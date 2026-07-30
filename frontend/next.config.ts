@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  experimental: {
+    // Prevent excessive worker thread allocation
+    cpus: 2,
+  },
 };
 
 export default nextConfig;

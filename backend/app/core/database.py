@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, URL
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 from app.core.config import settings
 
 # Construct URL object for SQLAlchemy (preserves username dot notation safely)
@@ -16,7 +15,12 @@ database_url = URL.create(
 
 engine = create_engine(
     database_url,
-    pool_pre_ping=True
+    pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=1800,
+    connect_args={"connect_timeout": 10}
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -28,3 +32,4 @@ def get_db():
         yield db
     finally:
         db.close()
+

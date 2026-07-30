@@ -13,7 +13,12 @@ mongodb_client = MongoDB()
 
 def connect_to_mongo():
     try:
-        mongodb_client.client = MongoClient(settings.MONGODB_URI, server_api=ServerApi('1'))
+        mongodb_client.client = MongoClient(
+            settings.MONGODB_URI,
+            server_api=ServerApi('1'),
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000
+        )
         mongodb_client.db = mongodb_client.client[settings.MONGODB_DB_NAME]
         mongodb_client.client.admin.command('ping')
         logger.info("Successfully connected to MongoDB Atlas!")
