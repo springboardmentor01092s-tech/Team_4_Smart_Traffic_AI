@@ -1,0 +1,37 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2026-07-30
+
+### Current Status
+**Ready for Backend Developer #2**
+The Authentication & User Management foundation is completely **frozen**, fully documented, and successfully tested against all requirements.
+
+### Added
+- Complete FastAPI application factory with lifespan context management.
+- Stateless authentication leveraging securely signed JWTs (Bearer tokens, HS256).
+- End-to-end Role-Based Access Control (`ADMIN`, `TRAFFIC_CONTROLLER`, `PUBLIC_USER`).
+- User schemas, robust dependency injection patterns, and RESTful routing for Account and Profile management.
+- Asynchronous PostgreSQL integration through SQLAlchemy 2.x and the `asyncpg` driver.
+- Alembic database migration environment and the initial schema definition.
+- Standardized, consistent exception handling that outputs structured JSON for HTTP errors.
+- CORS, Request ID generation, and structured Request/Response logging middleware.
+- 25+ unit and integration tests executing independently leveraging in-memory SQLite and aiosqlite.
+
+### Improved
+- Extracted router registration from `main.py` into a centralized `app/routers/__init__.py` registry to avert future code collisions/merge conflicts.
+- Applied robust dependency injection wrappers (`get_auth_service`, `get_user_service`) resulting in better encapsulation and making the application simpler to mock for isolated testing.
+- Fixed inconsistent logging behavior within authentication exception handlers to ensure HTTP authentication exceptions properly flush to stdout (useful in production context).
+- Improved SQLite testing robustness by conditionally gating PostgreSQL-specific SQLAlchemy pool configurations (e.g. `pool_size`, `max_overflow`).
+- Removed duplicated `model_config` attributes within schema inheritance chains and performed unused import cleanup across the system.
+
+### Security
+- Password storage utilizes `bcrypt` via Passlib (configured rigidly at 12 work factor rounds by default).
+- The `bcrypt` dependency is actively pinned at version `4.0.1` to maintain native compatibility with the generic `passlib` context hashing APIs.
+- JWT decoding validates structure and expiry, failing securely via distinct error representations.
+- Login operations securely thwart email enumeration attempts via constant-time password hash evaluation mechanisms, irrespective of the existence of the targeted subject email.
+- Authentication paths actively observe and respect account suspension conditions (`is_active` flags) synchronously across all interactions.
