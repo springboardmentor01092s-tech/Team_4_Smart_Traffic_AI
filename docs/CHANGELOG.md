@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2026-07-30
 
+## [1.1.0] - 2026-07-31
+
+### Current Status
+**Ready for Module 4 (Alerts)**
+Modules 1 (Cameras), 2 (Segments), and 3 (Readings) are now fully implemented, reviewed, and frozen.
+
+### Added
+- **Module 1: Traffic Cameras**: CRUD operations, RBAC, UUID primary keys, ENUM status, and soft-delete capabilities.
+- **Module 2: Traffic Segments**: Geospatial coordinate fields, segment status ENUM, and segment-camera relationship validation.
+- **Module 3: Traffic Readings**: High-throughput time-series data ingest using `BIGSERIAL` (auto-increment variant for SQLite), immutable records, and advanced time-series aggregations using standard SQL window functions (`ROW_NUMBER() OVER()`).
+- Added robust test coverage ensuring that Modules 1, 2, and 3 function correctly. The global test suite now contains 136 passing tests (1 skipped for SQLite dialect limitations).
+
+### Fixed
+- Fixed trailing slash redirection issues on router root endpoints (e.g., `""` instead of `"/"`).
+- Fixed repository test suite timezone evaluation constraints when asserting soft deletes.
+- Integrated missing `GET /segments/{segment_id}/latest-reading` implementation via DI of `ReadingRepository` into `SegmentService`.
+- Corrected generic `ValueError` logic on date ranges into a structured `InvalidDateRangeError` to trigger a consistent HTTP 422 Unprocessable Entity response.
+- Replaced Postgres-only `DISTINCT ON` constructs with cross-dialect compatible `ROW_NUMBER() OVER()` window functions to prevent SQLite testing breakages.
+
+## [1.0.0] - 2026-07-30
+
 ### Current Status
 **Ready for Backend Developer #2**
 The Authentication & User Management foundation is completely **frozen**, fully documented, and successfully tested against all requirements.

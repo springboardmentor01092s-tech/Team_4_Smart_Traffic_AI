@@ -200,6 +200,251 @@ Content-Type: application/json
 
 ---
 
+---
+
+## Traffic Cameras
+
+> API endpoints for managing IoT traffic camera units.
+
+### `GET /api/v1/cameras`
+
+List traffic cameras with optional filtering. Accessible by any authenticated user.
+
+**Headers**
+```
+Authorization: Bearer <access_token>
+```
+
+**Query Parameters**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | string | Filter by `ACTIVE`, `OFFLINE`, or `MAINTENANCE` |
+| `skip` | int | Pagination offset (default: 0) |
+| `limit` | int | Pagination limit (default: 100, max: 500) |
+
+**Response 200 — OK**
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "I-95 North Mile 42",
+    "latitude": 40.7128,
+    "longitude": -74.0060,
+    "status": "ACTIVE",
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
+
+---
+
+### `POST /api/v1/cameras`
+
+Register a new traffic camera. Requires `ADMIN` role.
+
+**Headers**
+```
+Authorization: Bearer <access_token>
+```
+
+**Request Body**
+```json
+{
+  "name": "I-95 North Mile 42",
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "status": "ACTIVE"
+}
+```
+
+**Response 201 — Created**
+Returns the created camera object.
+
+---
+
+### `GET /api/v1/cameras/{camera_id}`
+
+Get a specific camera by ID. Accessible by any authenticated user.
+
+**Response 200 — OK**
+Returns the camera object.
+
+**Error Responses**
+- `404 Not Found`: Camera does not exist or was soft-deleted.
+
+---
+
+### `PUT /api/v1/cameras/{camera_id}`
+
+Update a specific camera. Requires `ADMIN` role. All fields are optional.
+
+**Request Body**
+```json
+{
+  "status": "MAINTENANCE"
+}
+```
+
+**Response 200 — OK**
+Returns the updated camera object.
+
+---
+
+### `DELETE /api/v1/cameras/{camera_id}`
+
+Soft-delete a specific camera. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+Successfully deleted.
+
+**Error Responses**
+- `400 Bad Request`: Camera cannot be deleted because it is still linked to active Traffic Segments.
+
+---
+
+## Traffic Segments
+
+> API endpoints for managing logical road segments spanning between cameras.
+
+### `GET /api/v1/segments`
+
+List traffic segments. Accessible by any authenticated user.
+
+**Query Parameters**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | string | Filter by `ACTIVE`, `CONSTRUCTION`, or `CLOSED` |
+| `camera_id` | UUID | Filter segments linked to a specific camera |
+| `skip` | int | Pagination offset (default: 0) |
+| `limit` | int | Pagination limit (default: 100) |
+
+**Response 200 — OK**
+```json
+[
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "camera_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "I-95 Northbound Segment 42-43",
+    "start_latitude": 40.7128,
+    "start_longitude": -74.0060,
+    "end_latitude": 40.7150,
+    "end_longitude": -74.0080,
+    "status": "ACTIVE",
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
+
+---
+
+### `POST /api/v1/segments`
+
+Create a new traffic segment. Requires `ADMIN` role.
+
+**Request Body**
+Must contain all fields shown in the segment response above, excluding `id`, `created_at`, and `updated_at`.
+
+**Response 201 — Created**
+Returns the created segment.
+
+---
+
+### `GET /api/v1/segments/{segment_id}`
+
+Get a specific segment. Accessible by any authenticated user.
+
+---
+
+### `PUT /api/v1/segments/{segment_id}`
+
+Update a segment. Requires `ADMIN` role.
+
+---
+
+### `DELETE /api/v1/segments/{segment_id}`
+
+Soft-delete a segment. Requires `ADMIN` role.
+
+---
+
+### `GET /api/v1/segments/{segment_id}/latest-reading`
+
+Retrieve the most recent traffic reading for a specific segment. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "id": 1,
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "vehicle_count": 45,
+  "avg_speed_kmh": 65.5,
+  "congestion_level": "MODERATE",
+  "confidence_score": 95.0,
+  "recorded_at": "2025-01-15T10:35:00+00:00",
+  "created_at": "2025-01-15T10:35:05+00:00"
+}
+```
+*(Returns `null` if no readings exist).*
+
+---
+
+## Traffic Readings
+
+> API endpoints for high-throughput time-series traffic data.
+
+### `GET /api/v1/readings`
+
+List historical traffic readings. Accessible by any authenticated user.
+
+**Query Parameters**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `segment_id` | UUID | Filter readings for a specific segment |
+| `from_dt` | datetime | Return readings recorded after this time |
+| `to_dt` | datetime | Return readings recorded before this time |
+| `congestion_level` | string | Filter by congestion level |
+
+**Response 200 — OK**
+Returns a list of reading objects.
+
+---
+
+### `POST /api/v1/readings`
+
+Submit a new traffic reading. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Request Body**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "vehicle_count": 45,
+  "avg_speed_kmh": 65.5,
+  "congestion_level": "MODERATE",
+  "confidence_score": 95.0,
+  "recorded_at": "2025-01-15T10:35:00+00:00"
+}
+```
+
+**Response 201 — Created**
+Returns the persisted reading object.
+
+**Error Responses**
+- `422 Unprocessable Entity`: Raised if `recorded_at` is a future date.
+- `404 Not Found`: Raised if `segment_id` does not refer to a valid, active segment.
+
+---
+
+### `GET /api/v1/readings/{reading_id}`
+
+Get a specific traffic reading by its BIGSERIAL ID. Accessible by any authenticated user.
+
+**Response 200 — OK**
+Returns the specific reading object.
+
+---
+
 ## Standard Error Envelope
 
 All error responses use this consistent JSON structure:

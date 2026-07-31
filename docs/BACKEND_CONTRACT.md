@@ -88,7 +88,7 @@ async def add_camera(data: CameraCreate, db: AsyncSession = Depends(get_db)) -> 
     "/cameras/{camera_id}",
     dependencies=[Depends(require_role(UserRole.ADMIN))]
 )
-async def delete_camera(camera_id: int, db: AsyncSession = Depends(get_db)) -> None:
+async def delete_camera(camera_id: uuid.UUID, db: AsyncSession = Depends(get_db)) -> None:
     ...
 ```
 
@@ -135,7 +135,7 @@ from sqlalchemy.dialects.postgresql import UUID
 class TrafficAlert(Base):
     __tablename__ = "traffic_alerts"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_by: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="SET NULL"),

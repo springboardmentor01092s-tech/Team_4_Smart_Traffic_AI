@@ -56,13 +56,13 @@ The implementation of **Module 2: Traffic Segments** has been successfully compl
 - **pytest**: The complete test suite was executed (125 tests in total) and **all tests passed successfully**, covering Auth, Cameras, and Segments modules.
 
 ### Fixes Applied from Review
-1. Added the `GET /segments/{segment_id}/latest-reading` endpoint which returns `None` (as Module 3 is not yet implemented).
+1. Added the `GET /segments/{segment_id}/latest-reading` endpoint which returns the most recent reading (integrated via DI).
 2. Expanded router tests to include full RBAC matrices for `PUT` and `DELETE` endpoints.
 3. Expanded repository tests to cover filtering by `status` and `camera_id`.
 4. Implemented strict application-level validation for `camera_id` using `CameraNotFoundError` on create and update operations.
 
 ## Next Module to Implement
-The next module in the sequence is **Module 4: Incident Reports**. This module will handle geospatial intersections and multi-segment tracking for traffic incidents.
+The next module in the sequence is **Module 4: Alerts**. This module will handle geospatial intersections and multi-segment tracking for traffic alerts.
 
 ## Module 3 Completion: Traffic Readings
 The implementation of **Module 3: Traffic Readings** has been successfully completed in accordance with the Engineering Design Document v2.0.
