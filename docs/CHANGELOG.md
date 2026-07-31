@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Module 3: Traffic Readings**: High-throughput time-series data ingest using `BIGSERIAL` (auto-increment variant for SQLite), immutable records, and advanced time-series aggregations using standard SQL window functions (`ROW_NUMBER() OVER()`).
 - **Module 4: Traffic Alerts**: Alert management linked to segments, state transitions (ACTIVE -> RESOLVED / DISMISSED), comprehensive CRUD operations, soft-deletion, and robust state validations preventing illegal modifications of non-active alerts.
 - **Module 5: Traffic Predictions**: AI-driven congestion forecasting including `PredictionStatus` state transitions (PENDING -> COMPLETED / FAILED), confidence scoring, predictive congestion levels, and validation against predictions scheduled in the past.
-- Added robust test coverage ensuring that Modules 1, 2, 3, 4, and 5 function correctly. The global test suite now contains 185 passing tests (1 skipped for SQLite dialect limitations).
+- Added robust test coverage ensuring that Modules 1, 2, 3, 4, and 5 function correctly. The global test suite now contains 188 passing tests (1 skipped for SQLite dialect limitations).
 
 ### Fixed
 - Fixed trailing slash redirection issues on router root endpoints (e.g., `""` instead of `"/"`).
@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Converted `resolve` and `dismiss` endpoints from POST to PATCH.
   - Mapped enum fields to native SQLAlchemy Enums instead of `String` for the `Alert` model.
   - Renamed the table to `alerts` and correctly named the Alembic migration to `0007_create_alerts_table.py`.
+- Reworked Module 5 (Predictions) to address specification deviations:
+  - Added router integration tests covering HTTP 204 for DELETE, HTTP 404 for soft-deleted predictions, and the complete end-to-end `PENDING` -> `COMPLETED`/`FAILED` lifecycles.
+  - Verified and confirmed that physical database schemas strictly rely on Alembic to manage indexes and constraints, decoupling ORM models.
 
 ## [1.0.0] - 2026-07-30
 

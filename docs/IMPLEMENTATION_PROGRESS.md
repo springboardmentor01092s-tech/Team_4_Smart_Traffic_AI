@@ -63,8 +63,6 @@ The implementation of **Module 2: Traffic Segments** has been successfully compl
 3. Expanded repository tests to cover filtering by `status` and `camera_id`.
 4. Implemented strict application-level validation for `camera_id` using `CameraNotFoundError` on create and update operations.
 
-## Next Module to Implement
-The next module in the sequence is **Module 4: Alerts**. This module will handle geospatial intersections and multi-segment tracking for traffic alerts.
 
 ## Module 3 Completion: Traffic Readings
 The implementation of **Module 3: Traffic Readings** has been successfully completed in accordance with the Engineering Design Document v2.0.
@@ -138,3 +136,32 @@ Additionally, existing files were updated:
 4. Converted Alert ORM enum mappings from `String(...)` to native `sqlalchemy.Enum` mappings.
 5. Re-aligned the database table name from `traffic_alerts` to `alerts` and renamed the Alembic migration to `0007_create_alerts_table.py` to match the engineering design.
 
+## Module 5 Completion: Traffic Predictions
+The implementation of **Module 5: Traffic Predictions** has been successfully completed in accordance with the Engineering Design Document v2.0.
+
+### Files Added
+- `app/models/prediction.py`: UUID PK, soft-deletion via `deleted_at`, and native PostgreSQL ENUM for `PredictionStatus`.
+- `app/schemas/prediction.py`: Pydantic v2 schemas for request validation, including constraints preventing predictions for past times and mapping responses.
+- `app/repositories/prediction_repository.py`: Async SQLAlchemy repository filtering predictions by segment, status, and ensuring soft-deleted records are omitted.
+- `app/services/prediction_service.py`: Business logic layer enforcing state transitions (`PENDING` -> `COMPLETED` / `FAILED`) and ensuring future horizons.
+- `app/dependencies/predictions.py`: Dependency injection factory for the service.
+- `app/routers/predictions.py`: REST API router exposing POST for creation, GET endpoints, PATCH operations for completing or failing a prediction, and DELETE for soft deletion.
+- `alembic/versions/0008_create_traffic_predictions_table.py`: Database migration defining ENUM types and the predictions table schema.
+- `tests/test_predictions/test_predictions_repository.py`: Unit tests for data access.
+- `tests/test_predictions/test_predictions_service.py`: Unit tests for domain logic and state transition rules.
+- `tests/test_predictions/test_predictions_router.py`: Integration tests for API endpoints.
+
+Additionally, existing registry files were updated:
+- `app/models/__init__.py`: Registered the `TrafficPrediction` model.
+- `app/routers/__init__.py`: Registered the `predictions` router.
+- `app/core/exceptions.py`: Added `PredictionNotFoundError`, `PredictionNotPendingError`, and `PredictionTimeError`.
+
+### Validation Results
+- **pytest**: The complete regression suite was executed, ensuring no regressions.
+
+### Fixes Applied from Review (Targeted Rework)
+1. **Added Router Integration Tests**: Augmented the test suite with missing end-to-end integration tests for `DELETE /predictions/{id}` (HTTP 204), soft-deleted fetching (HTTP 404), and full PENDING -> COMPLETED / FAILED lifecycles.
+2. **Schema Verification**: Confirmed adherence to `ENGINEERING_DESIGN_V2.md`, confirming that physical database schemas strictly rely on Alembic to manage indexes and constraints, keeping ORM models decoupled.
+
+### Current Project State
+With the successful freeze of Module 5, all five core business modules are now structurally complete, tested, documented, and fully integrated with the Authentication system.

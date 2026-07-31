@@ -355,17 +355,56 @@ Returns the created segment.
 
 Get a specific segment. Accessible by any authenticated user.
 
+**Response 200 — OK**
+```json
+{
+  "id": "660e8400-e29b-41d4-a716-446655440001",
+  "camera_id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "I-95 Northbound Segment 42-43",
+  "start_latitude": 40.7128,
+  "start_longitude": -74.0060,
+  "end_latitude": 40.7150,
+  "end_longitude": -74.0080,
+  "status": "ACTIVE",
+  "created_at": "2025-01-15T10:30:00+00:00",
+  "updated_at": "2025-01-15T10:30:00+00:00"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Segment does not exist or was soft-deleted.
+
 ---
 
 ### `PUT /api/v1/segments/{segment_id}`
 
 Update a segment. Requires `ADMIN` role.
 
+**Request Body**
+All fields are optional.
+```json
+{
+  "status": "CONSTRUCTION"
+}
+```
+
+**Response 200 — OK**
+Returns the updated segment object.
+
+**Error Responses**
+- `404 Not Found`: Segment does not exist or was soft-deleted.
+
 ---
 
 ### `DELETE /api/v1/segments/{segment_id}`
 
 Soft-delete a segment. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+Successfully deleted.
+
+**Error Responses**
+- `404 Not Found`: Segment does not exist or was already soft-deleted.
 
 ---
 
@@ -407,7 +446,20 @@ List historical traffic readings. Accessible by any authenticated user.
 | `congestion_level` | string | Filter by congestion level |
 
 **Response 200 — OK**
-Returns a list of reading objects.
+```json
+[
+  {
+    "id": 1,
+    "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+    "vehicle_count": 45,
+    "avg_speed_kmh": 65.5,
+    "congestion_level": "MODERATE",
+    "confidence_score": 95.0,
+    "recorded_at": "2025-01-15T10:35:00+00:00",
+    "created_at": "2025-01-15T10:35:05+00:00"
+  }
+]
+```
 
 ---
 
@@ -441,7 +493,21 @@ Returns the persisted reading object.
 Get a specific traffic reading by its BIGSERIAL ID. Accessible by any authenticated user.
 
 **Response 200 — OK**
-Returns the specific reading object.
+```json
+{
+  "id": 1,
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "vehicle_count": 45,
+  "avg_speed_kmh": 65.5,
+  "congestion_level": "MODERATE",
+  "confidence_score": 95.0,
+  "recorded_at": "2025-01-15T10:35:00+00:00",
+  "created_at": "2025-01-15T10:35:05+00:00"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Reading does not exist.
 
 ---
 
@@ -464,7 +530,22 @@ List traffic alerts. Accessible by any authenticated user.
 | `limit` | int | Pagination limit (default: 100) |
 
 **Response 200 — OK**
-Returns a list of alert objects.
+```json
+[
+  {
+    "id": "770e8400-e29b-41d4-a716-446655440002",
+    "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+    "title": "Severe Congestion",
+    "description": "Traffic is completely stopped.",
+    "alert_type": "CONGESTION",
+    "severity": "CRITICAL",
+    "status": "ACTIVE",
+    "resolved_at": null,
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
 
 ---
 
@@ -493,7 +574,23 @@ Returns the created alert object.
 Get a specific traffic alert. Accessible by any authenticated user.
 
 **Response 200 — OK**
-Returns the specific alert object.
+```json
+{
+  "id": "770e8400-e29b-41d4-a716-446655440002",
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "title": "Severe Congestion",
+  "description": "Traffic is completely stopped.",
+  "alert_type": "CONGESTION",
+  "severity": "CRITICAL",
+  "status": "ACTIVE",
+  "resolved_at": null,
+  "created_at": "2025-01-15T10:30:00+00:00",
+  "updated_at": "2025-01-15T10:30:00+00:00"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Alert does not exist or was soft-deleted.
 
 ---
 
@@ -555,7 +652,24 @@ List traffic predictions. Accessible by any authenticated user.
 | `limit` | int | Pagination limit (default: 100) |
 
 **Response 200 — OK**
-Returns a list of prediction objects.
+```json
+[
+  {
+    "id": "880e8400-e29b-41d4-a716-446655440003",
+    "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+    "prediction_for": "2025-01-15T11:30:00+00:00",
+    "horizon_minutes": 60,
+    "model_version": "v1.2.0",
+    "status": "PENDING",
+    "predicted_congestion_level": null,
+    "predicted_vehicle_count": null,
+    "predicted_avg_speed_kmh": null,
+    "confidence_score": null,
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
 
 ---
 
@@ -583,7 +697,25 @@ Returns the created prediction object with status `PENDING`.
 Get a specific traffic prediction. Accessible by any authenticated user.
 
 **Response 200 — OK**
-Returns the specific prediction object.
+```json
+{
+  "id": "880e8400-e29b-41d4-a716-446655440003",
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "prediction_for": "2025-01-15T11:30:00+00:00",
+  "horizon_minutes": 60,
+  "model_version": "v1.2.0",
+  "status": "PENDING",
+  "predicted_congestion_level": null,
+  "predicted_vehicle_count": null,
+  "predicted_avg_speed_kmh": null,
+  "confidence_score": null,
+  "created_at": "2025-01-15T10:30:00+00:00",
+  "updated_at": "2025-01-15T10:30:00+00:00"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Prediction does not exist or was soft-deleted.
 
 ---
 
@@ -592,7 +724,24 @@ Returns the specific prediction object.
 Get upcoming PENDING or COMPLETED predictions for a segment. Accessible by any authenticated user.
 
 **Response 200 — OK**
-Returns a list of prediction objects.
+```json
+[
+  {
+    "id": "880e8400-e29b-41d4-a716-446655440003",
+    "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+    "prediction_for": "2025-01-15T11:30:00+00:00",
+    "horizon_minutes": 60,
+    "model_version": "v1.2.0",
+    "status": "PENDING",
+    "predicted_congestion_level": null,
+    "predicted_vehicle_count": null,
+    "predicted_avg_speed_kmh": null,
+    "confidence_score": null,
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
 
 ---
 
@@ -630,6 +779,9 @@ Soft-delete a prediction. Requires `ADMIN` role.
 
 **Response 204 — No Content**
 Successfully deleted.
+
+**Error Responses**
+- `404 Not Found`: Prediction does not exist or was already soft-deleted.
 
 ---
 

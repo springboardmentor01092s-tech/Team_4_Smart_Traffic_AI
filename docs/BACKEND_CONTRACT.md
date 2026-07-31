@@ -133,7 +133,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 
 class TrafficAlert(Base):
-    __tablename__ = "traffic_alerts"
+    __tablename__ = "alerts"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_by: Mapped[uuid.UUID] = mapped_column(
@@ -172,7 +172,7 @@ Reuse or subclass the existing exception hierarchy:
 from app.core.exceptions import AppBaseException
 
 class TrafficCameraNotFoundError(AppBaseException):
-    def __init__(self, camera_id: int) -> None:
+    def __init__(self, camera_id: uuid.UUID) -> None:
         super().__init__(f"Traffic camera {camera_id} not found.")
 ```
 
