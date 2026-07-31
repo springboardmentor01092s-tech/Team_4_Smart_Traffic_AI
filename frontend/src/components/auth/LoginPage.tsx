@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+
 import { 
   ArrowRight, 
   Eye, 
@@ -14,6 +15,8 @@ import {
   CheckCircle2,
   AlertCircle
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+
 
 export type UserType = "civilian" | "controller";
 
@@ -63,20 +66,9 @@ export default function LoginPage() {
   } | null>(null);
 
   // Registered Accounts
-  const [registeredAccounts, setRegisteredAccounts] = useState<Record<string, { password: string; user_type: string }>>({
-    "civilian@gmail.com": { password: "password123", user_type: "civilian" },
-    "controller@gmail.com": { password: "password123", user_type: "controller" },
-    "user@gmail.com": { password: "password123", user_type: "civilian" }
-  });
+  
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("cityflowx_registered_users");
-      if (stored) {
-        setRegisteredAccounts(JSON.parse(stored));
-      }
-    } catch {}
-  }, []);
+  
 
   const triggerToast = (type: "error" | "success", message: string) => {
     setToast({ type, message });
@@ -95,96 +87,70 @@ export default function LoginPage() {
     }
 
     if (isRegisterMode) {
-      try {
-        await fetch("http://localhost:8000/api/v1/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: cleanEmail,
-            password: password,
-            user_type: "civilian",
-            full_name: fullName || cleanEmail.split("@")[0]
-          })
-        }).catch(() => {});
-      } catch {}
+  const { error } = await supabase.auth.signUp({
+    email: cleanEmail,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        user_type: "civilian",
+      },
+    },
+  });
 
-      const updatedAccounts = {
-        ...registeredAccounts,
-        [cleanEmail]: { password: password, user_type: "civilian" }
-      };
-      setRegisteredAccounts(updatedAccounts);
-      try {
-        localStorage.setItem("cityflowx_registered_users", JSON.stringify(updatedAccounts));
-      } catch {}
+  if (error) {
+    triggerToast("error", error.message);
+    setLoading(false);
+    return;
+  }
 
-      triggerToast("success", "Account registered in Supabase! You can now sign in.");
-      setIsRegisterMode(false);
-      setLoading(false);
-      return;
-    }
+  triggerToast(
+    "success",
+    "Registration successful. Please verify your email."
+  );
+
+  setIsRegisterMode(false);
+  setLoading(false);
+  return;
+}
 
     // SIGN IN MODE
-    try {
-      let isVerified = false;
-
-      if (registeredAccounts[cleanEmail]) {
-        const account = registeredAccounts[cleanEmail];
-        if (account.password === password) {
-          isVerified = true;
-        } else {
-          triggerToast("error", "Invalid password credentials.");
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (!isVerified) {
-        const res = await fetch("http://localhost:8000/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: cleanEmail,
-            password: password,
-            user_type: userType
-          })
-        });
-
-        if (res.ok) {
-          isVerified = true;
-        }
-      }
-
-      if (isVerified) {
-        setAuthenticatedUser({
-          email: cleanEmail,
-          user_type: registeredAccounts[cleanEmail]?.user_type || userType
-        });
-      } else {
-        triggerToast("error", "Account not found. Please sign up to create an account.");
-      }
-    } catch {
-      if (registeredAccounts[cleanEmail]) {
-        setAuthenticatedUser({
-          email: cleanEmail,
-          user_type: registeredAccounts[cleanEmail].user_type
-        });
-      } else {
-        triggerToast("error", "Account not found. Please sign up first.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuthLogin = (provider: string) => {
-    if (userType === "controller") return;
-    const providerEmail = `civilian.${provider.toLowerCase()}@gmail.com`;
-    setAuthenticatedUser({
-      email: providerEmail,
-      user_type: "civilian"
+   try {
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email: cleanEmail,
+      password,
     });
-  };
 
+  if (error) {
+    triggerToast("error", error.message);
+    return;
+  }
+
+  setAuthenticatedUser({
+    email: data.user?.email || "",
+    user_type:
+      data.user?.user_metadata?.user_type ||
+      userType,
+  });
+} finally {
+  setLoading(false);
+}
+  };
+      
+  const handleOAuthLogin = async () => {
+  const { error } =
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/auth/callback",
+      },
+    });
+
+  if (error) {
+    triggerToast("error", error.message);
+  }
+};
   // Authenticated Portal View
   if (authenticatedUser) {
     return (
@@ -410,7 +376,7 @@ export default function LoginPage() {
             <div className="space-y-3 pt-1">
               <button
                 type="button"
-                onClick={() => handleOAuthLogin("Google")}
+                onClick={handleOAuthLogin}
                 className="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-3 transition-all shadow-sm"
               >
                 {/* Official Google SVG Icon */}
