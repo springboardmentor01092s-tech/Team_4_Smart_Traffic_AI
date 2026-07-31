@@ -97,20 +97,26 @@ def run_migrations_offline() -> None:
 async def run_async_migrations() -> None:
     """
     Run migrations asynchronously using an async engine.
-    Required because our app uses asyncpg (async-only driver).
+
+    Uses Alembic\'s recommended transaction pattern so migrations
+    are committed instead of being rolled back when the connection
+    is closed.
     """
     connectable = create_async_engine(get_url(), echo=False)
 
-    async with connectable.connect() as connection:
-        await connection.run_sync(
-            lambda sync_conn: context.configure(
-                connection=sync_conn,
-                target_metadata=target_metadata,
-                include_object=include_object,
-                compare_type=True,
-            )
+    def do_run_migrations(sync_connection):
+        context.configure(
+            connection=sync_connection,
+            target_metadata=target_metadata,
+            include_object=include_object,
+            compare_type=True,
         )
-        await connection.run_sync(lambda _: context.run_migrations())
+
+        with context.begin_transaction():
+            context.run_migrations()
+
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
 
     await connectable.dispose()
     logger.info("Online (async) migrations completed.")

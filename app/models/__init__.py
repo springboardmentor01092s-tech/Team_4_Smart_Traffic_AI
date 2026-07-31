@@ -12,4 +12,7 @@ Example:
 
 from app.models.user import User, UserRole  # noqa: F401
 
-__all__ = ["User", "UserRole"]
+# ── Business modules (Backend Developer #2) ───────────────────────────────────
+from app.models.camera import CameraStatus, TrafficCamera  # noqa: F401
+
+__all__ = ["User", "UserRole", "TrafficCamera", "CameraStatus"]

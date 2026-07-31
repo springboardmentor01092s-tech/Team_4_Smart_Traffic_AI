@@ -103,6 +103,24 @@ class UserInactiveError(AppBaseException):
         super().__init__("This account has been deactivated.")
 
 
+# ─── Traffic Camera Exceptions ────────────────────────────────────────────────
+
+class CameraNotFoundError(AppBaseException):
+    """Raised when a traffic camera lookup returns no result."""
+
+    def __init__(self, camera_id: object = "") -> None:
+        super().__init__(f"Traffic camera {camera_id} not found.")
+
+
+class CameraInUseError(AppBaseException):
+    """Raised when a camera cannot be deleted because segments reference it."""
+
+    def __init__(self, camera_id: object = "") -> None:
+        super().__init__(
+            f"Camera {camera_id} is assigned to active segments and cannot be deleted."
+        )
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -216,6 +234,18 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
     )
 
 
+async def camera_not_found_handler(request: Request, exc: CameraNotFoundError) -> JSONResponse:
+    """Map CameraNotFoundError → 404 Not Found."""
+    logger.warning("Camera not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "CAMERA_NOT_FOUND")
+
+
+async def camera_in_use_handler(request: Request, exc: CameraInUseError) -> JSONResponse:
+    """Map CameraInUseError → 409 Conflict."""
+    logger.warning("Camera in use | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "CAMERA_IN_USE")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -229,4 +259,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(UserNotFoundError, user_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(UserAlreadyExistsError, user_already_exists_handler)  # type: ignore[arg-type]
     app.add_exception_handler(UserInactiveError, user_inactive_handler)  # type: ignore[arg-type]
+    # ── Camera exceptions ─────────────────────────────────────────────────────
+    app.add_exception_handler(CameraNotFoundError, camera_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(CameraInUseError, camera_in_use_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]
