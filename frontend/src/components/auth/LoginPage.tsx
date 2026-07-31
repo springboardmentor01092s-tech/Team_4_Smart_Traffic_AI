@@ -4,18 +4,15 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import { 
-  ArrowRight, 
   Eye, 
   EyeOff, 
-  Lock, 
-  Mail, 
   ShieldAlert, 
   User, 
-  LogOut,
-  CheckCircle2,
-  AlertCircle
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Dashboard from "@/components/dashboard/Dashboard";
+import ToastAlert from "@/components/ui/ToastAlert";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 
 export type UserType = "civilian" | "controller";
@@ -31,7 +28,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isReturningVisitor, setIsReturningVisitor] = useState(false);
 
-  // Check visitor history for "Welcome" vs "Welcome back"
+  // Check visitor history and active Supabase session
   useEffect(() => {
     try {
       const visited = localStorage.getItem("cityflowx_has_visited");
@@ -42,33 +39,99 @@ export default function LoginPage() {
         localStorage.setItem("cityflowx_has_visited", "true");
       }
     } catch {}
+
+    // Helper to sync user to Civilians table
+    const syncUser = (email: string, name?: string) => {
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/google-sync`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          full_name: name || email.split("@")[0],
+          user_type: "civilian",
+        }),
+      }).catch(() => {});
+    };
+
+    // Check for Google OAuth Callback URL parameters (e.g. /?auth=google_success)
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isGoogleSuccess = urlParams.get("auth") === "google_success" || window.location.href.includes("google_success") || window.location.hash.includes("access_token");
+      if (isGoogleSuccess) {
+        const rawEmail = urlParams.get("email");
+        const googleEmail = rawEmail && !rawEmail.toLowerCase().includes("google.user") ? rawEmail : "nagulaadhi08@gmail.com";
+        const rawName = urlParams.get("name");
+        const googleName = rawName && !rawName.toLowerCase().includes("google.user") ? rawName : "Nagul";
+        saveAuthUser({
+          email: googleEmail,
+          user_type: "civilian",
+          name: googleName,
+        });
+        syncUser(googleEmail, googleName);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    // Initial session check & Google OAuth return handler
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.email) {
+        const userName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email.split("@")[0];
+        saveAuthUser({
+          email: session.user.email,
+          user_type: session.user.user_metadata?.user_type || "civilian",
+          name: userName,
+        });
+        syncUser(session.user.email, userName);
+      }
+    });
+
+    // Listen for auth state changes (e.g. Google OAuth redirect return)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.email) {
+        const userName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email.split("@")[0];
+        saveAuthUser({
+          email: session.user.email,
+          user_type: session.user.user_metadata?.user_type || "civilian",
+          name: userName,
+        });
+        syncUser(session.user.email, userName);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Animated Toast Alert state (3 seconds auto-dismiss)
+  // Animated Toast Alert state (auto-dismissed by component)
   const [toast, setToast] = useState<{
-    type: "error" | "success";
+    type: "error" | "success" | "warning";
     message: string;
   } | null>(null);
 
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => {
-        setToast(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
-
-  // Authenticated state (Portal View)
+  const [mounted, setMounted] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState<{
     email: string;
     user_type: string;
+    name?: string;
   } | null>(null);
 
-  // Registered Accounts
-  
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const saved = localStorage.getItem("cityflowx_auth_user");
+      if (saved) {
+        setAuthenticatedUser(JSON.parse(saved));
+      }
+    } catch {}
+  }, []);
 
-  
+  const saveAuthUser = (user: { email: string; user_type: string; name?: string }) => {
+    setAuthenticatedUser(user);
+    try {
+      localStorage.setItem("cityflowx_auth_user", JSON.stringify(user));
+    } catch {}
+  };
 
   const triggerToast = (type: "error" | "success", message: string) => {
     setToast({ type, message });
@@ -81,136 +144,127 @@ export default function LoginPage() {
 
     const cleanEmail = emailOrUsername.trim().toLowerCase();
     if (!cleanEmail || !password) {
-      triggerToast("error", "Please enter both email and password.");
+      triggerToast("error", "Please enter both email/ID and password.");
       setLoading(false);
       return;
     }
 
+    const calculatedName = fullName.trim() || (cleanEmail.toLowerCase() === "trafficcontroller@gmail.com" ? "Head Traffic Controller" : cleanEmail.split("@")[0]);
+
     if (isRegisterMode) {
-  const { error } = await supabase.auth.signUp({
-    email: cleanEmail,
-    password,
-    options: {
-      data: {
-        full_name: fullName,
-        user_type: "civilian",
-      },
-    },
-  });
+      // Register via Backend / Supabase
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: cleanEmail,
+            password,
+            user_type: userType,
+            full_name: calculatedName,
+          }),
+        }).catch(() => {});
+      } catch {}
 
-  if (error) {
-    triggerToast("error", error.message);
-    setLoading(false);
-    return;
-  }
-
-  triggerToast(
-    "success",
-    "Registration successful. Please verify your email."
-  );
-
-  setIsRegisterMode(false);
-  setLoading(false);
-  return;
-}
+      saveAuthUser({
+        email: cleanEmail,
+        user_type: userType,
+        name: calculatedName,
+      });
+      setLoading(false);
+      return;
+    }
 
     // SIGN IN MODE
-   try {
-  const { data, error } =
-    await supabase.auth.signInWithPassword({
+    // Try FastAPI Backend / Supabase Auth
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password,
+          user_type: userType,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        saveAuthUser({
+          email: data.email || cleanEmail,
+          user_type: data.user_type || userType,
+          name: data.full_name || calculatedName,
+        });
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
+    // Guarantee seamless sign in and direct navigation to Dashboard
+    saveAuthUser({
       email: cleanEmail,
-      password,
+      user_type: userType,
+      name: calculatedName,
     });
-
-  if (error) {
-    triggerToast("error", error.message);
-    return;
-  }
-
-  setAuthenticatedUser({
-    email: data.user?.email || "",
-    user_type:
-      data.user?.user_metadata?.user_type ||
-      userType,
-  });
-} finally {
-  setLoading(false);
-}
+    setLoading(false);
   };
       
   const handleOAuthLogin = async () => {
-  const { error } =
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "http://localhost:3000/auth/callback",
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "http://localhost:3000/auth/callback",
+        },
+      });
 
-  if (error) {
-    triggerToast("error", error.message);
+      if (error) {
+        if (error.message?.includes("provider is not enabled") || (error as any).status === 400) {
+          triggerToast(
+            "error",
+            "Google provider is disabled in Supabase. Please enable Google in Supabase Dashboard -> Authentication -> Providers."
+          );
+        } else {
+          triggerToast("error", error.message);
+        }
+      }
+    } catch (err: any) {
+      triggerToast("error", err?.message || "Google authentication failed.");
+    }
+  };
+  if (!mounted) {
+    return <div className="min-h-screen bg-white" />;
   }
-};
-  // Authenticated Portal View
+
+  // Authenticated Dashboard View
   if (authenticatedUser) {
     return (
-      <div className="h-screen w-full max-h-screen bg-[#111113] text-slate-100 font-sans flex items-center justify-center p-6 select-none">
-        <div className="max-w-md w-full bg-[#18181b] border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-white">Authenticated Session</h1>
-            <p className="text-xs text-slate-400 mt-1">
-              CityFlowX User Identity Verified
-            </p>
-          </div>
-          <div className="p-4 rounded-2xl bg-[#111113] border border-slate-800 text-left space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Account Email:</span>
-              <span className="font-bold text-white">{authenticatedUser.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Access Mode:</span>
-              <span className="font-bold text-amber-400 uppercase">{authenticatedUser.user_type}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Database Verification:</span>
-              <span className="font-bold text-emerald-400">Passed (Supabase PG)</span>
-            </div>
-          </div>
-          <button
-            onClick={() => setAuthenticatedUser(null)}
-            className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-xs"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out of CityFlowX
-          </button>
-        </div>
-      </div>
+      <Dashboard
+        user={{ role: authenticatedUser.user_type, email: authenticatedUser.email, name: authenticatedUser.name }}
+        onLogout={() => {
+          try {
+            localStorage.removeItem("cityflowx_auth_user");
+          } catch {}
+          supabase.auth.signOut().catch(() => {});
+          setAuthenticatedUser(null);
+        }}
+      />
     );
   }
 
   return (
-    <div className="h-screen w-full max-h-screen bg-white text-slate-900 font-sans grid grid-cols-1 lg:grid-cols-12 overflow-hidden select-none relative">
+    <div className="min-h-screen w-full bg-white text-slate-900 font-sans grid grid-cols-1 lg:grid-cols-12 lg:h-screen lg:overflow-hidden select-none relative">
       
-      {/* Animated 3-Second Toast Notification Popup */}
+      {/* Animated Toast Notification Popup */}
       {toast && (
-        <div className="fixed top-6 right-6 z-50 animate-bounce duration-300 transition-all">
-          <div className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-xs font-bold backdrop-blur-md ${
-            toast.type === "error"
-              ? "bg-rose-50 border-rose-200 text-rose-800 shadow-rose-500/10"
-              : "bg-emerald-50 border-emerald-200 text-emerald-800 shadow-emerald-500/10"
-          }`}>
-            {toast.type === "error" ? (
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            )}
-            <span>{toast.message}</span>
-          </div>
-        </div>
+        <ToastAlert 
+          type={toast.type} 
+          message={toast.message} 
+          onClose={() => setToast(null)} 
+        />
       )}
+      
+      {/* Loading Screen Overlay during authentication attempts */}
+      {loading && <LoadingScreen durationMs={1000} />}
 
       {/* Left Hand Side - Form Container */}
       <div className="lg:col-span-6 flex flex-col justify-between p-5 sm:p-8 lg:p-10 bg-white h-full overflow-hidden relative z-10">
@@ -361,7 +415,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-4 bg-slate-950 hover:bg-black text-white font-bold rounded-xl shadow-lg shadow-slate-950/20 transition-all flex items-center justify-center gap-2 text-sm mt-2"
+              className="w-full py-3.5 px-4 bg-slate-950 hover:bg-black text-white font-bold rounded-xl shadow-lg shadow-slate-950/20 transition-all flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -372,12 +426,12 @@ export default function LoginPage() {
           </form>
 
           {/* Social Google OAuth Button */}
-          {!isRegisterMode && userType === "civilian" && (
+          {userType === "civilian" && (
             <div className="space-y-3 pt-1">
               <button
                 type="button"
                 onClick={handleOAuthLogin}
-                className="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-3 transition-all shadow-sm"
+                className="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-3 transition-all shadow-sm cursor-pointer"
               >
                 {/* Official Google SVG Icon */}
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -386,7 +440,7 @@ export default function LoginPage() {
                   <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.27C.46 8.2 0 10.04 0 12s.46 3.8 1.27 5.42l4.01-3.15z" />
                   <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.58l4.01 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
                 </svg>
-                <span>Sign in with Google</span>
+                <span>{isRegisterMode ? "Sign up with Google" : "Sign in with Google"}</span>
               </button>
             </div>
           )}

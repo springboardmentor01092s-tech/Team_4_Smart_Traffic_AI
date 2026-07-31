@@ -19,11 +19,29 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"MongoDB connection skipped or failed: {e}")
     try:
-        # Create DB tables (users, etc.) in Supabase PostgreSQL
+        # Create DB tables (civilians, traffic_controllers, users) in Supabase PostgreSQL
         Base.metadata.create_all(bind=engine)
         logger.info("Supabase PostgreSQL tables created/verified successfully.")
+        
+        # Pre-seed default Traffic Controller account & setup Google Auth DB trigger
+        from app.core.database import SessionLocal
+        from app.api.v1.auth import init_default_controller
+        from setup_trigger import setup_trigger
+        
+        db = SessionLocal()
+        try:
+            init_default_controller(db)
+            logger.info("Default Traffic Controller pre-seeded into database.")
+        finally:
+            db.close()
+            
+        try:
+            setup_trigger()
+            logger.info("Supabase auth.users -> public.civilians database trigger verified.")
+        except Exception as trigger_err:
+            logger.warning(f"Trigger setup note: {trigger_err}")
     except Exception as e:
-        logger.warning(f"PostgreSQL table creation skipped or failed: {e}")
+        logger.warning(f"PostgreSQL table creation/seeding skipped or failed: {e}")
     yield
     # Shutdown sequence
     logger.info("Shutting down CityFlowX Backend...")
