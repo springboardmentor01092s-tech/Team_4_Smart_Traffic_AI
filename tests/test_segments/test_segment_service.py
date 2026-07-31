@@ -39,8 +39,13 @@ def mock_camera_repo() -> AsyncMock:
 
 
 @pytest.fixture
-def segment_service(mock_repo: AsyncMock, mock_camera_repo: AsyncMock) -> SegmentService:
-    return SegmentService(segment_repo=mock_repo, camera_repo=mock_camera_repo)
+def mock_reading_repo() -> AsyncMock:
+    return AsyncMock()
+
+
+@pytest.fixture
+def segment_service(mock_repo: AsyncMock, mock_camera_repo: AsyncMock, mock_reading_repo: AsyncMock) -> SegmentService:
+    return SegmentService(segment_repo=mock_repo, camera_repo=mock_camera_repo, reading_repo=mock_reading_repo)
 
 
 @pytest.mark.asyncio

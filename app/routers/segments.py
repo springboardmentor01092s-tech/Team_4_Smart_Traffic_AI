@@ -10,6 +10,7 @@ from app.dependencies.auth import get_current_user, require_role
 from app.dependencies.segments import get_segment_service
 from app.models.segment import SegmentStatus
 from app.models.user import UserRole
+from app.schemas.reading import ReadingRead
 from app.schemas.segment import SegmentCreate, SegmentRead, SegmentUpdate
 from app.services.segment_service import SegmentService
 
@@ -49,6 +50,7 @@ async def get_segment(
 
 @router.get(
     "/{segment_id}/latest-reading",
+    response_model=ReadingRead | None,
     summary="Get most recent reading for segment",
     dependencies=[Depends(get_current_user)],
 )

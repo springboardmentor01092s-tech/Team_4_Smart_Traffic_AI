@@ -11,6 +11,7 @@ from app.core.logging import get_logger
 from app.models.segment import SegmentStatus, TrafficSegment
 from app.repositories.camera_repository import CameraRepository
 from app.repositories.segment_repository import SegmentRepository
+from app.repositories.reading_repository import ReadingRepository
 from app.schemas.segment import SegmentCreate, SegmentUpdate
 
 logger = get_logger(__name__)
@@ -21,9 +22,11 @@ class SegmentService:
         self,
         segment_repo: SegmentRepository,
         camera_repo: CameraRepository,
+        reading_repo: ReadingRepository,
     ) -> None:
-        self._repo = segment_repo
-        self._camera_repo = camera_repo
+        self.segment_repo = segment_repo
+        self.camera_repo = camera_repo
+        self.reading_repo = reading_repo
 
     async def list_segments(
         self,
@@ -34,30 +37,37 @@ class SegmentService:
         limit: int = 100,
     ) -> list[TrafficSegment]:
         if camera_id is not None:
-            camera = await self._camera_repo.get_by_id(camera_id)
+            camera = await self.camera_repo.get_by_id(camera_id)
             if camera is None:
                 raise CameraNotFoundError(camera_id)
         
-        segments = await self._repo.get_all(status=status, camera_id=camera_id, skip=skip, limit=limit)
+        segments = await self.segment_repo.get_all(status=status, camera_id=camera_id, skip=skip, limit=limit)
         return list(segments)
 
     async def get_segment(self, segment_id: uuid.UUID) -> TrafficSegment:
-        segment = await self._repo.get_by_id(segment_id)
+        segment = await self.segment_repo.get_by_id(segment_id)
         if segment is None:
             raise SegmentNotFoundError(segment_id)
         return segment
 
     async def get_latest_reading(self, segment_id: uuid.UUID) -> dict | None:
-        await self.get_segment(segment_id)
-        return None
+        """
+        Retrieves the most recent traffic reading for the given segment.
+        Validates segment existence first.
+        """
+        segment = await self.segment_repo.get_by_id(segment_id)
+        if not segment:
+            raise SegmentNotFoundError(segment_id)
+        
+        return await self.reading_repo.get_latest_for_segment(segment_id)
 
     async def create_segment(self, data: SegmentCreate) -> TrafficSegment:
         if data.camera_id is not None:
-            camera = await self._camera_repo.get_by_id(data.camera_id)
+            camera = await self.camera_repo.get_by_id(data.camera_id)
             if camera is None:
                 raise CameraNotFoundError(data.camera_id)
 
-        segment = await self._repo.create(
+        segment = await self.segment_repo.create(
             name=data.name,
             start_point=data.start_point,
             end_point=data.end_point,
@@ -125,14 +135,14 @@ class SegmentService:
         # However, to be slightly better without deviating:
         if "camera_id" in data.model_fields_set:
             if data.camera_id is not None:
-                camera = await self._camera_repo.get_by_id(data.camera_id)
+                camera = await self.camera_repo.get_by_id(data.camera_id)
                 if camera is None:
                     raise CameraNotFoundError(data.camera_id)
             update_fields["camera_id"] = data.camera_id
             
         update_fields["updated_at"] = datetime.now(UTC)
 
-        updated = await self._repo.update(segment, **update_fields)
+        updated = await self.segment_repo.update(segment, **update_fields)
         return updated
 
     async def delete_segment(self, segment_id: uuid.UUID) -> None:
@@ -141,7 +151,8 @@ class SegmentService:
         # The database uses ON DELETE RESTRICT for readings, alerts, predictions.
         # Since these are soft deletes, the DB constraint won't fire. But for soft-delete,
         # do we need to check if readings exist? The design doc says:
-        # "Soft deletion preserves historical reading, alert, and prediction records."
-        # No specific "SegmentInUseError" is requested for segments in the design doc,
-        # unlike CameraInUseError. So we just soft-delete it.
-        await self._repo.soft_delete(segment)
+        # "Soft deletion preserves historical records."
+        # The design says: SegmentHasActiveAlertsError is raised by SegmentService.delete_segment
+        # We will add that check when AlertService is implemented.
+        # For now, just soft delete.
+        await self.segment_repo.soft_delete(segment)

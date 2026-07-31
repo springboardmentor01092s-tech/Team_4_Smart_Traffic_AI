@@ -130,6 +130,22 @@ class SegmentNotFoundError(AppBaseException):
         super().__init__(f"Traffic segment {segment_id} not found.")
 
 
+# ─── Traffic Reading Exceptions ────────────────────────────────────────────────
+
+class ReadingNotFoundError(AppBaseException):
+    """Raised when a traffic reading lookup returns no result."""
+
+    def __init__(self, reading_id: object = "") -> None:
+        super().__init__(f"Traffic reading {reading_id} not found.")
+
+
+class InvalidReadingTimeError(AppBaseException):
+    """Raised when a reading time is in the future."""
+
+    def __init__(self) -> None:
+        super().__init__("Reading recorded_at cannot be in the future.")
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -261,6 +277,18 @@ async def segment_not_found_handler(request: Request, exc: SegmentNotFoundError)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_FOUND")
 
 
+async def reading_not_found_handler(request: Request, exc: ReadingNotFoundError) -> JSONResponse:
+    """Map ReadingNotFoundError → 404 Not Found."""
+    logger.warning("Reading not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "READING_NOT_FOUND")
+
+
+async def invalid_reading_time_handler(request: Request, exc: InvalidReadingTimeError) -> JSONResponse:
+    """Map InvalidReadingTimeError → 422 Unprocessable Entity."""
+    logger.warning("Invalid reading time | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_READING_TIME")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -279,4 +307,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(CameraInUseError, camera_in_use_handler)  # type: ignore[arg-type]
     # ── Segment exceptions ────────────────────────────────────────────────────
     app.add_exception_handler(SegmentNotFoundError, segment_not_found_handler)  # type: ignore[arg-type]
+    # ── Reading exceptions ────────────────────────────────────────────────────
+    app.add_exception_handler(ReadingNotFoundError, reading_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(InvalidReadingTimeError, invalid_reading_time_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]

@@ -26,9 +26,11 @@ def get_api_router() -> APIRouter:
     # ──────────────────────────────────────────────────────────────────────────
     from app.routers.cameras import router as cameras_router  # noqa: PLC0415
     from app.routers.segments import router as segments_router  # noqa: PLC0415
+    from app.routers.readings import router as readings_router  # noqa: PLC0415
 
     api_router.include_router(cameras_router)
     api_router.include_router(segments_router)
+    api_router.include_router(readings_router)
 
     return api_router
 

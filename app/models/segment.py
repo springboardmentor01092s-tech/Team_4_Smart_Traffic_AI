@@ -24,6 +24,17 @@ class SegmentStatus(str, Enum):
     CLOSED = "CLOSED"
 
 
+class CongestionLevel(str, Enum):
+    """
+    Congestion level of a traffic segment/reading.
+    """
+    FREE_FLOW = "FREE_FLOW"
+    LIGHT = "LIGHT"
+    MODERATE = "MODERATE"
+    HEAVY = "HEAVY"
+    STANDSTILL = "STANDSTILL"
+
+
 class TrafficSegment(Base):
     """ORM model representing a monitored road segment."""
 
