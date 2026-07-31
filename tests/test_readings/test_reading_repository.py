@@ -144,3 +144,37 @@ async def test_count_by_congestion_level(test_db: AsyncSession, setup_camera_seg
     counts2 = await repo.count_by_congestion_level()
     assert counts2[CongestionLevel.HEAVY.value] == 0
     assert counts2[CongestionLevel.STANDSTILL.value] == 1
+
+
+@pytest.mark.asyncio
+async def test_get_hourly_averages(test_db: AsyncSession, setup_camera_segment):
+    # SQLite does not support PostgreSQL's native `date_trunc` function.
+    if test_db.bind.dialect.name == "sqlite":
+        pytest.skip("Skipping get_hourly_averages test due to SQLite dialect limitations (no date_trunc).")
+
+    camera, segment = setup_camera_segment
+    repo = ReadingRepository(test_db)
+    
+    # Let's insert a couple of readings within the same hour and one outside
+    now = datetime(2025, 1, 1, 10, 30, tzinfo=timezone.utc)
+    
+    # Same hour
+    await repo.create(segment.id, 100, 50.0, CongestionLevel.FREE_FLOW, 10.0, now)
+    await repo.create(segment.id, 200, 70.0, CongestionLevel.FREE_FLOW, 15.0, now + timedelta(minutes=15))
+    
+    # Different hour
+    await repo.create(segment.id, 300, 30.0, CongestionLevel.HEAVY, 40.0, now + timedelta(hours=1))
+    
+    results = await repo.get_hourly_averages(segment_id=segment.id)
+    
+    assert len(results) == 2
+    
+    first_hour = results[0]
+    assert first_hour["hour"] == datetime(2025, 1, 1, 10, 0, tzinfo=timezone.utc)
+    assert first_hour["avg_vehicle_count"] == 150.0  # (100+200)/2
+    assert first_hour["avg_speed_kmh"] == 60.0  # (50+70)/2
+    
+    second_hour = results[1]
+    assert second_hour["hour"] == datetime(2025, 1, 1, 11, 0, tzinfo=timezone.utc)
+    assert second_hour["avg_vehicle_count"] == 300.0
+    assert second_hour["avg_speed_kmh"] == 30.0

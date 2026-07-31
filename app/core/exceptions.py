@@ -146,6 +146,13 @@ class InvalidReadingTimeError(AppBaseException):
         super().__init__("Reading recorded_at cannot be in the future.")
 
 
+class InvalidDateRangeError(AppBaseException):
+    """Raised when an end date is before a start date."""
+
+    def __init__(self) -> None:
+        super().__init__("The 'from_dt' must be before 'to_dt'.")
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -289,6 +296,12 @@ async def invalid_reading_time_handler(request: Request, exc: InvalidReadingTime
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_READING_TIME")
 
 
+async def invalid_date_range_handler(request: Request, exc: InvalidDateRangeError) -> JSONResponse:
+    """Map InvalidDateRangeError → 422 Unprocessable Entity."""
+    logger.warning("Invalid date range | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_DATE_RANGE")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -310,4 +323,5 @@ def register_exception_handlers(app: FastAPI) -> None:
     # ── Reading exceptions ────────────────────────────────────────────────────
     app.add_exception_handler(ReadingNotFoundError, reading_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(InvalidReadingTimeError, invalid_reading_time_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(InvalidDateRangeError, invalid_date_range_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]

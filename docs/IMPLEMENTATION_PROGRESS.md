@@ -90,8 +90,12 @@ Additionally, existing files were updated:
 ### Validation Results
 - **pytest**: The complete test suite was executed (136 tests in total) and **all tests passed successfully**. The suite covers the newly added Traffic Readings module along with the frozen Authentication, User Management, Cameras, and Segments modules.
 
-### Fixes Applied
-During the implementation phase, the following inconsistencies were addressed:
+### Fixes Applied from Review
+1. **Date Validation Exception**: Replaced the generic `ValueError` when `from_dt >= to_dt` with a dedicated domain exception (`InvalidDateRangeError`) mapped to HTTP 422 Unprocessable Entity in the global exception handler.
+2. **Analytics Test Coverage**: Added repository-level test coverage for `get_hourly_averages`. A conditional skip was introduced for the SQLite dialect since SQLite natively lacks the `date_trunc` function required for time-series aggregation, preserving PostgreSQL correctness without breaking local SQLite test suites.
+3. **Repository Refactoring**: Removed the redundant `get_by_segment` method from `ReadingRepository` in favor of the more robust `get_all` method to strictly adhere to DRY principles and maintain a clean internal API.
+
+### Fixes Applied During Initial Implementation
 1. **Model ID Field Variant**: Modified the `id` column in `TrafficReading` (`BigInteger` for `BIGSERIAL`) to use `.with_variant(Integer, "sqlite")` to natively support autoincrement in the local SQLite test DB environment.
 2. **Standard SQL vs DISTINCT ON**: Updated `get_latest_per_segment` and `count_by_congestion_level` in the repository layer to use `ROW_NUMBER() OVER (PARTITION BY segment_id ORDER BY recorded_at DESC)`. This replaced `DISTINCT ON` which is PostgreSQL-exclusive, ensuring full compatibility with both the SQLite test suite and PostgreSQL production database.
 3. **Enum Attribute Fix**: Adjusted `CameraStatus.ONLINE` to `CameraStatus.ACTIVE` across tests to align with the actual values defined in `app/models/camera.py`.

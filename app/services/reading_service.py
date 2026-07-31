@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import uuid
 from collections.abc import Sequence
 
-from app.core.exceptions import ReadingNotFoundError, SegmentNotFoundError, InvalidReadingTimeError
+from app.core.exceptions import ReadingNotFoundError, SegmentNotFoundError, InvalidReadingTimeError, InvalidDateRangeError
 from app.models.reading import TrafficReading
 from app.models.segment import CongestionLevel
 from app.repositories.reading_repository import ReadingRepository
@@ -50,10 +50,7 @@ class ReadingService:
         limit: int = 100,
     ) -> Sequence[TrafficReading]:
         if from_dt and to_dt and from_dt >= to_dt:
-            # We don't have a specific exception for this, so we'll just let it return empty 
-            # or could raise a generic ValueError. The spec says "Validates from_dt < to_dt if both provided"
-            # Since no specific exception is given, returning empty or ValueError is fine.
-            raise ValueError("from_dt must be before to_dt")
+            raise InvalidDateRangeError()
 
         if segment_id:
             segment = await self.segment_repo.get_by_id(segment_id)

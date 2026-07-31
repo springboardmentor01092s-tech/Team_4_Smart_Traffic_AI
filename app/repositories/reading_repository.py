@@ -32,26 +32,7 @@ class ReadingRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_by_segment(
-        self,
-        segment_id: uuid.UUID,
-        from_dt: datetime | None = None,
-        to_dt: datetime | None = None,
-        congestion_level: CongestionLevel | None = None,
-        skip: int = 0,
-        limit: int = 100,
-    ) -> Sequence[TrafficReading]:
-        stmt = select(TrafficReading).where(TrafficReading.segment_id == segment_id)
-        if from_dt:
-            stmt = stmt.where(TrafficReading.recorded_at >= from_dt)
-        if to_dt:
-            stmt = stmt.where(TrafficReading.recorded_at <= to_dt)
-        if congestion_level:
-            stmt = stmt.where(TrafficReading.congestion_level == congestion_level)
-            
-        stmt = stmt.order_by(desc(TrafficReading.recorded_at)).offset(skip).limit(limit)
-        result = await self.session.execute(stmt)
-        return result.scalars().all()
+
 
     async def get_all(
         self,
