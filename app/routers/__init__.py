@@ -25,8 +25,10 @@ def get_api_router() -> APIRouter:
     # BUSINESS MODULE ROUTERS — Backend Developer #2
     # ──────────────────────────────────────────────────────────────────────────
     from app.routers.cameras import router as cameras_router  # noqa: PLC0415
+    from app.routers.segments import router as segments_router  # noqa: PLC0415
 
     api_router.include_router(cameras_router)
+    api_router.include_router(segments_router)
 
     return api_router
 

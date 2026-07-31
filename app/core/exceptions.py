@@ -121,6 +121,15 @@ class CameraInUseError(AppBaseException):
         )
 
 
+# ─── Traffic Segment Exceptions ────────────────────────────────────────────────
+
+class SegmentNotFoundError(AppBaseException):
+    """Raised when a traffic segment lookup returns no result."""
+
+    def __init__(self, segment_id: object = "") -> None:
+        super().__init__(f"Traffic segment {segment_id} not found.")
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -246,6 +255,12 @@ async def camera_in_use_handler(request: Request, exc: CameraInUseError) -> JSON
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "CAMERA_IN_USE")
 
 
+async def segment_not_found_handler(request: Request, exc: SegmentNotFoundError) -> JSONResponse:
+    """Map SegmentNotFoundError → 404 Not Found."""
+    logger.warning("Segment not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_FOUND")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -262,4 +277,6 @@ def register_exception_handlers(app: FastAPI) -> None:
     # ── Camera exceptions ─────────────────────────────────────────────────────
     app.add_exception_handler(CameraNotFoundError, camera_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(CameraInUseError, camera_in_use_handler)  # type: ignore[arg-type]
+    # ── Segment exceptions ────────────────────────────────────────────────────
+    app.add_exception_handler(SegmentNotFoundError, segment_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]
