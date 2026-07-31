@@ -12,6 +12,7 @@ from app.models.segment import SegmentStatus, TrafficSegment
 from app.repositories.camera_repository import CameraRepository
 from app.repositories.segment_repository import SegmentRepository
 from app.repositories.reading_repository import ReadingRepository
+from app.repositories.alert_repository import AlertRepository
 from app.schemas.segment import SegmentCreate, SegmentUpdate
 
 logger = get_logger(__name__)
@@ -23,10 +24,12 @@ class SegmentService:
         segment_repo: SegmentRepository,
         camera_repo: CameraRepository,
         reading_repo: ReadingRepository,
+        alert_repo: AlertRepository,
     ) -> None:
         self.segment_repo = segment_repo
         self.camera_repo = camera_repo
         self.reading_repo = reading_repo
+        self.alert_repo = alert_repo
 
     async def list_segments(
         self,
@@ -147,12 +150,11 @@ class SegmentService:
 
     async def delete_segment(self, segment_id: uuid.UUID) -> None:
         segment = await self.get_segment(segment_id)
-        # Note: Segments might be referenced by readings, alerts, predictions, route_segments.
-        # The database uses ON DELETE RESTRICT for readings, alerts, predictions.
-        # Since these are soft deletes, the DB constraint won't fire. But for soft-delete,
-        # do we need to check if readings exist? The design doc says:
-        # "Soft deletion preserves historical records."
-        # The design says: SegmentHasActiveAlertsError is raised by SegmentService.delete_segment
-        # We will add that check when AlertService is implemented.
-        # For now, just soft delete.
+        
+        from app.models.alert import AlertStatus
+        alerts = await self.alert_repo.get_all(segment_id=segment_id, status=AlertStatus.ACTIVE)
+        if alerts:
+            from app.core.exceptions import SegmentHasActiveAlertsError
+            raise SegmentHasActiveAlertsError(segment_id)
+
         await self.segment_repo.soft_delete(segment)

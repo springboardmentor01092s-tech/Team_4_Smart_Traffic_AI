@@ -101,3 +101,38 @@ Additionally, existing files were updated:
 3. **Enum Attribute Fix**: Adjusted `CameraStatus.ONLINE` to `CameraStatus.ACTIVE` across tests to align with the actual values defined in `app/models/camera.py`.
 4. **Router Import Alignment**: Fixed imports in `app/routers/readings.py` to pull `require_role` from `app.dependencies.auth` instead of `app.core.security`.
 5. **Fixture Return Mapping**: Fixed test payloads parsing `admin_user` and `public_user` fixtures by leveraging the `login_user` and `make_auth_headers` test utilities from `tests.conftest`.
+
+## Module 4 Completion: Traffic Alerts
+The implementation of **Module 4: Traffic Alerts** has been successfully completed in accordance with the Engineering Design Document v2.0.
+
+### Files Added
+- `app/models/alert.py`: UUID PK, soft-deletion via `deleted_at`, and native PostgreSQL ENUMs for `AlertType`, `AlertSeverity`, and `AlertStatus`.
+- `app/schemas/alert.py`: Pydantic v2 schemas for request validation and response mapping, including robust validation for constraints.
+- `app/repositories/alert_repository.py`: Async SQLAlchemy repository handling database operations for alerts, filtering by segment, status, and severity.
+- `app/services/alert_service.py`: Business logic layer, validating segment existence and enforcing strict state transitions (e.g. `ACTIVE` -> `RESOLVED` / `DISMISSED`).
+- `app/dependencies/alerts.py`: Dependency injection factory for the alert service.
+- `app/routers/alerts.py`: REST API router exposing POST for creation, GET for fetching, PUT for updates, specific action endpoints for resolve/dismiss, and soft delete functionality.
+- `alembic/versions/0005_create_traffic_alerts.py`: Database migration for creating the ENUMs and the `traffic_alerts` table.
+- `tests/test_alerts/test_alert_repository.py`: Unit tests for data access layer.
+- `tests/test_alerts/test_alert_service.py`: Unit tests for domain logic and status transitions.
+- `tests/test_alerts/test_alert_router.py`: Integration tests for API endpoints with RBAC validation.
+
+Additionally, existing files were updated:
+- `app/models/__init__.py`: Registered the `Alert` model.
+- `app/routers/__init__.py`: Registered the `alerts` router.
+- `app/core/exceptions.py`: Added `AlertNotFoundError` and `AlertNotActiveError`.
+
+### Validation Results
+- **pytest**: The complete test suite was executed and **all tests passed successfully**. The suite covers the newly added Traffic Alerts module along with the frozen Authentication, User Management, Cameras, Segments, and Readings modules.
+
+### Fixes Applied During Initial Implementation
+1. **Enum Initialization via Alembic**: Leveraged `enum.create(op.get_bind(), checkfirst=True)` in Alembic to prevent PostgreSQL `DuplicateObjectError` which occurs when Enums are inherently defined in SQLAlchemy models with `create_type=False`.
+2. **State Conflict Consistency**: Aligned the endpoint tests to assert `409 Conflict` matching the domain exception configuration for invalid state transitions.
+
+### Fixes Applied from Review (Targeted Rework)
+1. Added missing analytics repository methods `get_active_count()` and `get_active_by_severity()`.
+2. Added `alert_type` filtering consistently across Repository, Service, Router, tests, and API documentation.
+3. Changed `resolve` and `dismiss` endpoint HTTP verbs from `POST` to `PATCH` to match the specification.
+4. Converted Alert ORM enum mappings from `String(...)` to native `sqlalchemy.Enum` mappings.
+5. Re-aligned the database table name from `traffic_alerts` to `alerts` and renamed the Alembic migration to `0007_create_alerts_table.py` to match the engineering design.
+

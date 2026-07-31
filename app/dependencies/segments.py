@@ -8,8 +8,14 @@ from app.core.database import get_db
 from app.repositories.camera_repository import CameraRepository
 from app.repositories.segment_repository import SegmentRepository
 from app.repositories.reading_repository import ReadingRepository
+from app.repositories.alert_repository import AlertRepository
 from app.services.segment_service import SegmentService
 
 
 async def get_segment_service(db: AsyncSession = Depends(get_db)) -> SegmentService:
-    return SegmentService(SegmentRepository(db), CameraRepository(db), ReadingRepository(db))
+    return SegmentService(
+        SegmentRepository(db),
+        CameraRepository(db),
+        ReadingRepository(db),
+        AlertRepository(db),
+    )

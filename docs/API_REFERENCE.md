@@ -445,6 +445,99 @@ Returns the specific reading object.
 
 ---
 
+## Traffic Alerts
+
+> API endpoints for managing traffic alerts and incidents on segments.
+
+### `GET /api/v1/alerts`
+
+List traffic alerts. Accessible by any authenticated user.
+
+**Query Parameters**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `segment_id` | UUID | Filter alerts for a specific segment |
+| `status` | string | Filter by `ACTIVE`, `RESOLVED`, or `DISMISSED` |
+| `severity` | string | Filter by `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL` |
+| `alert_type` | string | Filter by alert category (`CONGESTION`, `ACCIDENT`, etc) |
+| `skip` | int | Pagination offset (default: 0) |
+| `limit` | int | Pagination limit (default: 100) |
+
+**Response 200 — OK**
+Returns a list of alert objects.
+
+---
+
+### `POST /api/v1/alerts`
+
+Create a new traffic alert. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Request Body**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "title": "Severe Congestion",
+  "description": "Traffic is completely stopped.",
+  "alert_type": "CONGESTION",
+  "severity": "CRITICAL"
+}
+```
+
+**Response 201 — Created**
+Returns the created alert object.
+
+---
+
+### `GET /api/v1/alerts/{alert_id}`
+
+Get a specific traffic alert. Accessible by any authenticated user.
+
+**Response 200 — OK**
+Returns the specific alert object.
+
+---
+
+### `PUT /api/v1/alerts/{alert_id}`
+
+Update a traffic alert. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role. 
+Only fields like `title`, `description`, and `severity` can be updated.
+
+**Response 200 — OK**
+Returns the updated alert.
+**Error Responses**
+- `409 Conflict`: Raised if the alert is not in `ACTIVE` state.
+
+---
+
+### `PATCH /api/v1/alerts/{alert_id}/resolve`
+
+Resolve a traffic alert. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+Transitions status to `RESOLVED` and sets `resolved_at`.
+
+**Response 200 — OK**
+Returns the updated alert.
+
+---
+
+### `PATCH /api/v1/alerts/{alert_id}/dismiss`
+
+Dismiss a traffic alert. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+Transitions status to `DISMISSED` and sets `resolved_at`.
+
+**Response 200 — OK**
+Returns the updated alert.
+
+---
+
+### `DELETE /api/v1/alerts/{alert_id}`
+
+Soft-delete an alert. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+Successfully deleted.
+
+---
+
 ## Standard Error Envelope
 
 All error responses use this consistent JSON structure:

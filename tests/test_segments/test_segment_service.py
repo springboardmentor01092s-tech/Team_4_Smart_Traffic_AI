@@ -44,8 +44,23 @@ def mock_reading_repo() -> AsyncMock:
 
 
 @pytest.fixture
-def segment_service(mock_repo: AsyncMock, mock_camera_repo: AsyncMock, mock_reading_repo: AsyncMock) -> SegmentService:
-    return SegmentService(segment_repo=mock_repo, camera_repo=mock_camera_repo, reading_repo=mock_reading_repo)
+def mock_alert_repo() -> AsyncMock:
+    return AsyncMock()
+
+
+@pytest.fixture
+def segment_service(
+    mock_repo: AsyncMock,
+    mock_camera_repo: AsyncMock,
+    mock_reading_repo: AsyncMock,
+    mock_alert_repo: AsyncMock,
+) -> SegmentService:
+    return SegmentService(
+        segment_repo=mock_repo,
+        camera_repo=mock_camera_repo,
+        reading_repo=mock_reading_repo,
+        alert_repo=mock_alert_repo,
+    )
 
 
 @pytest.mark.asyncio
@@ -103,11 +118,17 @@ async def test_update_segment(segment_service: SegmentService, mock_repo: AsyncM
 
 
 @pytest.mark.asyncio
-async def test_delete_segment(segment_service: SegmentService, mock_repo: AsyncMock) -> None:
+async def test_delete_segment(
+    segment_service: SegmentService,
+    mock_repo: AsyncMock,
+    mock_alert_repo: AsyncMock,
+) -> None:
     sid = uuid.uuid4()
     mock_segment = make_mock_segment(sid)
     mock_repo.get_by_id.return_value = mock_segment
+    mock_alert_repo.get_all.return_value = []
     
     await segment_service.delete_segment(sid)
+    
     mock_repo.get_by_id.assert_awaited_once_with(sid)
     mock_repo.soft_delete.assert_awaited_once_with(mock_segment)

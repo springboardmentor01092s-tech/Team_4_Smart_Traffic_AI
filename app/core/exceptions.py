@@ -130,6 +130,13 @@ class SegmentNotFoundError(AppBaseException):
         super().__init__(f"Traffic segment {segment_id} not found.")
 
 
+class SegmentHasActiveAlertsError(AppBaseException):
+    """Raised when attempting to delete a segment that has active alerts."""
+
+    def __init__(self, segment_id: object = "") -> None:
+        super().__init__(f"Traffic segment {segment_id} has active alerts and cannot be deleted.")
+
+
 # ─── Traffic Reading Exceptions ────────────────────────────────────────────────
 
 class ReadingNotFoundError(AppBaseException):
@@ -151,6 +158,22 @@ class InvalidDateRangeError(AppBaseException):
 
     def __init__(self) -> None:
         super().__init__("The 'from_dt' must be before 'to_dt'.")
+
+
+# ─── Traffic Alert Exceptions ──────────────────────────────────────────────────
+
+class AlertNotFoundError(AppBaseException):
+    """Raised when a traffic alert lookup returns no result."""
+
+    def __init__(self, alert_id: object = "") -> None:
+        super().__init__(f"Traffic alert {alert_id} not found.")
+
+
+class AlertNotActiveError(AppBaseException):
+    """Raised when attempting to resolve or dismiss an alert that is not active."""
+
+    def __init__(self, alert_id: object = "") -> None:
+        super().__init__(f"Traffic alert {alert_id} is not in ACTIVE state.")
 
 
 # ─── Exception Handlers ──────────────────────────────────────────────────────
@@ -284,6 +307,12 @@ async def segment_not_found_handler(request: Request, exc: SegmentNotFoundError)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_FOUND")
 
 
+async def segment_has_active_alerts_handler(request: Request, exc: SegmentHasActiveAlertsError) -> JSONResponse:
+    """Map SegmentHasActiveAlertsError → 400 Bad Request."""
+    logger.warning("Segment has active alerts | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_400_BAD_REQUEST, exc.message, "SEGMENT_HAS_ACTIVE_ALERTS")
+
+
 async def reading_not_found_handler(request: Request, exc: ReadingNotFoundError) -> JSONResponse:
     """Map ReadingNotFoundError → 404 Not Found."""
     logger.warning("Reading not found | %s %s | %s", request.method, request.url.path, exc.message)
@@ -300,6 +329,18 @@ async def invalid_date_range_handler(request: Request, exc: InvalidDateRangeErro
     """Map InvalidDateRangeError → 422 Unprocessable Entity."""
     logger.warning("Invalid date range | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_DATE_RANGE")
+
+
+async def alert_not_found_handler(request: Request, exc: AlertNotFoundError) -> JSONResponse:
+    """Map AlertNotFoundError → 404 Not Found."""
+    logger.warning("Alert not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "ALERT_NOT_FOUND")
+
+
+async def alert_not_active_handler(request: Request, exc: AlertNotActiveError) -> JSONResponse:
+    """Map AlertNotActiveError → 409 Conflict."""
+    logger.warning("Alert not active | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "ALERT_NOT_ACTIVE")
 
 
 def register_exception_handlers(app: FastAPI) -> None:
@@ -320,8 +361,12 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(CameraInUseError, camera_in_use_handler)  # type: ignore[arg-type]
     # ── Segment exceptions ────────────────────────────────────────────────────
     app.add_exception_handler(SegmentNotFoundError, segment_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(SegmentHasActiveAlertsError, segment_has_active_alerts_handler)  # type: ignore[arg-type]
     # ── Reading exceptions ────────────────────────────────────────────────────
     app.add_exception_handler(ReadingNotFoundError, reading_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(InvalidReadingTimeError, invalid_reading_time_handler)  # type: ignore[arg-type]
     app.add_exception_handler(InvalidDateRangeError, invalid_date_range_handler)  # type: ignore[arg-type]
+    # ── Alert exceptions ──────────────────────────────────────────────────────
+    app.add_exception_handler(AlertNotFoundError, alert_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(AlertNotActiveError, alert_not_active_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]

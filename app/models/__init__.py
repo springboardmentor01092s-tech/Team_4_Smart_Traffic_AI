@@ -16,5 +16,12 @@ from app.models.user import User, UserRole  # noqa: F401
 from app.models.camera import CameraStatus, TrafficCamera  # noqa: F401
 from app.models.segment import SegmentStatus, TrafficSegment  # noqa: F401
 from app.models.reading import TrafficReading  # noqa: F401
+from app.models.alert import Alert, AlertType, AlertSeverity, AlertStatus  # noqa: F401
 
-__all__ = ["User", "UserRole", "TrafficCamera", "CameraStatus", "TrafficSegment", "SegmentStatus", "TrafficReading"]
+__all__ = [
+    "User", "UserRole", 
+    "TrafficCamera", "CameraStatus", 
+    "TrafficSegment", "SegmentStatus", 
+    "TrafficReading",
+    "Alert", "AlertType", "AlertSeverity", "AlertStatus"
+]

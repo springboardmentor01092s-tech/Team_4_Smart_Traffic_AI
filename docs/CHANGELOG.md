@@ -10,14 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-07-31
 
 ### Current Status
-**Ready for Module 4 (Alerts)**
-Modules 1 (Cameras), 2 (Segments), and 3 (Readings) are now fully implemented, reviewed, and frozen.
+**Ready for Module 5 (Traffic Predictions)**
+Modules 1 (Cameras), 2 (Segments), 3 (Readings), and 4 (Alerts) are now fully implemented, reviewed, and frozen.
 
 ### Added
 - **Module 1: Traffic Cameras**: CRUD operations, RBAC, UUID primary keys, ENUM status, and soft-delete capabilities.
 - **Module 2: Traffic Segments**: Geospatial coordinate fields, segment status ENUM, and segment-camera relationship validation.
 - **Module 3: Traffic Readings**: High-throughput time-series data ingest using `BIGSERIAL` (auto-increment variant for SQLite), immutable records, and advanced time-series aggregations using standard SQL window functions (`ROW_NUMBER() OVER()`).
-- Added robust test coverage ensuring that Modules 1, 2, and 3 function correctly. The global test suite now contains 136 passing tests (1 skipped for SQLite dialect limitations).
+- **Module 4: Traffic Alerts**: Alert management linked to segments, state transitions (ACTIVE -> RESOLVED / DISMISSED), comprehensive CRUD operations, soft-deletion, and robust state validations preventing illegal modifications of non-active alerts.
+- Added robust test coverage ensuring that Modules 1, 2, 3, and 4 function correctly. The global test suite now contains 172 passing tests (1 skipped for SQLite dialect limitations).
 
 ### Fixed
 - Fixed trailing slash redirection issues on router root endpoints (e.g., `""` instead of `"/"`).
@@ -25,6 +26,13 @@ Modules 1 (Cameras), 2 (Segments), and 3 (Readings) are now fully implemented, r
 - Integrated missing `GET /segments/{segment_id}/latest-reading` implementation via DI of `ReadingRepository` into `SegmentService`.
 - Corrected generic `ValueError` logic on date ranges into a structured `InvalidDateRangeError` to trigger a consistent HTTP 422 Unprocessable Entity response.
 - Replaced Postgres-only `DISTINCT ON` constructs with cross-dialect compatible `ROW_NUMBER() OVER()` window functions to prevent SQLite testing breakages.
+- Handled PostgreSQL `DuplicateObjectError` during Alembic enum creation using `enum.create(op.get_bind(), checkfirst=True)`.
+- Reworked Module 4 (Alerts) to address specification deviations:
+  - Added missing `get_active_count` and `get_active_by_severity` analytics methods to `AlertRepository`.
+  - Added `alert_type` filtering consistently across repository, service, and router layers.
+  - Converted `resolve` and `dismiss` endpoints from POST to PATCH.
+  - Mapped enum fields to native SQLAlchemy Enums instead of `String` for the `Alert` model.
+  - Renamed the table to `alerts` and correctly named the Alembic migration to `0007_create_alerts_table.py`.
 
 ## [1.0.0] - 2026-07-30
 
