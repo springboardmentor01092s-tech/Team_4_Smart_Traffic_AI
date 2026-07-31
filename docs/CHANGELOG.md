@@ -10,15 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-07-31
 
 ### Current Status
-**Ready for Module 5 (Traffic Predictions)**
-Modules 1 (Cameras), 2 (Segments), 3 (Readings), and 4 (Alerts) are now fully implemented, reviewed, and frozen.
+**Modules 1–5** (Cameras, Segments, Readings, Alerts, Predictions) are now fully implemented, reviewed, and frozen.
 
 ### Added
 - **Module 1: Traffic Cameras**: CRUD operations, RBAC, UUID primary keys, ENUM status, and soft-delete capabilities.
 - **Module 2: Traffic Segments**: Geospatial coordinate fields, segment status ENUM, and segment-camera relationship validation.
 - **Module 3: Traffic Readings**: High-throughput time-series data ingest using `BIGSERIAL` (auto-increment variant for SQLite), immutable records, and advanced time-series aggregations using standard SQL window functions (`ROW_NUMBER() OVER()`).
 - **Module 4: Traffic Alerts**: Alert management linked to segments, state transitions (ACTIVE -> RESOLVED / DISMISSED), comprehensive CRUD operations, soft-deletion, and robust state validations preventing illegal modifications of non-active alerts.
-- Added robust test coverage ensuring that Modules 1, 2, 3, and 4 function correctly. The global test suite now contains 172 passing tests (1 skipped for SQLite dialect limitations).
+- **Module 5: Traffic Predictions**: AI-driven congestion forecasting including `PredictionStatus` state transitions (PENDING -> COMPLETED / FAILED), confidence scoring, predictive congestion levels, and validation against predictions scheduled in the past.
+- Added robust test coverage ensuring that Modules 1, 2, 3, 4, and 5 function correctly. The global test suite now contains 185 passing tests (1 skipped for SQLite dialect limitations).
 
 ### Fixed
 - Fixed trailing slash redirection issues on router root endpoints (e.g., `""` instead of `"/"`).

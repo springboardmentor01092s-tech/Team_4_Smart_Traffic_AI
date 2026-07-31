@@ -167,3 +167,23 @@ async def login_user(client: AsyncClient, email: str, password: str) -> str:
     )
     assert response.status_code == 200, f"Login failed: {response.text}"
     return response.json()["access_token"]
+
+
+@pytest_asyncio.fixture
+async def segment(test_db: AsyncSession):
+    from app.models.segment import TrafficSegment
+    seg = TrafficSegment(
+        name="Test Segment",
+        start_point="A",
+        end_point="B",
+        start_latitude=40.0,
+        start_longitude=-73.0,
+        end_latitude=40.1,
+        end_longitude=-73.1,
+        length_km=5.0,
+        speed_limit_kmh=60,
+    )
+    test_db.add(seg)
+    await test_db.commit()
+    await test_db.refresh(seg)
+    return seg

@@ -31,11 +31,13 @@ During the implementation phase, two key inconsistencies were addressed:
 2. **Repository Test Datetime Comparison**: Addressed a `TypeError` in `test_camera_repository.py` where offset-naive and offset-aware datetimes were being compared. SQLite returned naive datetimes, while the soft-delete function assigned a timezone-aware UTC datetime. The fix involved stripping timezone info before comparison during testing.
 
 ## Current Project State
-The project now consists of four fully working modules:
+The project now consists of six fully working modules:
 1. **Authentication & User Management** (FROZEN)
 2. **Traffic Cameras** (COMPLETED & FROZEN)
 3. **Traffic Segments** (COMPLETED & FROZEN)
 4. **Traffic Readings** (COMPLETED & FROZEN)
+5. **Traffic Alerts** (COMPLETED & FROZEN)
+6. **Traffic Predictions** (COMPLETED & FROZEN)
 
 All code adheres strictly to the architectural patterns (Router → Service → Repository), leveraging dependency injection, standardized exception handling, and async SQLAlchemy.
 

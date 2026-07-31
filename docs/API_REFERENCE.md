@@ -538,6 +538,101 @@ Successfully deleted.
 
 ---
 
+## Traffic Predictions
+
+> API endpoints for managing AI-driven traffic predictions.
+
+### `GET /api/v1/predictions`
+
+List traffic predictions. Accessible by any authenticated user.
+
+**Query Parameters**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `segment_id` | UUID | Filter predictions for a specific segment |
+| `status` | string | Filter by `PENDING`, `COMPLETED`, or `FAILED` |
+| `skip` | int | Pagination offset (default: 0) |
+| `limit` | int | Pagination limit (default: 100) |
+
+**Response 200 — OK**
+Returns a list of prediction objects.
+
+---
+
+### `POST /api/v1/predictions`
+
+Request a new traffic prediction. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Request Body**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "prediction_for": "2025-01-15T11:30:00+00:00",
+  "horizon_minutes": 60,
+  "model_version": "v1.2.0"
+}
+```
+
+**Response 201 — Created**
+Returns the created prediction object with status `PENDING`.
+
+---
+
+### `GET /api/v1/predictions/{prediction_id}`
+
+Get a specific traffic prediction. Accessible by any authenticated user.
+
+**Response 200 — OK**
+Returns the specific prediction object.
+
+---
+
+### `GET /api/v1/predictions/segment/{segment_id}/upcoming`
+
+Get upcoming PENDING or COMPLETED predictions for a segment. Accessible by any authenticated user.
+
+**Response 200 — OK**
+Returns a list of prediction objects.
+
+---
+
+### `PATCH /api/v1/predictions/{prediction_id}/complete`
+
+Submit the result of a traffic prediction model. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Request Body**
+```json
+{
+  "predicted_congestion_level": "HEAVY",
+  "predicted_vehicle_count": 120,
+  "predicted_avg_speed_kmh": 35.5,
+  "confidence_score": 0.85
+}
+```
+
+**Response 200 — OK**
+Returns the updated prediction with status `COMPLETED`.
+
+---
+
+### `PATCH /api/v1/predictions/{prediction_id}/fail`
+
+Mark a pending prediction as FAILED. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Response 200 — OK**
+Returns the updated prediction with status `FAILED`.
+
+---
+
+### `DELETE /api/v1/predictions/{prediction_id}`
+
+Soft-delete a prediction. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+Successfully deleted.
+
+---
+
 ## Standard Error Envelope
 
 All error responses use this consistent JSON structure:

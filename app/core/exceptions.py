@@ -176,6 +176,29 @@ class AlertNotActiveError(AppBaseException):
         super().__init__(f"Traffic alert {alert_id} is not in ACTIVE state.")
 
 
+# ─── Traffic Prediction Exceptions ─────────────────────────────────────────────
+
+class PredictionNotFoundError(AppBaseException):
+    """Raised when a traffic prediction lookup returns no result."""
+
+    def __init__(self, prediction_id: object = "") -> None:
+        super().__init__(f"Prediction {prediction_id} not found.")
+
+
+class PredictionNotPendingError(AppBaseException):
+    """Raised when attempting to complete/fail a prediction that is not PENDING."""
+
+    def __init__(self, prediction_id: object = "") -> None:
+        super().__init__(f"Prediction {prediction_id} is not in PENDING status.")
+
+
+class PredictionTimeInPastError(AppBaseException):
+    """Raised when a prediction is scheduled for the past."""
+
+    def __init__(self) -> None:
+        super().__init__("prediction_for must be a future timestamp.")
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -343,6 +366,24 @@ async def alert_not_active_handler(request: Request, exc: AlertNotActiveError) -
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "ALERT_NOT_ACTIVE")
 
 
+async def prediction_not_found_handler(request: Request, exc: PredictionNotFoundError) -> JSONResponse:
+    """Map PredictionNotFoundError → 404 Not Found."""
+    logger.warning("Prediction not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "PREDICTION_NOT_FOUND")
+
+
+async def prediction_not_pending_handler(request: Request, exc: PredictionNotPendingError) -> JSONResponse:
+    """Map PredictionNotPendingError → 409 Conflict."""
+    logger.warning("Prediction not pending | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "PREDICTION_NOT_PENDING")
+
+
+async def prediction_time_in_past_handler(request: Request, exc: PredictionTimeInPastError) -> JSONResponse:
+    """Map PredictionTimeInPastError → 422 Unprocessable Entity."""
+    logger.warning("Prediction time in past | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "PREDICTION_TIME_IN_PAST")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -369,4 +410,8 @@ def register_exception_handlers(app: FastAPI) -> None:
     # ── Alert exceptions ──────────────────────────────────────────────────────
     app.add_exception_handler(AlertNotFoundError, alert_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(AlertNotActiveError, alert_not_active_handler)  # type: ignore[arg-type]
+    # ── Prediction exceptions ─────────────────────────────────────────────────
+    app.add_exception_handler(PredictionNotFoundError, prediction_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(PredictionNotPendingError, prediction_not_pending_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(PredictionTimeInPastError, prediction_time_in_past_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]
