@@ -7,7 +7,7 @@ import uuid
 from datetime import UTC, datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -65,7 +65,7 @@ class TrafficSegment(Base):
     )
 
     status: Mapped[SegmentStatus] = mapped_column(
-        String(20),
+        SAEnum(SegmentStatus, name="segment_status", native_enum=True, create_type=False),
         nullable=False,
         default=SegmentStatus.ACTIVE,
     )

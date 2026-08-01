@@ -18,12 +18,14 @@ from app.models.segment import SegmentStatus, TrafficSegment  # noqa: F401
 from app.models.reading import TrafficReading  # noqa: F401
 from app.models.alert import Alert, AlertType, AlertSeverity, AlertStatus  # noqa: F401
 from app.models.prediction import TrafficPrediction, PredictionStatus  # noqa: F401
+from app.models.route import Route, RouteSegment  # noqa: F401
 
 __all__ = [
-    "User", "UserRole", 
-    "TrafficCamera", "CameraStatus", 
-    "TrafficSegment", "SegmentStatus", 
+    "User", "UserRole",
+    "TrafficCamera", "CameraStatus",
+    "TrafficSegment", "SegmentStatus",
     "TrafficReading",
     "Alert", "AlertType", "AlertSeverity", "AlertStatus",
-    "TrafficPrediction", "PredictionStatus"
+    "TrafficPrediction", "PredictionStatus",
+    "Route", "RouteSegment",
 ]

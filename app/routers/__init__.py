@@ -29,12 +29,15 @@ def get_api_router() -> APIRouter:
     from app.routers.readings import router as readings_router  # noqa: PLC0415
     from app.routers.alerts import router as alerts_router  # noqa: PLC0415
     from app.routers.predictions import router as predictions_router  # noqa: PLC0415
+    from app.routers.routes import router as routes_router  # noqa: PLC0415
+    from app.routers.analytics import router as analytics_router  # noqa: PLC0415
 
     api_router.include_router(cameras_router)
     api_router.include_router(segments_router)
     api_router.include_router(readings_router)
     api_router.include_router(alerts_router)
     api_router.include_router(predictions_router)
+    api_router.include_router(routes_router)
+    api_router.include_router(analytics_router)
 
     return api_router
-

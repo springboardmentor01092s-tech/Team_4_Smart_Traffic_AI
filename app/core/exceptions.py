@@ -199,6 +199,51 @@ class PredictionTimeInPastError(AppBaseException):
         super().__init__("prediction_for must be a future timestamp.")
 
 
+# ─── Route Exceptions ──────────────────────────────────────────────────────────
+
+class RouteNotFoundError(AppBaseException):
+    """Raised when a route lookup returns no result."""
+
+    def __init__(self, route_id: object = "") -> None:
+        super().__init__(f"Route {route_id} not found.")
+
+
+class RouteSequenceConflictError(AppBaseException):
+    """Raised when a segment sequence_order is already taken in a route."""
+
+    def __init__(self, route_id: object = "", order: int = 0) -> None:
+        super().__init__(
+            f"Sequence order {order} is already taken in route {route_id}."
+        )
+
+
+class SegmentNotInRouteError(AppBaseException):
+    """Raised when a segment is not part of the specified route."""
+
+    def __init__(self, route_id: object = "", segment_id: object = "") -> None:
+        super().__init__(
+            f"Segment {segment_id} is not part of route {route_id}."
+        )
+
+
+# ─── Analytics Exceptions ──────────────────────────────────────────────────────
+
+class AnalyticsRangeExceededError(AppBaseException):
+    """Raised when requested analytics date range exceeds allowed limits."""
+
+    def __init__(self, max_days: int) -> None:
+        super().__init__(f"Date range exceeds the maximum allowed {max_days} days.")
+
+
+class AnalyticsInvalidBucketError(AppBaseException):
+    """Raised when an invalid time bucket is requested for analytics."""
+
+    def __init__(self, bucket_minutes: int) -> None:
+        super().__init__(
+            f"Invalid bucket_minutes: {bucket_minutes}. Allowed values are 5, 15, 30, 60."
+        )
+
+
 # ─── Exception Handlers ──────────────────────────────────────────────────────
 
 def _error_response(
@@ -384,6 +429,36 @@ async def prediction_time_in_past_handler(request: Request, exc: PredictionTimeI
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "PREDICTION_TIME_IN_PAST")
 
 
+async def route_not_found_handler(request: Request, exc: RouteNotFoundError) -> JSONResponse:
+    """Map RouteNotFoundError → 404 Not Found."""
+    logger.warning("Route not found | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "ROUTE_NOT_FOUND")
+
+
+async def route_sequence_conflict_handler(request: Request, exc: RouteSequenceConflictError) -> JSONResponse:
+    """Map RouteSequenceConflictError → 409 Conflict."""
+    logger.warning("Route sequence conflict | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "ROUTE_SEQUENCE_CONFLICT")
+
+
+async def segment_not_in_route_handler(request: Request, exc: SegmentNotInRouteError) -> JSONResponse:
+    """Map SegmentNotInRouteError → 404 Not Found."""
+    logger.warning("Segment not in route | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_IN_ROUTE")
+
+
+async def analytics_range_exceeded_handler(request: Request, exc: AnalyticsRangeExceededError) -> JSONResponse:
+    """Map AnalyticsRangeExceededError → 422 Unprocessable Entity."""
+    logger.warning("Analytics range exceeded | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "ANALYTICS_RANGE_EXCEEDED")
+
+
+async def analytics_invalid_bucket_handler(request: Request, exc: AnalyticsInvalidBucketError) -> JSONResponse:
+    """Map AnalyticsInvalidBucketError → 422 Unprocessable Entity."""
+    logger.warning("Analytics invalid bucket | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "ANALYTICS_INVALID_BUCKET")
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """
     Register all exception handlers on the FastAPI app.
@@ -414,4 +489,11 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(PredictionNotFoundError, prediction_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(PredictionNotPendingError, prediction_not_pending_handler)  # type: ignore[arg-type]
     app.add_exception_handler(PredictionTimeInPastError, prediction_time_in_past_handler)  # type: ignore[arg-type]
+    # ── Route exceptions ──────────────────────────────────────────────────────
+    app.add_exception_handler(RouteNotFoundError, route_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(RouteSequenceConflictError, route_sequence_conflict_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(SegmentNotInRouteError, segment_not_in_route_handler)  # type: ignore[arg-type]
+    # ── Analytics exceptions ──────────────────────────────────────────────────
+    app.add_exception_handler(AnalyticsRangeExceededError, analytics_range_exceeded_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(AnalyticsInvalidBucketError, analytics_invalid_bucket_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]

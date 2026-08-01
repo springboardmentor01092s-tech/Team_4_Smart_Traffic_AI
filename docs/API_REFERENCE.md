@@ -785,6 +785,296 @@ Successfully deleted.
 
 ---
 
+
+## Module 6: Routes
+
+### `GET /api/v1/routes`
+List all routes (paginated, non-deleted). Accessible by any authenticated user.
+
+**Query Parameters**
+- `is_active` (boolean, optional): Filter by active status
+- `skip` (integer, default: 0)
+- `limit` (integer, default: 100)
+
+**Response 200 — OK**
+```json
+[
+  {
+    "id": "770e8400-e29b-41d4-a716-446655440001",
+    "name": "Downtown Commute",
+    "origin_name": "North Suburbs",
+    "destination_name": "City Center",
+    "total_distance_km": 15.5,
+    "is_active": true,
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:00+00:00"
+  }
+]
+```
+
+---
+
+### `GET /api/v1/routes/{route_id}`
+Get detailed route information including its ordered segments. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "id": "770e8400-e29b-41d4-a716-446655440001",
+  "name": "Downtown Commute",
+  "origin_name": "North Suburbs",
+  "destination_name": "City Center",
+  "total_distance_km": 15.5,
+  "is_active": true,
+  "segments": [
+    {
+      "id": "111e8400-e29b-41d4-a716-446655440001",
+      "route_id": "770e8400-e29b-41d4-a716-446655440001",
+      "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+      "sequence_order": 1
+    }
+  ],
+  "created_at": "2025-01-15T10:30:00+00:00",
+  "updated_at": "2025-01-15T10:30:00+00:00"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or was soft-deleted.
+
+---
+
+### `GET /api/v1/routes/{route_id}/traffic`
+Get aggregated current traffic across all segments of a route. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "route_id": "770e8400-e29b-41d4-a716-446655440001",
+  "total_segments": 3,
+  "segments_with_data": 3,
+  "worst_congestion_level": "HEAVY",
+  "average_speed_kmh": 45.2
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or was soft-deleted.
+
+---
+
+### `POST /api/v1/routes`
+Create a new route. Requires `ADMIN` role.
+
+**Request Body**
+```json
+{
+  "name": "Downtown Commute",
+  "origin_name": "North Suburbs",
+  "destination_name": "City Center",
+  "total_distance_km": 15.5,
+  "is_active": true
+}
+```
+
+**Response 201 — Created**
+Returns the newly created route object.
+
+---
+
+### `PUT /api/v1/routes/{route_id}`
+Update a route. Requires `ADMIN` role.
+
+**Request Body**
+```json
+{
+  "name": "Downtown Commute Alternative",
+  "is_active": false
+}
+```
+
+**Response 200 — OK**
+Returns the updated route.
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or was soft-deleted.
+
+---
+
+### `POST /api/v1/routes/{route_id}/segments`
+Add a traffic segment to a route at a specific sequence order. Requires `ADMIN` role.
+
+**Request Body**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "sequence_order": 1
+}
+```
+
+**Response 201 — Created**
+Returns the `RouteSegment` association record.
+
+**Error Responses**
+- `404 Not Found`: Route or Segment does not exist.
+- `409 Conflict`: Sequence order is already taken in this route.
+
+---
+
+### `DELETE /api/v1/routes/{route_id}/segments/{id}`
+Remove a segment from a route by its RouteSegment association ID. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or Segment is not part of this route.
+
+---
+
+### `DELETE /api/v1/routes/{route_id}`
+Soft-delete a route. Requires `ADMIN` role.
+
+**Response 204 — No Content**
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or was already soft-deleted.
+
+---
+
+## Module 7: Analytics
+
+### `GET /api/v1/analytics/summary`
+Get a system-wide snapshot. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "total_active_segments": 150,
+  "total_active_cameras": 120,
+  "current_active_alerts": 5,
+  "overall_avg_speed_kmh": 55.4,
+  "timestamp": "2025-01-15T10:30:00+00:00"
+}
+```
+
+---
+
+### `GET /api/v1/analytics/congestion-heatmap`
+Get all segments with their latest congestion levels. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+[
+  {
+    "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+    "congestion_level": "MODERATE",
+    "recorded_at": "2025-01-15T10:30:00+00:00",
+    "latitude": 40.7128,
+    "longitude": -74.0060
+  }
+]
+```
+
+---
+
+### `GET /api/v1/analytics/peak-hours`
+Get hourly vehicle count averages across all segments. Accessible by any authenticated user.
+
+**Query Parameters**
+- `from_dt` (datetime, optional)
+- `to_dt` (datetime, optional)
+
+**Response 200 — OK**
+```json
+[
+  {
+    "hour_of_day": 8,
+    "avg_vehicle_count": 450.5
+  },
+  {
+    "hour_of_day": 9,
+    "avg_vehicle_count": 510.2
+  }
+]
+```
+
+**Error Responses**
+- `422 Unprocessable Entity`: Invalid date range (e.g., from_dt after to_dt).
+
+---
+
+### `GET /api/v1/analytics/segments/{segment_id}/history`
+Get historical readings for a segment aggregated by time buckets. Accessible by any authenticated user.
+
+**Query Parameters**
+- `bucket_minutes` (integer, default: 60)
+- `from_dt` (datetime, optional)
+- `to_dt` (datetime, optional)
+
+**Response 200 — OK**
+```json
+[
+  {
+    "time_bucket": "2025-01-15T08:00:00+00:00",
+    "avg_speed_kmh": 42.5,
+    "avg_vehicle_count": 120.0,
+    "max_congestion_level": "HEAVY"
+  }
+  }
+]
+```
+
+**Error Responses**
+- `404 Not Found`: Segment does not exist.
+- `422 Unprocessable Entity`: Invalid bucket_minutes (allowed: 5, 15, 30, 60) or invalid date range.
+
+---
+
+### `GET /api/v1/analytics/segments/{segment_id}/trends`
+Get statistical trends for a specific segment. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Response 200 — OK**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "daily_avg_vehicles": 1500,
+  "daily_avg_speed_kmh": 45.5,
+  "most_common_congestion": "MODERATE",
+  "trend_direction": "INCREASING"
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Segment does not exist.
+
+---
+
+### `GET /api/v1/analytics/reports`
+Get a full analytics report combining multiple domains. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Query Parameters**
+- `from_dt` (datetime, required)
+- `to_dt` (datetime, required)
+
+**Response 200 — OK**
+```json
+{
+  "report_period": {
+    "start": "2025-01-14T00:00:00+00:00",
+    "end": "2025-01-15T00:00:00+00:00"
+  },
+  "total_alerts_resolved": 12,
+  "avg_alert_resolution_minutes": 45.5,
+  "most_congested_segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "overall_system_health_score": 92.5
+}
+```
+
+**Error Responses**
+- `422 Unprocessable Entity`: Date range exceeds maximum allowed days or is invalid.
+
+---
+
 ## Standard Error Envelope
 
 All error responses use this consistent JSON structure:

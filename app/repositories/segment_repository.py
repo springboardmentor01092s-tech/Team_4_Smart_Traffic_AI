@@ -7,7 +7,7 @@ import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.logging import get_logger
@@ -97,3 +97,9 @@ class SegmentRepository:
         self._db.add(segment)
         await self._db.flush()
         logger.warning("TrafficSegment soft-deleted | id=%s", segment.id)
+
+    async def count_all_non_deleted(self) -> int:
+        result = await self._db.execute(
+            select(func.count(TrafficSegment.id)).where(TrafficSegment.deleted_at.is_(None))
+        )
+        return result.scalar_one_or_none() or 0

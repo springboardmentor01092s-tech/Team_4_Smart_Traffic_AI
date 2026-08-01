@@ -92,7 +92,7 @@ def upgrade() -> None:
         # ── Status (native ENUM) ──────────────────────────────────────────────
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "ACTIVE",
                 "INACTIVE",
                 "MAINTENANCE",

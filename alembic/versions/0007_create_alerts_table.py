@@ -1,7 +1,7 @@
 """Create alerts table
 
 Revision ID: 0007
-Revises: 0004
+Revises: 0006
 Create Date: 2026-07-31 11:46:00.000000
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "0007"
-down_revision: Union[str, None] = "0004"
+down_revision: Union[str, None] = "0006"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -76,7 +76,7 @@ def upgrade() -> None:
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column(
             "alert_type",
-            sa.Enum(
+            postgresql.ENUM(
                 "CONGESTION",
                 "ACCIDENT",
                 "ROAD_CLOSURE",
@@ -90,7 +90,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "severity",
-            sa.Enum(
+            postgresql.ENUM(
                 "LOW",
                 "MEDIUM",
                 "HIGH",
@@ -102,7 +102,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "ACTIVE",
                 "RESOLVED",
                 "DISMISSED",

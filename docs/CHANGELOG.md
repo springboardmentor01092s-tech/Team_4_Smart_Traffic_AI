@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-07-30
+## [1.0.0] - 2026-08-01
+
+### Current Status
+**TrafficVision AI Backend v1.0.0 Release Readiness**
+All core modules (1–7) and the Authentication foundation are fully implemented, verified, and frozen.
+
+### Added
+- Completed `API_REFERENCE.md` for Module 6 (Routes) and Module 7 (Analytics).
+
+### Fixed
+- Resolved PostgreSQL ENUM migration deployment issue (`DuplicateObjectError`) using `postgresql.ENUM` with `create_type=False` across affected migrations.
+- Aligned ORM mappings of `Camera` and `Segment` models strictly to native SQLAlchemy `Enum` types.
+- Final PostgreSQL migration verification successful (upgrade/downgrade/upgrade on a fresh DB).
+- Final regression verification: 269 passed, 5 skipped, 0 failed.
 
 ## [1.1.0] - 2026-07-31
 

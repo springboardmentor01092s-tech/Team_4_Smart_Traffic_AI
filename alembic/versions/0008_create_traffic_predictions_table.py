@@ -49,7 +49,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "predicted_congestion_level",
-            sa.Enum(
+            postgresql.ENUM(
                 "FREE_FLOW",
                 "LIGHT",
                 "MODERATE",
@@ -67,7 +67,7 @@ def upgrade() -> None:
         sa.Column("horizon_minutes", sa.Integer(), nullable=False),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "PENDING",
                 "COMPLETED",
                 "FAILED",

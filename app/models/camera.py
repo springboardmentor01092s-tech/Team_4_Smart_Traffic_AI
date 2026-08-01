@@ -30,7 +30,7 @@ import uuid
 from datetime import UTC, datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import DateTime, String, Text, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -93,7 +93,7 @@ class TrafficCamera(Base):
 
     # ─── Status ──────────────────────────────────────────────────────────────
     status: Mapped[CameraStatus] = mapped_column(
-        String(20),
+        SAEnum(CameraStatus, name="camera_status", native_enum=True, create_type=False),
         nullable=False,
         default=CameraStatus.ACTIVE,
         doc="Operational status of the camera. Defaults to ACTIVE.",

@@ -61,7 +61,7 @@ def upgrade() -> None:
         sa.Column("camera_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("traffic_cameras.id", ondelete="SET NULL"), nullable=True),
         sa.Column(
             "status",
-            sa.Enum(
+            postgresql.ENUM(
                 "ACTIVE",
                 "INACTIVE",
                 "UNDER_MAINTENANCE",
