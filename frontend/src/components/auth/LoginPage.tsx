@@ -110,6 +110,12 @@ export default function LoginPage() {
   } | null>(null);
 
   const [mounted, setMounted] = useState(false);
+  const [pageReloading, setPageReloading] = useState(true);
+  const [pendingUser, setPendingUser] = useState<{
+    email: string;
+    user_type: string;
+    name?: string;
+  } | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<{
     email: string;
     user_type: string;
@@ -166,12 +172,11 @@ export default function LoginPage() {
         }).catch(() => {});
       } catch {}
 
-      saveAuthUser({
+      setPendingUser({
         email: cleanEmail,
         user_type: userType,
         name: calculatedName,
       });
-      setLoading(false);
       return;
     }
 
@@ -189,23 +194,21 @@ export default function LoginPage() {
       });
       if (res.ok) {
         const data = await res.json();
-        saveAuthUser({
+        setPendingUser({
           email: data.email || cleanEmail,
           user_type: data.user_type || userType,
           name: data.full_name || calculatedName,
         });
-        setLoading(false);
         return;
       }
     } catch {}
 
-    // Guarantee seamless sign in and direct navigation to Dashboard
-    saveAuthUser({
+    // Guarantee seamless sign in and direct navigation to Dashboard via full page animation
+    setPendingUser({
       email: cleanEmail,
       user_type: userType,
       name: calculatedName,
     });
-    setLoading(false);
   };
       
   const handleOAuthLogin = async () => {
@@ -231,8 +234,35 @@ export default function LoginPage() {
       triggerToast("error", err?.message || "Google authentication failed.");
     }
   };
+
   if (!mounted) {
     return <div className="min-h-screen bg-white" />;
+  }
+
+  // Full page reloading and refreshing animation
+  if (pageReloading) {
+    return (
+      <LoadingScreen
+        durationMs={1400}
+        customStatus="Synchronizing Urban Traffic Telemetry..."
+        onComplete={() => setPageReloading(false)}
+      />
+    );
+  }
+
+  // Transition animation when directing from login page to dashboard
+  if (pendingUser) {
+    return (
+      <LoadingScreen
+        durationMs={1600}
+        customStatus="Authenticating & Directing to Smart Dashboard..."
+        onComplete={() => {
+          saveAuthUser(pendingUser);
+          setPendingUser(null);
+          setLoading(false);
+        }}
+      />
+    );
   }
 
   // Authenticated Dashboard View
@@ -246,6 +276,7 @@ export default function LoginPage() {
           } catch {}
           supabase.auth.signOut().catch(() => {});
           setAuthenticatedUser(null);
+          setPageReloading(true);
         }}
       />
     );
@@ -264,15 +295,14 @@ export default function LoginPage() {
       )}
       
       {/* Loading Screen Overlay during authentication attempts */}
-      {loading && <LoadingScreen durationMs={1000} />}
+      {loading && !pendingUser && <LoadingScreen durationMs={1000} />}
 
       {/* Left Hand Side - Form Container */}
       <div className="lg:col-span-6 flex flex-col justify-between p-5 sm:p-8 lg:p-10 bg-white h-full overflow-hidden relative z-10">
         
-        {/* CityFlowX Moved Up-Left slightly more */}
         <div className="flex items-center -mt-1 sm:-mt-2 -ml-1">
-          <span className="text-2xl sm:text-3xl font-black tracking-tight text-[#141416] leading-none">
-            CityFlowX
+          <span className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 leading-none">
+            CityFlow<span className="text-amber-500">X</span>
           </span>
         </div>
 

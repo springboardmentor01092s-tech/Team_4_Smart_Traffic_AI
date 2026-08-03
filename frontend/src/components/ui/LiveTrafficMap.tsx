@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { GoogleMap, useJsApiLoader, DirectionsRenderer, Marker } from '@react-google-maps/api';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { GoogleMap, useJsApiLoader, Marker, Polyline, DirectionsRenderer } from '@react-google-maps/api';
+import { Navigation } from 'lucide-react';
+import LottieLoader from '@/components/ui/LottieLoader';
+import LottieError from '@/components/ui/LottieError';
 
 export interface RouteProp {
   id: string;
@@ -21,6 +24,10 @@ const defaultCenter = {
   lng: 77.5946
 };
 
+// Route markers visualization
+const fallbackOriginPos = { lat: 12.9988, lng: 77.5921 };
+const fallbackDestPos = { lat: 12.9507, lng: 77.5848 };
+
 // Use a static array for libraries to prevent reload warnings
 const LIBRARIES: ("places")[] = ["places"];
 
@@ -33,48 +40,57 @@ const userSvgIcon = `data:image/svg+xml;utf-8, \
 
 export default function LiveTrafficMap({ 
   proposedRoute, 
-  userLocation 
+  userLocation,
+  directionsResult = null,
+  selectedRouteIndex = 0,
+  osmRoutes = []
 }: { 
   proposedRoute?: RouteProp | null;
   userLocation?: { lat: number; lng: number } | null;
+  directionsResult?: google.maps.DirectionsResult | null;
+  selectedRouteIndex?: number;
+  osmRoutes?: { path: { lat: number; lng: number }[]; color: string; index: number }[];
 }) {
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: LIBRARIES
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
-  
-  // Hardcoded for MVP since route optimization currently mocks endpoints
+  const [internalDirections, setInternalDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const skipGoogleDirections = useRef(false);
+
   const originStr = proposedRoute ? proposedRoute.origin : "Bangalore Palace, Bangalore";
   const destinationStr = proposedRoute ? proposedRoute.destination : "Lalbagh Botanical Garden, Bangalore";
 
-  const calculateRoute = useCallback(async () => {
-    if (!isLoaded) return;
-    
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    try {
-      const results = await directionsService.route({
-        origin: originStr,
-        destination: destinationStr,
-        // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode.DRIVING,
-        provideRouteAlternatives: true
-      });
-      setDirectionsResponse(results);
-    } catch (error) {
-      console.error("Error fetching directions", error);
-    }
-  }, [isLoaded, originStr, destinationStr]);
+  // Avoid calling Google DirectionsService internally without billing enabled; rely on OSRM polylines and external directions.
 
+  // Pan to user location when received
   useEffect(() => {
-    if (isLoaded) {
-      calculateRoute();
+    if (map && userLocation && !directionsResult && !internalDirections && (!osmRoutes || osmRoutes.length === 0)) {
+      map.panTo(userLocation);
     }
-  }, [isLoaded, calculateRoute]);
+  }, [map, userLocation, directionsResult, internalDirections, osmRoutes]);
+
+  // Adjust bounds for OSRM fallback real-time road paths
+  useEffect(() => {
+    if (map && osmRoutes && osmRoutes.length > 0 && window.google && window.google.maps) {
+      const selected = osmRoutes[selectedRouteIndex] || osmRoutes[0];
+      if (selected && selected.path && selected.path.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        selected.path.forEach((p: { lat: number; lng: number }) => bounds.extend(p));
+        map.fitBounds(bounds);
+      }
+    }
+  }, [map, osmRoutes, selectedRouteIndex]);
+
+  const handleRecenter = () => {
+    if (map && userLocation) {
+      map.panTo(userLocation);
+      map.setZoom(14);
+    }
+  };
 
   const onLoad = useCallback(function callback(mapInstance: google.maps.Map) {
     setMap(mapInstance);
@@ -86,14 +102,39 @@ export default function LiveTrafficMap({
 
   const routeColor = proposedRoute?.status === "APPROVED" ? "#10b981" : proposedRoute?.status === "PENDING" ? "#f59e0b" : "#ef4444";
 
-  if (!isLoaded) return (
-    <div className="w-full h-[350px] sm:h-[450px] rounded-2xl bg-slate-100 animate-pulse border border-slate-200 flex items-center justify-center text-slate-400 font-semibold text-sm">
-      Loading Google Maps...
+  if (loadError) return (
+    <div className="w-full h-[350px] sm:h-[450px] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center p-4">
+      <LottieError 
+        title="Failed to Load Map Engine" 
+        text="Unable to initialize Google Maps interface. Please check telemetry connection or network permissions."
+        showRetry={true} 
+        size="md" 
+      />
     </div>
   );
 
+  if (!isLoaded) return (
+    <div className="w-full h-[350px] sm:h-[450px] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+      <LottieLoader text="Loading real-time Google Maps SDK..." size="md" />
+    </div>
+  );
+
+  const effectiveDirections = directionsResult || internalDirections;
+
   return (
     <div className="w-full h-[350px] sm:h-[450px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative z-0">
+      {userLocation && (
+        <button
+          type="button"
+          onClick={handleRecenter}
+          className="absolute bottom-4 right-4 z-10 bg-white/90 backdrop-blur-md hover:bg-white text-slate-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md border border-slate-200 flex items-center gap-2 transition-all cursor-pointer hover:shadow-lg active:scale-95"
+          title="Recenter map to your live position"
+        >
+          <Navigation className="w-3.5 h-3.5 text-blue-600" />
+          <span>Recenter My Location</span>
+        </button>
+      )}
+
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={userLocation || defaultCenter}
@@ -112,18 +153,59 @@ export default function LiveTrafficMap({
           ]
         }}
       >
-        {directionsResponse && (
-          <DirectionsRenderer 
-            directions={directionsResponse}
-            options={{
-              polylineOptions: {
+        {effectiveDirections && effectiveDirections.routes ? (
+          effectiveDirections.routes.map((_, idx) => (
+            <DirectionsRenderer
+              key={idx}
+              directions={effectiveDirections}
+              routeIndex={idx}
+              options={{
+                suppressMarkers: idx !== selectedRouteIndex,
+                preserveViewport: idx !== selectedRouteIndex,
+                polylineOptions: {
+                  strokeColor: idx === selectedRouteIndex ? (proposedRoute?.status === "PENDING" ? "#f59e0b" : "#10b981") : "#94a3b8",
+                  strokeWeight: idx === selectedRouteIndex ? 6 : 4,
+                  strokeOpacity: idx === selectedRouteIndex ? 0.9 : 0.4,
+                  zIndex: idx === selectedRouteIndex ? 50 : 10,
+                }
+              }}
+            />
+          ))
+        ) : osmRoutes && osmRoutes.length > 0 ? (
+          <>
+            {osmRoutes.map((rt) => (
+              <Polyline
+                key={rt.index}
+                path={rt.path}
+                options={{
+                  strokeColor: rt.index === selectedRouteIndex ? (proposedRoute?.status === "PENDING" ? "#f59e0b" : "#10b981") : "#94a3b8",
+                  strokeWeight: rt.index === selectedRouteIndex ? 6 : 4,
+                  strokeOpacity: rt.index === selectedRouteIndex ? 0.9 : 0.4,
+                  zIndex: rt.index === selectedRouteIndex ? 50 : 10,
+                }}
+              />
+            ))}
+            {osmRoutes[selectedRouteIndex]?.path?.[0] && (
+              <Marker position={osmRoutes[selectedRouteIndex].path[0]} title={`Origin: ${originStr}`} />
+            )}
+            {osmRoutes[selectedRouteIndex]?.path?.[osmRoutes[selectedRouteIndex].path.length - 1] && (
+              <Marker position={osmRoutes[selectedRouteIndex].path[osmRoutes[selectedRouteIndex].path.length - 1]} title={`Destination: ${destinationStr}`} />
+            )}
+          </>
+        ) : (
+          <>
+            <Marker position={fallbackOriginPos} title={`Origin: ${originStr}`} />
+            <Marker position={fallbackDestPos} title={`Destination: ${destinationStr}`} />
+            <Polyline 
+              path={[fallbackOriginPos, fallbackDestPos]}
+              options={{
                 strokeColor: routeColor,
-                strokeWeight: 6,
-                strokeOpacity: 0.8
-              },
-              suppressMarkers: false // default markers for origin/dest
-            }}
-          />
+                strokeWeight: 5,
+                strokeOpacity: 0.7,
+                geodesic: true
+              }}
+            />
+          </>
         )}
 
         {userLocation && window.google && (
@@ -140,3 +222,5 @@ export default function LiveTrafficMap({
     </div>
   );
 }
+
+

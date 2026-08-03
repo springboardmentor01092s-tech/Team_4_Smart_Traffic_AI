@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import ErrorSuppressor from "@/components/ui/ErrorSuppressor";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-google-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} h-full antialiased font-sans`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#ebedee] text-slate-900">
+        <ErrorSuppressor />
         {children}
       </body>
     </html>
