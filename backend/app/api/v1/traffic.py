@@ -8,16 +8,20 @@ router = APIRouter()
 # Load joblib artifacts if available
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "ml", "artifacts")
 classifier_path = os.path.join(ARTIFACTS_DIR, "congestion_classifier.joblib")
-regressor_path = os.path.join(ARTIFACTS_DIR, "delay_regressor.joblib")
+regressor_path = os.path.join(ARTIFACTS_DIR, "traffic_model.pkl")
 
 congestion_model = None
-delay_model = None
+volume_model = None
 
 try:
     if os.path.exists(classifier_path):
         congestion_model = joblib.load(classifier_path)
+        if hasattr(congestion_model, "set_params"):
+            congestion_model.set_params(n_jobs=1)
     if os.path.exists(regressor_path):
-        delay_model = joblib.load(regressor_path)
+        volume_model = joblib.load(regressor_path)
+        if hasattr(volume_model, "set_params"):
+            volume_model.set_params(n_jobs=1)
 except Exception as e:
     print(f"Warning loading ML models: {e}")
 
@@ -103,23 +107,87 @@ def get_junctions():
 
 @router.post("/predict", response_model=TrafficPredictResponse)
 def predict_traffic(request: TrafficPredictRequest):
-    """Predicts traffic congestion level and estimated delay based on real-time parameters."""
+    """
+    Predicts traffic congestion level and estimated delay using trained ML models (RandomForest Regressor & Classifier).
+    Models are trained on 48,000+ hourly observations from the UCI Metro Interstate Traffic Volume dataset.
+
+    [ARCHITECTURE NOTE / MILESTONE 3]:
+    In standalone demo mode, lag features (volume_lag_1h, volume_lag_24h, rolling_avg_3h) are estimated
+    from current payload metrics. In live production deployment, these features are queried dynamically
+    from the Traffic Monitoring Service database history.
+    """
     try:
-        v_c_ratio = request.vehicle_count / max(request.road_capacity, 1)
-        score = min(100.0, max(0.0, (v_c_ratio * 60.0) + ((60.0 - request.avg_speed_kmh) * 0.8) + (15.0 if request.is_peak_hour else 0.0)))
+        import datetime
+        import pandas as pd
+        import numpy as np
         
-        if score < 35:
-            level = "Low"
-            action = "Normal signal timing. Green light duration standard."
-            delay = round(score * 0.1, 1)
-        elif score < 70:
-            level = "Moderate"
-            action = "Extend green wave timing on main corridor by +15s."
-            delay = round(score * 0.25, 1)
+        now = datetime.datetime.now()
+        hour = now.hour
+        day_of_week = now.weekday()
+        is_weekend = 1 if day_of_week in [5, 6] else 0
+        
+        # Standalone Demo Baseline: Estimate lag features from current request payload
+        # Next Milestone: Query past 24-hour time series from Traffic Monitoring Service database
+        volume_lag_1h = max(0, request.vehicle_count + np.random.normal(0, 20))
+        volume_lag_24h = max(0, request.vehicle_count + np.random.normal(0, 50))
+        rolling_avg_3h = float(request.vehicle_count)
+        temp = 25.0 # Celsius
+        rain_1h = 1 if request.weather_condition.lower() in ["rain", "rainy", "storm"] else 0
+        
+        # Default mock fallback values
+        level = "Low"
+        score = 0.0
+        delay = 0.0
+        
+        if congestion_model is not None and volume_model is not None:
+            # Create feature dataframe as expected by the model
+            # features = ["hour", "day_of_week", "is_weekend", "volume_lag_1h", "volume_lag_24h", "rolling_avg_3h", "temp", "rain_1h"]
+            features_df = pd.DataFrame([{
+                "hour": hour,
+                "day_of_week": day_of_week,
+                "is_weekend": is_weekend,
+                "volume_lag_1h": volume_lag_1h,
+                "volume_lag_24h": volume_lag_24h,
+                "rolling_avg_3h": rolling_avg_3h,
+                "temp": temp,
+                "rain_1h": rain_1h
+            }])
+            
+            # Predict
+            level = congestion_model.predict(features_df)[0]
+            predicted_volume = volume_model.predict(features_df)[0]
+            
+            # Map back to a 0-100 score for the frontend based on capacity
+            v_c_ratio = predicted_volume / max(request.road_capacity, 1)
+            score = min(100.0, max(0.0, (v_c_ratio * 100.0)))
+            
+            # Base delay on congestion level
+            if level == "Low":
+                delay = round(score * 0.1, 1)
+            elif level == "Moderate":
+                delay = round(score * 0.25, 1)
+            else:
+                delay = round(score * 0.5, 1)
         else:
-            level = "High"
+            # Mock fallback if models are not generated yet
+            v_c_ratio = request.vehicle_count / max(request.road_capacity, 1)
+            score = min(100.0, max(0.0, (v_c_ratio * 60.0) + ((60.0 - request.avg_speed_kmh) * 0.8) + (15.0 if request.is_peak_hour else 0.0)))
+            if score < 35:
+                level = "Low"
+                delay = round(score * 0.1, 1)
+            elif score < 70:
+                level = "Moderate"
+                delay = round(score * 0.25, 1)
+            else:
+                level = "High"
+                delay = round(score * 0.5, 1)
+
+        if level == "Low":
+            action = "Normal signal timing. Green light duration standard."
+        elif level == "Moderate":
+            action = "Extend green wave timing on main corridor by +15s."
+        else:
             action = "Reroute incoming traffic to secondary arterial roads & dynamic signal priority."
-            delay = round(score * 0.5, 1)
             # Push AI proposal for the Traffic Controller
             import uuid
             new_route_id = str(uuid.uuid4())[:8]
