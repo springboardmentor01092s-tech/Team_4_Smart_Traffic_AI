@@ -173,19 +173,23 @@ export default function LiveTrafficMap({
           ))
         ) : osmRoutes && osmRoutes.length > 0 ? (
           <>
-            {osmRoutes.map((rt) => (
-              <Polyline
-                key={rt.index}
-                path={rt.path}
-                options={{
-                  strokeColor: rt.index === selectedRouteIndex ? (proposedRoute?.status === "PENDING" ? "#f59e0b" : "#10b981") : "#94a3b8",
-                  strokeWeight: rt.index === selectedRouteIndex ? 6 : 4,
-                  strokeOpacity: rt.index === selectedRouteIndex ? 0.9 : 0.4,
-                  zIndex: rt.index === selectedRouteIndex ? 50 : 10,
-                }}
-              />
-            ))}
-            {osmRoutes[selectedRouteIndex]?.path?.[0] && (
+            {(() => {
+              const activeRt = osmRoutes[selectedRouteIndex] || osmRoutes[0];
+              if (!activeRt) return null;
+              return (
+                <Polyline
+                  key={activeRt.index}
+                  path={activeRt.path}
+                  options={{
+                    strokeColor: activeRt.color || "#10b981",
+                    strokeWeight: 7,
+                    strokeOpacity: 0.95,
+                    zIndex: 100,
+                  }}
+                />
+              );
+            })()}
+            {osmRoutes[selectedRouteIndex]?.path?.[0] && !userLocation && (
               <Marker position={osmRoutes[selectedRouteIndex].path[0]} title={`Origin: ${originStr}`} />
             )}
             {osmRoutes[selectedRouteIndex]?.path?.[osmRoutes[selectedRouteIndex].path.length - 1] && (

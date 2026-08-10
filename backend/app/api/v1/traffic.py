@@ -213,28 +213,150 @@ def predict_traffic(request: TrafficPredictRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+class CandidateRouteInput(BaseModel):
+    index: int
+    name: str
+    distance_km: float
+    normal_mins: float
+    estimated_vehicle_count: float = 3000.0
+    road_capacity: float = 4000.0
+
+class RouteOptimizeRequest(BaseModel):
+    origin: str
+    destination: str
+    candidate_routes: list[CandidateRouteInput] = []
+    weather_condition: str = "Clear"
+
 @router.post("/route-optimize")
 def optimize_route(request: RouteOptimizeRequest):
-    """Provides primary and alternate route optimization with delay estimates."""
-    return {
-        "origin": request.origin,
-        "destination": request.destination,
-        "primary_route": {
-            "name": f"Direct via Main Arterial",
-            "distance_km": 12.4,
-            "estimated_time_mins": 26,
-            "congestion": "Moderate",
-            "delay_mins": 6.5
-        },
-        "alternate_route": {
-            "name": f"Bypass via Outer Express Flyover",
-            "distance_km": 14.8,
-            "estimated_time_mins": 19,
-            "congestion": "Clear",
-            "delay_mins": 1.2
-        },
-        "recommendation": "Take Alternate Express Route to save ~7 mins."
-    }
+    """
+    Evaluates candidate routes between origin and destination using the trained 
+    RandomForest Regressor & Classifier ML models to predict real-time traffic volume,
+    congestion level, delay, and optimal AI route recommendation.
+    """
+    try:
+        from datetime import datetime
+        now = datetime.now()
+        current_hour = now.hour
+        current_dow = now.weekday()
+        is_weekend = 1 if current_dow >= 5 else 0
+
+        rain_1h = 1.0 if "rain" in request.weather_condition.lower() else 0.0
+        temp = 24.5
+
+        if request.candidate_routes and len(request.candidate_routes) > 0:
+            routes_to_eval = request.candidate_routes
+        else:
+            routes_to_eval = [
+                CandidateRouteInput(index=0, name="Direct via Main Arterial Corridor", distance_km=12.4, normal_mins=22.0, estimated_vehicle_count=4200.0, road_capacity=3800.0),
+                CandidateRouteInput(index=1, name="Bypass via Express Outer Flyover", distance_km=14.8, normal_mins=18.0, estimated_vehicle_count=2100.0, road_capacity=4500.0),
+                CandidateRouteInput(index=2, name="Secondary Arterial via Ring Road", distance_km=13.6, normal_mins=20.0, estimated_vehicle_count=2900.0, road_capacity=4000.0)
+            ]
+
+        import pandas as pd
+
+        evaluated_routes = []
+
+        for i, r in enumerate(routes_to_eval):
+            # Primary direct corridor (index 0) experiences peak commute volume
+            if i == 0:
+                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 4600.0
+            elif i == 1:
+                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 2100.0
+            else:
+                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 3100.0
+
+            volume_lag_1h = base_vol
+            volume_lag_24h = base_vol * 0.95
+            rolling_avg_3h = base_vol * 0.98
+
+            if congestion_model is not None and volume_model is not None:
+                features_df = pd.DataFrame([{
+                    "hour": current_hour,
+                    "day_of_week": current_dow,
+                    "is_weekend": is_weekend,
+                    "volume_lag_1h": volume_lag_1h,
+                    "volume_lag_24h": volume_lag_24h,
+                    "rolling_avg_3h": rolling_avg_3h,
+                    "temp": temp,
+                    "rain_1h": rain_1h
+                }])
+
+                pred_level = str(congestion_model.predict(features_df)[0])
+                pred_vol = float(volume_model.predict(features_df)[0])
+            else:
+                v_c = base_vol / max(r.road_capacity, 1.0)
+                pred_vol = base_vol
+                if v_c > 0.85:
+                    pred_level = "High"
+                elif v_c > 0.55:
+                    pred_level = "Moderate"
+                else:
+                    pred_level = "Low"
+
+            capacity = max(float(r.road_capacity), 1.0)
+            vc_ratio = pred_vol / capacity
+            score = min(100.0, max(5.0, round(vc_ratio * 100.0, 1)))
+
+            if pred_level == "Low":
+                delay_mins = round(r.normal_mins * 0.08, 1)
+                badge_color = "emerald"
+                congestion_desc = "Clear Traffic (Free Flow)"
+            elif pred_level == "Moderate":
+                delay_mins = round(r.normal_mins * 0.28, 1)
+                badge_color = "amber"
+                congestion_desc = "Moderate Traffic"
+            else:
+                delay_mins = round(r.normal_mins * 0.65, 1)
+                badge_color = "rose"
+                congestion_desc = "High Traffic Bottleneck"
+
+            total_mins = round(r.normal_mins + delay_mins, 1)
+
+            evaluated_routes.append({
+                "index": r.index,
+                "name": r.name,
+                "distance_km": r.distance_km,
+                "normal_mins": r.normal_mins,
+                "delay_mins": delay_mins,
+                "total_time_mins": total_mins,
+                "predicted_volume": round(pred_vol, 0),
+                "congestion_level": pred_level,
+                "congestion_score": score,
+                "congestion_desc": congestion_desc,
+                "badgeColor": badge_color,
+                "is_recommended": False
+            })
+
+        sorted_routes = sorted(evaluated_routes, key=lambda x: (x["total_time_mins"], x["congestion_score"]))
+        best_route_index = sorted_routes[0]["index"]
+
+        for route in evaluated_routes:
+            if route["index"] == best_route_index:
+                route["is_recommended"] = True
+
+        best_route = next(r for r in evaluated_routes if r["index"] == best_route_index)
+        worst_time = max(r["total_time_mins"] for r in evaluated_routes)
+        time_saved = round(worst_time - best_route["total_time_mins"], 1)
+
+        recommendation_summary = (
+            f"AI Model recommends '{best_route['name']}': "
+            f"Bypasses {best_route['congestion_level'].lower()} congestion bottlenecks, "
+            f"saving ~{time_saved} mins with an estimated travel time of {best_route['total_time_mins']} mins."
+        )
+
+        return {
+            "status": "success",
+            "origin": request.origin,
+            "destination": request.destination,
+            "ai_evaluated_routes": evaluated_routes,
+            "recommended_route_index": best_route_index,
+            "time_saved_mins": time_saved,
+            "recommendation_summary": recommendation_summary
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/proposed-routes")
 def get_proposed_routes():
