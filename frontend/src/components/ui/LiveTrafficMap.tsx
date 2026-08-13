@@ -59,12 +59,11 @@ export default function LiveTrafficMap({
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [internalDirections, setInternalDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const skipGoogleDirections = useRef(false);
+  const polylinesRef = useRef<google.maps.Polyline[]>([]);
+  const markersRef = useRef<google.maps.Marker[]>([]);
 
-  const originStr = proposedRoute ? proposedRoute.origin : "Bangalore Palace, Bangalore";
-  const destinationStr = proposedRoute ? proposedRoute.destination : "Lalbagh Botanical Garden, Bangalore";
-
-  // Avoid calling Google DirectionsService internally without billing enabled; rely on OSRM polylines and external directions.
+  const originStr = proposedRoute ? proposedRoute.origin : "";
+  const destinationStr = proposedRoute ? proposedRoute.destination : "";
 
   // Pan to user location when received
   useEffect(() => {
@@ -73,17 +72,63 @@ export default function LiveTrafficMap({
     }
   }, [map, userLocation, directionsResult, internalDirections, osmRoutes]);
 
-  // Adjust bounds for OSRM fallback real-time road paths
+  // Imperatively manage polylines and markers to guarantee complete cleanup of old search routes
   useEffect(() => {
-    if (map && osmRoutes && osmRoutes.length > 0 && window.google && window.google.maps) {
-      const selected = osmRoutes[selectedRouteIndex] || osmRoutes[0];
-      if (selected && selected.path && selected.path.length > 0) {
+    // 1. Wipe all existing polylines from the Google Map instance
+    polylinesRef.current.forEach((p) => p.setMap(null));
+    polylinesRef.current = [];
+
+    // 2. Wipe all existing search markers from the Google Map instance
+    markersRef.current.forEach((m) => m.setMap(null));
+    markersRef.current = [];
+
+    if (!map || !window.google || !window.google.maps) return;
+
+    if (osmRoutes && osmRoutes.length > 0) {
+      const activeRt = osmRoutes[selectedRouteIndex] || osmRoutes[0];
+      if (activeRt && activeRt.path && activeRt.path.length > 0) {
+        // Draw only the active selected route polyline
+        const poly = new window.google.maps.Polyline({
+          path: activeRt.path,
+          strokeColor: activeRt.color || "#10b981",
+          strokeWeight: 7,
+          strokeOpacity: 0.95,
+          zIndex: 100,
+          map: map,
+        });
+        polylinesRef.current.push(poly);
+
+        // Origin Marker
+        const startPt = activeRt.path[0];
+        if (startPt) {
+          const originMarker = new window.google.maps.Marker({
+            position: startPt,
+            map: map,
+            title: originStr ? `Origin: ${originStr}` : "Origin",
+            label: { text: "A", color: "#ffffff", fontWeight: "bold" },
+          });
+          markersRef.current.push(originMarker);
+        }
+
+        // Destination Marker
+        const endPt = activeRt.path[activeRt.path.length - 1];
+        if (endPt) {
+          const destMarker = new window.google.maps.Marker({
+            position: endPt,
+            map: map,
+            title: destinationStr ? `Destination: ${destinationStr}` : "Destination",
+            label: { text: "B", color: "#ffffff", fontWeight: "bold" },
+          });
+          markersRef.current.push(destMarker);
+        }
+
+        // Fit map bounds to current route
         const bounds = new window.google.maps.LatLngBounds();
-        selected.path.forEach((p: { lat: number; lng: number }) => bounds.extend(p));
+        activeRt.path.forEach((p: { lat: number; lng: number }) => bounds.extend(p));
         map.fitBounds(bounds);
       }
     }
-  }, [map, osmRoutes, selectedRouteIndex]);
+  }, [map, osmRoutes, selectedRouteIndex, originStr, destinationStr]);
 
   const handleRecenter = () => {
     if (map && userLocation) {
@@ -99,8 +144,6 @@ export default function LiveTrafficMap({
   const onUnmount = useCallback(function callback() {
     setMap(null);
   }, []);
-
-  const routeColor = proposedRoute?.status === "APPROVED" ? "#10b981" : proposedRoute?.status === "PENDING" ? "#f59e0b" : "#ef4444";
 
   if (loadError) return (
     <div className="w-full h-[350px] sm:h-[450px] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center p-4">
@@ -153,7 +196,7 @@ export default function LiveTrafficMap({
           ]
         }}
       >
-        {effectiveDirections && effectiveDirections.routes ? (
+        {effectiveDirections && effectiveDirections.routes && (
           effectiveDirections.routes.map((_, idx) => (
             <DirectionsRenderer
               key={idx}
@@ -171,45 +214,6 @@ export default function LiveTrafficMap({
               }}
             />
           ))
-        ) : osmRoutes && osmRoutes.length > 0 ? (
-          <>
-            {(() => {
-              const activeRt = osmRoutes[selectedRouteIndex] || osmRoutes[0];
-              if (!activeRt) return null;
-              return (
-                <Polyline
-                  key={activeRt.index}
-                  path={activeRt.path}
-                  options={{
-                    strokeColor: activeRt.color || "#10b981",
-                    strokeWeight: 7,
-                    strokeOpacity: 0.95,
-                    zIndex: 100,
-                  }}
-                />
-              );
-            })()}
-            {osmRoutes[selectedRouteIndex]?.path?.[0] && !userLocation && (
-              <Marker position={osmRoutes[selectedRouteIndex].path[0]} title={`Origin: ${originStr}`} />
-            )}
-            {osmRoutes[selectedRouteIndex]?.path?.[osmRoutes[selectedRouteIndex].path.length - 1] && (
-              <Marker position={osmRoutes[selectedRouteIndex].path[osmRoutes[selectedRouteIndex].path.length - 1]} title={`Destination: ${destinationStr}`} />
-            )}
-          </>
-        ) : (
-          <>
-            <Marker position={fallbackOriginPos} title={`Origin: ${originStr}`} />
-            <Marker position={fallbackDestPos} title={`Destination: ${destinationStr}`} />
-            <Polyline 
-              path={[fallbackOriginPos, fallbackDestPos]}
-              options={{
-                strokeColor: routeColor,
-                strokeWeight: 5,
-                strokeOpacity: 0.7,
-                geodesic: true
-              }}
-            />
-          </>
         )}
 
         {userLocation && window.google && (
@@ -226,5 +230,6 @@ export default function LiveTrafficMap({
     </div>
   );
 }
+
 
 

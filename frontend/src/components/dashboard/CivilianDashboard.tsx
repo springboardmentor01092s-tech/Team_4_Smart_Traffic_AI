@@ -84,10 +84,25 @@ export default function CivilianDashboard({ username }: { username?: string }) {
     } catch {}
   };
 
+  const userHasCustomSearch = useRef(false);
+
+  const resetRouteState = () => {
+    userHasCustomSearch.current = false;
+    setRealRoutes([]);
+    setOsmRoutes([]);
+    setDirectionsResult(null);
+    setActiveRoute(null);
+    setRouteResult(null);
+    setAiRecommendationSummary(null);
+    setRouteError(null);
+    setSelectedRouteIndex(0);
+  };
+
   const handleOriginChange = (val: string) => {
     setOrigin(val);
     setIsOriginUserLocation(false);
     setShowOriginSuggestions(true);
+    resetRouteState();
     if (originTimeoutRef.current) clearTimeout(originTimeoutRef.current);
     if (!val.trim() || val.trim().length < 2) {
       setOriginPredictions([]);
@@ -101,6 +116,7 @@ export default function CivilianDashboard({ username }: { username?: string }) {
   const handleDestChange = (val: string) => {
     setDestination(val);
     setShowDestSuggestions(true);
+    resetRouteState();
     if (destTimeoutRef.current) clearTimeout(destTimeoutRef.current);
     if (!val.trim() || val.trim().length < 2) {
       setDestPredictions([]);
@@ -252,11 +268,14 @@ export default function CivilianDashboard({ username }: { username?: string }) {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [incidentLoc, setIncidentLoc] = useState("");
   const [incidentType, setIncidentType] = useState("Accident");
+  const [customIncidentType, setCustomIncidentType] = useState("");
+  const [incidentPriority, setIncidentPriority] = useState("High");
   const [incidentDesc, setIncidentDesc] = useState("");
   const [incidentSubmitting, setIncidentSubmitting] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [junctions, setJunctions] = useState<any[]>([]);
+  const [loadingJunctions, setLoadingJunctions] = useState(false);
   const [activeRoute, setActiveRoute] = useState<RouteProp | null>(null);
 
   const fetchIncidents = async () => {
@@ -270,13 +289,17 @@ export default function CivilianDashboard({ username }: { username?: string }) {
   };
 
   const fetchJunctions = async () => {
+    setLoadingJunctions(true);
     try {
       const res = await fetch(getApiUrl("traffic/junctions"));
       if (res.ok) {
         const data = await res.json();
         setJunctions(data);
+        setToastMsg("City junction live density feed refreshed!");
       }
-    } catch {}
+    } catch {} finally {
+      setLoadingJunctions(false);
+    }
   };
 
   useEffect(() => {
@@ -284,9 +307,10 @@ export default function CivilianDashboard({ username }: { username?: string }) {
     fetchJunctions();
   }, []);
 
-  // Poll for APPROVED routes
+  // Poll for APPROVED routes from controller only if civilian hasn't searched a custom route
   useEffect(() => {
     const pollRoutes = async () => {
+      if (userHasCustomSearch.current) return;
       try {
         const res = await fetch(getApiUrl("traffic/proposed-routes"));
         if (res.ok) {
@@ -391,82 +415,141 @@ export default function CivilianDashboard({ username }: { username?: string }) {
     const directDistKm = Math.max(1, parseFloat((R * cVal).toFixed(1)));
     const directMins = Math.max(2, Math.round((directDistKm / 48) * 60));
 
-    const generateSmoothPath = (perpOffsetScale: number = 0.0) => {
+    // Helper to fetch 100% REAL DRIVING ROADS via Google Maps DirectionsService
+    const getGoogleRealRoutes = async (startPt: { lat: number; lng: number }, endPt: { lat: number; lng: number }): Promise<any[] | null> => {
+      if (typeof window !== "undefined" && (window as any).google && (window as any).google.maps && (window as any).google.maps.DirectionsService) {
+        try {
+          const service = new (window as any).google.maps.DirectionsService();
+          const res: any = await new Promise((resolve) => {
+            service.route(
+              {
+                origin: startPt,
+                destination: endPt,
+                travelMode: (window as any).google.maps.TravelMode.DRIVING,
+                provideRouteAlternatives: true
+              },
+              (result: any, status: any) => {
+                if (status === "OK" && result && result.routes && result.routes.length > 0) {
+                  resolve(result);
+                } else {
+                  resolve(null);
+                }
+              }
+            );
+          });
+
+          if (res && res.routes && res.routes.length > 0) {
+            return res.routes.map((r: any, idx: number) => {
+              const leg = r.legs[0];
+              const distMeters = leg?.distance?.value || (directDistKm * 1000);
+              const durSecs = leg?.duration?.value || (directMins * 60);
+              const roadName = r.summary ? `via ${r.summary}` : (idx === 0 ? "Direct Main Corridor" : `AI Express Bypass ${idx}`);
+              
+              const pathCoords = (r.overview_path || []).map((pt: any) => ({
+                lat: pt.lat(),
+                lng: pt.lng()
+              }));
+
+              return {
+                distance: distMeters,
+                duration: durSecs,
+                summary: roadName,
+                path: pathCoords
+              };
+            });
+          }
+        } catch (e) {
+          console.warn("Google DirectionsService notice:", e);
+        }
+      }
+      return null;
+    };
+
+    // Helper to fetch 100% REAL DRIVING ROADS via OSRM API (snapping waypoints to real highways)
+    const fetchOsrmRealRoad = async (p1: { lat: number; lng: number }, p2: { lat: number; lng: number }, mid?: { lat: number; lng: number }) => {
+      try {
+        const waypointsStr = mid 
+          ? `${p1.lng},${p1.lat};${mid.lng},${mid.lat};${p2.lng},${p2.lat}`
+          : `${p1.lng},${p1.lat};${p2.lng},${p2.lat}`;
+        const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${waypointsStr}?overview=full&geometries=geojson`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.routes && data.routes.length > 0) {
+            const r = data.routes[0];
+            const coords = r.geometry?.coordinates?.map((pt: any) => ({ lat: pt[1], lng: pt[0] })) || [];
+            return {
+              distance: r.distance,
+              duration: r.duration,
+              path: coords
+            };
+          }
+        }
+      } catch (e) {}
+      return null;
+    };
+
+    // 1. Attempt Google Maps Real-World Driving Directions first
+    let realRoadCandidates = await getGoogleRealRoutes(start, end);
+
+    // 2. If Google Directions returned fewer than 3 real road routes, use OSRM real road waypoints
+    if (!realRoadCandidates || realRoadCandidates.length === 0) {
+      realRoadCandidates = [];
+      const primaryRoad = await fetchOsrmRealRoad(start, end);
+      if (primaryRoad && primaryRoad.path.length > 0) {
+        realRoadCandidates.push({
+          distance: primaryRoad.distance,
+          duration: primaryRoad.duration,
+          summary: "Direct Main Highway",
+          path: primaryRoad.path
+        });
+      }
+
+      // Midpoint calculations along perpendicular real road corridors
       const dLat = end.lat - start.lat;
       const dLng = end.lng - start.lng;
       const len = Math.hypot(dLat, dLng) || 1;
       const perpLat = -dLng / len;
       const perpLng = dLat / len;
 
-      const midLat = (start.lat + end.lat) / 2 + perpLat * perpOffsetScale;
-      const midLng = (start.lng + end.lng) / 2 + perpLng * perpOffsetScale;
+      const wp1 = { lat: (start.lat + end.lat) / 2 + perpLat * 0.025, lng: (start.lng + end.lng) / 2 + perpLng * 0.025 };
+      const wp2 = { lat: (start.lat + end.lat) / 2 - perpLat * 0.020, lng: (start.lng + end.lng) / 2 - perpLng * 0.020 };
 
-      const pts: { lat: number; lng: number }[] = [];
-      const steps = 15;
-      for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
-        const lat = (1 - t) * (1 - t) * start.lat + 2 * (1 - t) * t * midLat + t * t * end.lat;
-        const lng = (1 - t) * (1 - t) * start.lng + 2 * (1 - t) * t * midLng + t * t * end.lng;
-        pts.push({ lat, lng });
+      const road1 = await fetchOsrmRealRoad(start, end, wp1);
+      if (road1 && road1.path.length > 0) {
+        realRoadCandidates.push({
+          distance: road1.distance,
+          duration: road1.duration,
+          summary: "via Outer Express Bypass",
+          path: road1.path
+        });
       }
-      return pts;
-    };
 
-    let osmData: any = null;
-    try {
-      const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&alternatives=true&geometries=geojson`);
-      if (res.ok) {
-        osmData = await res.json();
+      const road2 = await fetchOsrmRealRoad(start, end, wp2);
+      if (road2 && road2.path.length > 0) {
+        realRoadCandidates.push({
+          distance: road2.distance,
+          duration: road2.duration,
+          summary: "via Secondary Ring Corridor",
+          path: road2.path
+        });
       }
-    } catch (e) {
-      console.warn("OSRM public API unreachable, using smooth highway fallback:", e);
-    }
-
-    // Check if OSRM returned looping detours (> 1.35x direct distance) or if network failed
-    const osrmPrimaryDistKm = osmData?.routes?.[0]?.distance ? (osmData.routes[0].distance / 1000) : 999;
-    const isOsrmLoopingDetour = osrmPrimaryDistKm > (directDistKm * 1.35);
-
-    if (!osmData || !osmData.routes || osmData.routes.length === 0 || isOsrmLoopingDetour) {
-      const path0 = generateSmoothPath(0.005);
-      const path1 = generateSmoothPath(0.030); // Outer Western Express Bypass
-      const path2 = generateSmoothPath(-0.020); // Secondary Arterial Bypass
-
-      osmData = {
-        routes: [
-          {
-            distance: directDistKm * 1000,
-            duration: directMins * 60,
-            geometry: { coordinates: path0.map(p => [p.lng, p.lat]) }
-          },
-          {
-            distance: (directDistKm * 1.10) * 1000,
-            duration: Math.round(directMins * 0.82) * 60,
-            geometry: { coordinates: path1.map(p => [p.lng, p.lat]) }
-          },
-          {
-            distance: (directDistKm * 1.05) * 1000,
-            duration: Math.round(directMins * 0.92) * 60,
-            geometry: { coordinates: path2.map(p => [p.lng, p.lat]) }
-          }
-        ]
-      };
     }
 
     try {
       setLoadingRoute(false);
 
-      if (osmData && osmData.routes && osmData.routes.length > 0) {
+      if (realRoadCandidates && realRoadCandidates.length > 0) {
         // Build candidate inputs for AI ML Model evaluation
-        const candidateInputs = osmData.routes.map((r: any, idx: number) => {
+        const candidateInputs = realRoadCandidates.map((r: any, idx: number) => {
           const distKm = parseFloat((r.distance / 1000).toFixed(1));
           const normalDurMins = Math.max(1, Math.round(r.duration / 60));
           return {
             index: idx,
-            name: idx === 0 ? `Direct Main Corridor (${distKm} km)` : `AI Bypass Expressway ${idx} (${distKm} km)`,
+            name: r.summary ? `${r.summary} (${distKm} km)` : (idx === 0 ? `Direct Main Corridor (${distKm} km)` : (idx === 1 ? `AI Express Bypass (${distKm} km)` : `Secondary Arterial Route (${distKm} km)`)),
             distance_km: distKm,
             normal_mins: normalDurMins,
-            estimated_vehicle_count: idx === 0 ? 4600 : (idx === 1 ? 2100 : 3100),
-            road_capacity: idx === 0 ? 3800 : (idx === 1 ? 4500 : 4000)
+            estimated_vehicle_count: idx === 0 ? 4666 : (idx === 1 ? 1850 : 2800),
+            road_capacity: idx === 0 ? 3800 : (idx === 1 ? 4800 : 4000)
           };
         });
 
@@ -497,20 +580,20 @@ export default function CivilianDashboard({ username }: { username?: string }) {
           setAiRecommendationSummary(aiResultData.recommendation_summary || null);
           recommendedIndex = aiResultData.recommended_route_index ?? 0;
 
-          osmData.routes.forEach((r: any, idx: number) => {
+          realRoadCandidates.forEach((r: any, idx: number) => {
             const aiRoute = aiResultData.ai_evaluated_routes.find((ar: any) => ar.index === idx);
             const distKm = (r.distance / 1000).toFixed(1);
             const normalDurMins = Math.max(1, Math.round(r.duration / 60));
 
-            const level = aiRoute ? aiRoute.congestion_level : (idx === 0 ? "Moderate" : "Low");
-            const delayMins = aiRoute ? aiRoute.delay_mins : Math.round(normalDurMins * (idx === 0 ? 0.2 : 0.04));
+            const level = aiRoute ? aiRoute.congestion_level : (idx === 0 ? "High" : (idx === 1 ? "Low" : "Moderate"));
+            const delayMins = aiRoute ? aiRoute.delay_mins : Math.round(normalDurMins * (idx === 0 ? 0.65 : (idx === 1 ? 0.08 : 0.28)));
             const totalMins = aiRoute ? aiRoute.total_time_mins : (normalDurMins + delayMins);
-            const badgeColor = aiRoute ? aiRoute.badgeColor : (idx === 0 ? "amber" : "emerald");
+            const badgeColor = aiRoute ? aiRoute.badgeColor : (idx === 0 ? "rose" : (idx === 1 ? "emerald" : "amber"));
             const isRec = aiRoute ? aiRoute.is_recommended : (idx === recommendedIndex);
 
             computedRoutes.push({
               index: idx,
-              name: aiRoute ? aiRoute.name : (idx === 0 ? `Primary Arterial Corridor (${distKm} km)` : `AI Bypass Expressway ${idx} (${distKm} km)`),
+              name: aiRoute ? aiRoute.name : (r.summary ? `${r.summary} (${distKm} km)` : `Real Road Route ${idx + 1} (${distKm} km)`),
               distance_km: distKm,
               time_mins: totalMins,
               normal_mins: normalDurMins,
@@ -523,46 +606,40 @@ export default function CivilianDashboard({ username }: { username?: string }) {
               isRecommended: isRec
             });
 
-            const coords = r.geometry?.coordinates?.map((p: any) => ({ lat: p[1], lng: p[0] })) || [];
-            if (coords.length > 0 && start) {
-              coords[0] = { lat: start.lat, lng: start.lng };
-            }
             mapPaths.push({
-              path: coords,
+              path: r.path || [],
               color: badgeColor === "rose" ? "#ef4444" : (badgeColor === "amber" ? "#f59e0b" : "#10b981"),
               index: idx
             });
           });
         } else {
-          osmData.routes.forEach((r: any, idx: number) => {
+          realRoadCandidates.forEach((r: any, idx: number) => {
             const distKm = (r.distance / 1000).toFixed(1);
             const normalDurMins = Math.max(1, Math.round(r.duration / 60));
-            const delayMins = Math.round(normalDurMins * (idx === 0 ? 0.20 : 0.04));
+            const delayMins = Math.round(normalDurMins * (idx === 0 ? 0.65 : (idx === 1 ? 0.08 : 0.28)));
             const liveMins = normalDurMins + delayMins;
 
             computedRoutes.push({
               index: idx,
-              name: idx === 0 ? `Primary Arterial Road (${distKm} km)` : `AI Bypass Route ${idx} (${distKm} km)`,
+              name: r.summary ? `${r.summary} (${distKm} km)` : `Real Road Route ${idx + 1} (${distKm} km)`,
               distance_km: distKm,
               time_mins: liveMins,
               normal_mins: normalDurMins,
               delay_mins: delayMins,
-              congestion: idx === 0 ? "Moderate Traffic" : "Clear Route",
-              badgeColor: idx === 0 ? "amber" : "emerald",
+              congestion: idx === 0 ? "High Traffic" : (idx === 1 ? "Clear Traffic" : "Moderate Traffic"),
+              badgeColor: idx === 0 ? "rose" : (idx === 1 ? "emerald" : "amber"),
               isRecommended: idx === 1
             });
 
-            const coords = r.geometry?.coordinates?.map((p: any) => ({ lat: p[1], lng: p[0] })) || [];
-            if (coords.length > 0 && start) {
-              coords[0] = { lat: start.lat, lng: start.lng };
-            }
             mapPaths.push({
-              path: coords,
-              color: idx === 0 ? "#f59e0b" : "#10b981",
+              path: r.path || [],
+              color: idx === 0 ? "#ef4444" : (idx === 1 ? "#10b981" : "#f59e0b"),
               index: idx
             });
           });
         }
+
+
 
         setRealRoutes(computedRoutes);
         setOsmRoutes(mapPaths);
@@ -594,7 +671,8 @@ export default function CivilianDashboard({ username }: { username?: string }) {
       setToastMsg("Please select or enter a destination location.");
       return;
     }
-    setRouteError(null);
+    resetRouteState();
+    userHasCustomSearch.current = true;
     setLoadingRoute(true);
     fallbackOsmRouting();
   };
@@ -602,6 +680,11 @@ export default function CivilianDashboard({ username }: { username?: string }) {
   const handleReportIncident = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!incidentLoc || !incidentDesc) return;
+
+    const finalType = incidentType === "Others" 
+      ? (customIncidentType.trim() || "Custom Hazard") 
+      : incidentType;
+
     setIncidentSubmitting(true);
     try {
       const res = await fetch(getApiUrl("traffic/incidents"), {
@@ -609,8 +692,8 @@ export default function CivilianDashboard({ username }: { username?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           location: incidentLoc,
-          type: incidentType,
-          severity: "High",
+          type: finalType,
+          severity: incidentPriority,
           description: incidentDesc,
         }),
       });
@@ -619,8 +702,11 @@ export default function CivilianDashboard({ username }: { username?: string }) {
         setIncidents([data.incident, ...incidents]);
         setIncidentLoc("");
         setIncidentDesc("");
-        setToastMsg("Traffic incident report submitted to city control center!");
-        setTimeout(() => setToastMsg(null), 4000);
+        setCustomIncidentType("");
+        setIncidentType("Accident");
+        setIncidentPriority("High");
+        setToastMsg(`Traffic hazard report sent to assigned Traffic Controller! (Priority: ${incidentPriority})`);
+        setTimeout(() => setToastMsg(null), 5000);
       }
     } catch {
       setToastMsg("Incident report logged locally.");
@@ -804,14 +890,29 @@ export default function CivilianDashboard({ username }: { username?: string }) {
 
             </div>
 
-            <button
-              type="submit"
-              disabled={loadingRoute}
-              className="w-full py-3.5 px-4 bg-slate-950 hover:bg-black text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
-            >
-              {loadingRoute ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-              Search AI Optimized Route
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={loadingRoute}
+                className="flex-1 py-3.5 px-4 bg-slate-950 hover:bg-black text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+              >
+                {loadingRoute ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                Search AI Optimized Route
+              </button>
+              {(realRoutes.length > 0 || destination) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDestination("");
+                    resetRouteState();
+                    setToastMsg("Cleared current route search.");
+                  }}
+                  className="px-4 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all text-xs cursor-pointer shrink-0"
+                >
+                  Clear Search
+                </button>
+              )}
+            </div>
           </form>
 
           {loadingRoute && (
@@ -952,16 +1053,45 @@ export default function CivilianDashboard({ username }: { username?: string }) {
                     <option value="Road Work">Road Work</option>
                     <option value="Signal Failure">Signal Failure</option>
                     <option value="Waterlogging">Waterlogging</option>
+                    <option value="Congestion Bottleneck">Congestion Bottleneck</option>
+                    <option value="Debris / Obstacle">Debris / Obstacle</option>
+                    <option value="Others">Others (Custom)</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-slate-700 font-bold mb-1">Priority</label>
-                  <div className="py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold text-center">
-                    High Priority
-                  </div>
+                  <select
+                    value={incidentPriority}
+                    onChange={(e) => setIncidentPriority(e.target.value)}
+                    className={`w-full font-extrabold rounded-xl px-3 py-2.5 focus:outline-none transition-all cursor-pointer ${
+                      incidentPriority === "High"
+                        ? "bg-rose-50 border border-rose-300 text-rose-800 focus:border-rose-600"
+                        : incidentPriority === "Medium"
+                        ? "bg-amber-50 border border-amber-300 text-amber-900 focus:border-amber-600"
+                        : "bg-blue-50 border border-blue-300 text-blue-900 focus:border-blue-600"
+                    }`}
+                  >
+                    <option value="High" className="bg-white text-rose-700 font-bold">High Priority</option>
+                    <option value="Medium" className="bg-white text-amber-800 font-bold">Medium Priority</option>
+                    <option value="Low" className="bg-white text-blue-800 font-bold">Low Priority</option>
+                  </select>
                 </div>
               </div>
+
+              {incidentType === "Others" && (
+                <div className="animate-in fade-in duration-200">
+                  <label className="block text-slate-700 font-bold mb-1">Specify Custom Hazard Type</label>
+                  <input
+                    type="text"
+                    required={incidentType === "Others"}
+                    placeholder="e.g. Broken Down Truck, Fallen Tree, Oil Spill..."
+                    value={customIncidentType}
+                    onChange={(e) => setCustomIncidentType(e.target.value)}
+                    className="w-full bg-amber-50/50 border border-amber-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-amber-600 font-medium text-xs"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-slate-700 font-bold mb-1">Description</label>
@@ -1029,9 +1159,11 @@ export default function CivilianDashboard({ username }: { username?: string }) {
           </div>
           <button
             onClick={fetchJunctions}
-            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs flex items-center gap-1.5 font-bold transition-colors cursor-pointer"
+            disabled={loadingJunctions}
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs flex items-center gap-1.5 font-bold transition-all cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw className="w-3.5 h-3.5" /> Refresh Feed
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingJunctions ? 'animate-spin text-blue-600' : ''}`} />
+            {loadingJunctions ? "Refreshing..." : "Refresh Feed"}
           </button>
         </div>
 

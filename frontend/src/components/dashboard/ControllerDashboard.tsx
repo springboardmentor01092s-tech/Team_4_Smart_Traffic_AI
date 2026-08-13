@@ -7,7 +7,9 @@ import {
   BarChart3, 
   Radio, 
   RefreshCw, 
-  Play
+  Play,
+  AlertTriangle,
+  CheckCircle2
 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import ToastAlert from "@/components/ui/ToastAlert";
@@ -24,6 +26,7 @@ import {
 
 export default function ControllerDashboard() {
   const [junctions, setJunctions] = useState<any[]>([]);
+  const [removedJunctionIds, setRemovedJunctionIds] = useState<string[]>([]);
   const [loadingJunctions, setLoadingJunctions] = useState(false);
 
   const [trendData, setTrendData] = useState<any[]>([]);
@@ -90,13 +93,30 @@ export default function ControllerDashboard() {
     }
   };
 
+  const [incidents, setIncidents] = useState<any[]>([]);
+
+  const fetchIncidents = async () => {
+    try {
+      const res = await fetch(getApiUrl("traffic/incidents"));
+      if (res.ok) {
+        const data = await res.json();
+        setIncidents(data);
+      }
+    } catch {}
+  };
+
   useEffect(() => {
     fetchJunctions();
     fetchTrends();
     fetchProposedRoutes();
+    fetchIncidents();
+    const interval = setInterval(fetchIncidents, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleOverrideSignal = async (junctionId: string, mode: "emergency_green" | "all_red" | "auto") => {
+    // Instantly remove card from view when any button is clicked
+    setRemovedJunctionIds(prev => [...prev, junctionId]);
     try {
       const res = await fetch(getApiUrl("traffic/override-signal"), {
         method: "POST",
@@ -104,12 +124,11 @@ export default function ControllerDashboard() {
         body: JSON.stringify({ junction_id: junctionId, mode }),
       });
       if (res.ok) {
-        fetchJunctions();
         const modeLabel = mode === "emergency_green" ? "EMERGENCY GREEN WAVE" : mode === "all_red" ? "TRAFFIC HALTED" : "AUTOMATED SIGNAL CONTROL";
-        setToastMsg(`Junction ${junctionId} set to: ${modeLabel}`);
+        setToastMsg(`Junction ${junctionId} set to: ${modeLabel} (Card Removed)`);
       }
     } catch {
-      setToastMsg(`Signal mode updated for ${junctionId}`);
+      setToastMsg(`Signal mode updated for ${junctionId} (Card Removed)`);
     }
   };
   
@@ -121,11 +140,44 @@ export default function ControllerDashboard() {
         body: JSON.stringify({ route_id: routeId }),
       });
       if (res.ok) {
-        setToastMsg("Route Approved and broadcasted to civilians!");
-        fetchProposedRoutes();
+        setProposedRoutes(prev => prev.map(r => r.id === routeId ? { ...r, status: "APPROVED" } : r));
+        setToastMsg("Decision recorded! Route approved & broadcasted to civilian navigators.");
+        setTimeout(() => setToastMsg(null), 4000);
       }
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleDismissRoute = async (routeId: string) => {
+    try {
+      const res = await fetch(getApiUrl("traffic/dismiss-route"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ route_id: routeId }),
+      });
+      if (res.ok) {
+        setProposedRoutes(prev => prev.filter(r => r.id !== routeId));
+        setToastMsg("Route suggestion cleared.");
+        setTimeout(() => setToastMsg(null), 3000);
+      }
+    } catch (e) {}
+  };
+
+  const handleAcknowledgeIncident = async (incidentId: number, location: string) => {
+    try {
+      setIncidents(prev => prev.filter(inc => inc.id !== incidentId));
+      const res = await fetch(getApiUrl("traffic/incidents/resolve"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ incident_id: incidentId }),
+      });
+      if (res.ok) {
+        setToastMsg(`Hazard alert for "${location}" acknowledged & response unit dispatched. Alert cleared from feed!`);
+        setTimeout(() => setToastMsg(null), 4000);
+      }
+    } catch (err) {
+      console.error("Error acknowledging incident:", err);
     }
   };
 
@@ -213,63 +265,87 @@ export default function ControllerDashboard() {
               <p className="text-xs text-slate-500 font-medium">Emergency vehicle override controls (Ambulance / Fire / Police)</p>
             </div>
           </div>
-          <span className="text-xs text-slate-500 font-bold hidden sm:inline">
-            Intersections Active: <strong className="text-slate-900">{junctions.length}</strong>
-          </span>
+          <div className="flex items-center gap-3">
+            {removedJunctionIds.length > 0 && (
+              <button 
+                onClick={() => setRemovedJunctionIds([])}
+                className="text-xs font-bold text-amber-700 hover:text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-xl transition-all cursor-pointer"
+              >
+                Reset Cards ({removedJunctionIds.length} Hidden)
+              </button>
+            )}
+            <span className="text-xs text-slate-500 font-bold hidden sm:inline">
+              Intersections Active: <strong className="text-slate-900">{junctions.filter(j => !removedJunctionIds.includes(j.id)).length}</strong>
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {junctions.map((j) => (
-            <div key={j.id} className={`p-5 rounded-2xl bg-slate-50 border transition-all ${j.override ? 'border-amber-400 shadow-md bg-amber-50/20' : 'border-slate-200'}`}>
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{j.id}</span>
-                  <h4 className="text-sm font-bold text-slate-900">{j.name}</h4>
+        {junctions.filter(j => !removedJunctionIds.includes(j.id)).length === 0 ? (
+          <div className="p-8 bg-slate-50 border border-slate-200 rounded-2xl text-center space-y-3">
+            <p className="text-sm font-bold text-slate-700">All junction cards have been processed and removed by controller.</p>
+            {removedJunctionIds.length > 0 && (
+              <button
+                onClick={() => setRemovedJunctionIds([])}
+                className="px-4 py-2 bg-slate-950 text-white text-xs font-extrabold rounded-xl hover:bg-black transition-all cursor-pointer"
+              >
+                Restore Hidden Junction Cards
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {junctions.filter(j => !removedJunctionIds.includes(j.id)).map((j) => (
+              <div key={j.id} className={`p-5 rounded-2xl bg-slate-50 border transition-all ${j.override ? 'border-amber-400 shadow-md bg-amber-50/20' : 'border-slate-200'}`}>
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{j.id}</span>
+                    <h4 className="text-sm font-bold text-slate-900">{j.name}</h4>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-2.5 h-2.5 rounded-full ${j.signal === 'Green' ? 'bg-emerald-500 animate-ping' : j.signal === 'Yellow' ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                    <span className="text-xs font-bold text-slate-700">{j.signal}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className={`w-2.5 h-2.5 rounded-full ${j.signal === 'Green' ? 'bg-emerald-500 animate-ping' : j.signal === 'Yellow' ? 'bg-amber-500' : 'bg-rose-500'}`} />
-                  <span className="text-xs font-bold text-slate-700">{j.signal}</span>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs mb-4">
-                <div className="p-2 rounded-xl bg-white border border-slate-200">
-                  <span className="text-[10px] text-slate-400 font-medium block">Density</span>
-                  <span className="font-bold text-slate-900">{j.vehicle_count} veh/hr</span>
+                <div className="grid grid-cols-2 gap-2 text-xs mb-4">
+                  <div className="p-2 rounded-xl bg-white border border-slate-200">
+                    <span className="text-[10px] text-slate-400 font-medium block">Density</span>
+                    <span className="font-bold text-slate-900">{j.vehicle_count} veh/hr</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white border border-slate-200">
+                    <span className="text-[10px] text-slate-400 font-medium block">Speed</span>
+                    <span className="font-bold text-blue-700">{j.speed_kmh} km/h</span>
+                  </div>
                 </div>
-                <div className="p-2 rounded-xl bg-white border border-slate-200">
-                  <span className="text-[10px] text-slate-400 font-medium block">Speed</span>
-                  <span className="font-bold text-blue-700">{j.speed_kmh} km/h</span>
-                </div>
-              </div>
 
-              {/* Signal Controls */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Controller Override</span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-                  <button
-                    onClick={() => handleOverrideSignal(j.id, "emergency_green")}
-                    className="py-2 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-[10px] transition-all cursor-pointer shadow-sm"
-                  >
-                    Green Wave
-                  </button>
-                  <button
-                    onClick={() => handleOverrideSignal(j.id, "all_red")}
-                    className="py-2 px-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl text-[10px] transition-all cursor-pointer shadow-sm"
-                  >
-                    Halt Traffic
-                  </button>
-                  <button
-                    onClick={() => handleOverrideSignal(j.id, "auto")}
-                    className="py-2 px-2 bg-slate-200 hover:bg-slate-300 text-slate-900 font-extrabold rounded-xl text-[10px] transition-all cursor-pointer"
-                  >
-                    Auto Mode
-                  </button>
+                {/* Signal Controls */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Controller Override</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                    <button
+                      onClick={() => handleOverrideSignal(j.id, "emergency_green")}
+                      className="py-2 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-[10px] transition-all cursor-pointer shadow-sm"
+                    >
+                      Green Wave
+                    </button>
+                    <button
+                      onClick={() => handleOverrideSignal(j.id, "all_red")}
+                      className="py-2 px-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl text-[10px] transition-all cursor-pointer shadow-sm"
+                    >
+                      Halt Traffic
+                    </button>
+                    <button
+                      onClick={() => handleOverrideSignal(j.id, "auto")}
+                      className="py-2 px-2 bg-slate-200 hover:bg-slate-300 text-slate-900 font-extrabold rounded-xl text-[10px] transition-all cursor-pointer"
+                    >
+                      Auto Mode
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* AI Prediction Simulator & Route Approval */}
@@ -384,39 +460,81 @@ export default function ControllerDashboard() {
             </div>
           </div>
 
-          {/* AI Route Suggestions (Pending Review) */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden group">
-            <h3 className="text-sm font-black text-slate-900 tracking-wider uppercase mb-1 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-500" />
-              AI Route Approvals
-            </h3>
-            <p className="text-xs text-slate-500 mb-6 font-medium leading-relaxed">Review and approve AI-generated alternative routes.</p>
+          {/* AI Route Approvals & Controller Decisions */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden group space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <h3 className="text-sm font-black text-slate-900 tracking-wider uppercase">
+                  AI Route Approvals & Decisions
+                </h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-xs">
+                {proposedRoutes.filter(r => r.status === "PENDING").length} Pending Review
+              </span>
+            </div>
             
-            <div className="space-y-4">
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              Review AI-generated alternate route proposals. Approving a proposal broadcasts it to civilians and removes it from the pending list.
+            </p>
+            
+            <div className="space-y-3">
               {proposedRoutes.filter(r => r.status === "PENDING").length === 0 ? (
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center text-slate-400 text-xs font-semibold">
-                  No pending routes. Run the simulator to generate one.
+                  No pending route proposals requiring decision. Run the simulator to generate new reroute triggers.
                 </div>
               ) : (
                 proposedRoutes.filter(r => r.status === "PENDING").map(route => (
-                  <div key={route.id} className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex flex-col gap-3">
+                  <div key={route.id} className="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex flex-col gap-3 transition-all">
                     <div className="flex justify-between items-start">
                       <div>
-                        <span className="text-amber-800 font-bold text-sm block">Reroute to {route.destination}</span>
-                        <span className="text-amber-600/80 text-xs font-medium">From {route.origin}</span>
+                        <span className="text-amber-900 font-extrabold text-sm block">Reroute to {route.destination}</span>
+                        <span className="text-amber-700 text-xs font-medium">From {route.origin}</span>
                       </div>
-                      <span className="px-2 py-1 bg-amber-200 text-amber-800 rounded-md text-[10px] font-black tracking-wide">
-                        PENDING
+                      <span className="px-2 py-1 bg-amber-200 text-amber-900 rounded-md text-[10px] font-black tracking-wide">
+                        PENDING DECISION
                       </span>
                     </div>
-                    <button 
-                      onClick={() => handleApproveRoute(route.id)}
-                      className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition-colors cursor-pointer shadow-sm"
-                    >
-                      Approve & Broadcast Route
-                    </button>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleApproveRoute(route.id)}
+                        className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Approve & Broadcast
+                      </button>
+                      <button 
+                        onClick={() => handleDismissRoute(route.id)}
+                        className="py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
                   </div>
                 ))
+              )}
+
+              {/* Active Broadcasts History */}
+              {proposedRoutes.filter(r => r.status === "APPROVED").length > 0 && (
+                <div className="pt-3 border-t border-slate-100 space-y-2">
+                  <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">
+                    Active Approved Broadcasts ({proposedRoutes.filter(r => r.status === "APPROVED").length})
+                  </span>
+                  {proposedRoutes.filter(r => r.status === "APPROVED").map(route => (
+                    <div key={route.id} className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex justify-between items-center text-xs">
+                      <div>
+                        <span className="font-extrabold text-emerald-900 block">{route.destination} Reroute</span>
+                        <span className="text-[10px] text-emerald-700 font-medium">Approved & Broadcasted to Civilians</span>
+                      </div>
+                      <button
+                        onClick={() => handleDismissRoute(route.id)}
+                        className="text-[10px] text-slate-500 hover:text-slate-900 font-bold underline cursor-pointer"
+                      >
+                        Clear Broadcast
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
             
@@ -469,6 +587,65 @@ export default function ControllerDashboard() {
             <div>
               <span className="text-[10px] text-slate-500 font-bold uppercase block">AI Efficiency</span>
               <span className="font-extrabold text-emerald-700">+28.4% Flow</span>
+            </div>
+          </div>
+
+          {/* Civilian Hazard Telemetry Feed for Traffic Controller */}
+          <div className="pt-4 border-t border-slate-100 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600" />
+                <h4 className="text-sm font-extrabold text-slate-900">Civilian Hazard Telemetry Feed</h4>
+              </div>
+              <span className="px-2.5 py-0.5 bg-rose-100 text-rose-800 rounded-full text-[10px] font-black">
+                {incidents.length} Live Alerts
+              </span>
+            </div>
+
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+              {incidents.length === 0 ? (
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center text-slate-400 text-xs font-semibold">
+                  No active civilian hazard alerts reported.
+                </div>
+              ) : (
+                incidents.map((inc: any) => (
+                  <div key={inc.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-2 relative">
+                    <div className="flex justify-between items-center">
+                      <span className="font-extrabold text-slate-900">{inc.location}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${
+                          inc.severity === "High"
+                            ? "bg-rose-100 text-rose-800 border-rose-300"
+                            : inc.severity === "Medium"
+                            ? "bg-amber-100 text-amber-900 border-amber-300"
+                            : "bg-blue-100 text-blue-800 border-blue-300"
+                        }`}>
+                          {inc.severity} Priority
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-200 text-slate-800 text-[9px] font-bold">
+                          {inc.type}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-700 text-[11px] font-medium leading-relaxed bg-white p-2 rounded-xl border border-slate-200/80">
+                      "{inc.description}"
+                    </p>
+
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 pt-0.5">
+                      <span className="font-semibold">Reported: {inc.reported_at}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleAcknowledgeIncident(inc.id, inc.location)}
+                        className="px-2.5 py-1 bg-slate-950 hover:bg-black text-white rounded-lg font-bold transition-all text-[9px] flex items-center gap-1 cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        Acknowledge & Dispatch
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

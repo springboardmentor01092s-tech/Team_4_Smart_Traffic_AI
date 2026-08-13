@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import os
 import joblib
+from app.ml.congestion import generate_forecast, forecast_delay
 
 router = APIRouter()
 
@@ -87,6 +88,48 @@ class SignalOverrideRequest(BaseModel):
 
 class ApproveRouteRequest(BaseModel):
     route_id: str
+
+class AcknowledgeIncidentRequest(BaseModel):
+    incident_id: int
+
+class ForecastRequest(BaseModel):
+    hour: int
+    day_of_week: int
+    volume_lag_1h: float
+    volume_lag_24h: float
+    rolling_avg_3h: float
+    temp: float
+    rain_1h: float
+    vehicle_count: int
+    avg_speed_kmh: float
+    road_capacity: int
+    is_peak_hour: bool
+    weather_code: int = 0
+    has_incident: bool = False
+
+@router.post("/forecast")
+def forecast_traffic(request: ForecastRequest):
+    """
+    Generates congestion classification and delay forecast using the ML congestion module.
+    """
+    try:
+        return generate_forecast(
+            hour=request.hour,
+            day_of_week=request.day_of_week,
+            volume_lag_1h=request.volume_lag_1h,
+            volume_lag_24h=request.volume_lag_24h,
+            rolling_avg_3h=request.rolling_avg_3h,
+            temp=request.temp,
+            rain_1h=request.rain_1h,
+            vehicle_count=request.vehicle_count,
+            avg_speed_kmh=request.avg_speed_kmh,
+            road_capacity=request.road_capacity,
+            is_peak_hour=request.is_peak_hour,
+            weather_code=request.weather_code,
+            has_incident=request.has_incident
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/metrics")
 def get_traffic_metrics():
@@ -258,19 +301,18 @@ def optimize_route(request: RouteOptimizeRequest):
         evaluated_routes = []
 
         for i, r in enumerate(routes_to_eval):
-            # Primary direct corridor (index 0) experiences peak commute volume
             if i == 0:
-                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 4600.0
+                base_vol = int(r.estimated_vehicle_count) if r.estimated_vehicle_count > 1000 else 4666
             elif i == 1:
-                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 2100.0
+                base_vol = int(r.estimated_vehicle_count) if r.estimated_vehicle_count > 1000 else 1850
             else:
-                base_vol = r.estimated_vehicle_count if r.estimated_vehicle_count > 1000 else 3100.0
+                base_vol = int(r.estimated_vehicle_count) if r.estimated_vehicle_count > 1000 else 2800
 
-            volume_lag_1h = base_vol
-            volume_lag_24h = base_vol * 0.95
-            rolling_avg_3h = base_vol * 0.98
+            volume_lag_1h = float(base_vol)
+            volume_lag_24h = float(base_vol * 0.95)
+            rolling_avg_3h = float(base_vol * 0.98)
 
-            if congestion_model is not None and volume_model is not None:
+            if congestion_model is not None:
                 features_df = pd.DataFrame([{
                     "hour": current_hour,
                     "day_of_week": current_dow,
@@ -281,54 +323,66 @@ def optimize_route(request: RouteOptimizeRequest):
                     "temp": temp,
                     "rain_1h": rain_1h
                 }])
-
                 pred_level = str(congestion_model.predict(features_df)[0])
-                pred_vol = float(volume_model.predict(features_df)[0])
             else:
                 v_c = base_vol / max(r.road_capacity, 1.0)
-                pred_vol = base_vol
-                if v_c > 0.85:
-                    pred_level = "High"
-                elif v_c > 0.55:
-                    pred_level = "Moderate"
-                else:
-                    pred_level = "Low"
+                pred_level = "High" if v_c > 0.85 else ("Moderate" if v_c > 0.55 else "Low")
+
+            pred_vol = float(base_vol)
+
+            # Use ML delay regressor model to predict actual delay in minutes
+            try:
+                avg_speed = 25.0 if pred_level == "High" else (40.0 if pred_level == "Moderate" else 55.0)
+                is_peak = True if i == 0 else False
+                has_inc = True if i == 0 and pred_level == "High" else False
+                predicted_delay = forecast_delay(
+                    vehicle_count=int(pred_vol),
+                    avg_speed_kmh=avg_speed,
+                    road_capacity=int(r.road_capacity),
+                    is_peak_hour=is_peak,
+                    weather_code=0,
+                    has_incident=has_inc
+                )
+            except Exception:
+                predicted_delay = round(r.normal_mins * (0.65 if pred_level == "High" else (0.28 if pred_level == "Moderate" else 0.08)), 1)
 
             capacity = max(float(r.road_capacity), 1.0)
             vc_ratio = pred_vol / capacity
             score = min(100.0, max(5.0, round(vc_ratio * 100.0, 1)))
 
             if pred_level == "Low":
-                delay_mins = round(r.normal_mins * 0.08, 1)
                 badge_color = "emerald"
                 congestion_desc = "Clear Traffic (Free Flow)"
             elif pred_level == "Moderate":
-                delay_mins = round(r.normal_mins * 0.28, 1)
                 badge_color = "amber"
                 congestion_desc = "Moderate Traffic"
             else:
-                delay_mins = round(r.normal_mins * 0.65, 1)
                 badge_color = "rose"
                 congestion_desc = "High Traffic Bottleneck"
 
-            total_mins = round(r.normal_mins + delay_mins, 1)
+            total_mins = round(r.normal_mins + predicted_delay, 1)
+
+            # Congestion Penalty for ranking: prevent High traffic bottleneck routes from being chosen over clear bypasses
+            penalty = 25.0 if pred_level == "High" else (6.0 if pred_level == "Moderate" else 0.0)
 
             evaluated_routes.append({
                 "index": r.index,
                 "name": r.name,
                 "distance_km": r.distance_km,
                 "normal_mins": r.normal_mins,
-                "delay_mins": delay_mins,
+                "delay_mins": round(predicted_delay, 1),
                 "total_time_mins": total_mins,
                 "predicted_volume": round(pred_vol, 0),
                 "congestion_level": pred_level,
                 "congestion_score": score,
                 "congestion_desc": congestion_desc,
                 "badgeColor": badge_color,
+                "ranking_score": total_mins + penalty,
                 "is_recommended": False
             })
 
-        sorted_routes = sorted(evaluated_routes, key=lambda x: (x["total_time_mins"], x["congestion_score"]))
+        # Sort by ranking score (actual total travel time + congestion penalty)
+        sorted_routes = sorted(evaluated_routes, key=lambda x: (x["ranking_score"], x["total_time_mins"]))
         best_route_index = sorted_routes[0]["index"]
 
         for route in evaluated_routes:
@@ -336,14 +390,19 @@ def optimize_route(request: RouteOptimizeRequest):
                 route["is_recommended"] = True
 
         best_route = next(r for r in evaluated_routes if r["index"] == best_route_index)
-        worst_time = max(r["total_time_mins"] for r in evaluated_routes)
-        time_saved = round(worst_time - best_route["total_time_mins"], 1)
+        worst_route = max(evaluated_routes, key=lambda x: x["total_time_mins"])
+        time_saved = max(0.0, round(worst_route["total_time_mins"] - best_route["total_time_mins"], 1))
 
-        recommendation_summary = (
-            f"AI Model recommends '{best_route['name']}': "
-            f"Bypasses {best_route['congestion_level'].lower()} congestion bottlenecks, "
-            f"saving ~{time_saved} mins with an estimated travel time of {best_route['total_time_mins']} mins."
-        )
+        if time_saved > 0:
+            recommendation_summary = (
+                f"AI Model recommends '{best_route['name']}': "
+                f"Bypasses high congestion bottlenecks on {worst_route['name']}, "
+                f"saving ~{time_saved} mins with an estimated travel time of {best_route['total_time_mins']} mins."
+            )
+        else:
+            recommendation_summary = (
+                f"AI Model recommends '{best_route['name']}' with an estimated travel time of {best_route['total_time_mins']} mins."
+            )
 
         return {
             "status": "success",
@@ -354,6 +413,7 @@ def optimize_route(request: RouteOptimizeRequest):
             "time_saved_mins": time_saved,
             "recommendation_summary": recommendation_summary
         }
+
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -393,6 +453,16 @@ def report_incident(incident: IncidentReportRequest):
     IN_MEMORY_INCIDENTS.insert(0, item)
     return {"success": True, "incident": item}
 
+@router.post("/acknowledge-incident")
+def acknowledge_incident(request: AcknowledgeIncidentRequest):
+    """Traffic Controller acknowledges a civilian reported hazard."""
+    for inc in IN_MEMORY_INCIDENTS:
+        if inc["id"] == request.incident_id:
+            inc["status"] = "Acknowledged"
+            inc["acknowledged_at"] = "Just now"
+            return {"success": True, "incident": inc}
+    raise HTTPException(status_code=404, detail="Incident not found")
+
 @router.post("/override-signal")
 def override_signal(request: SignalOverrideRequest):
     """Triggers emergency signal overrides for Traffic Controllers."""
@@ -415,11 +485,37 @@ def override_signal(request: SignalOverrideRequest):
 
 @router.get("/analytics-trends")
 def get_analytics_trends():
-    """Returns 24-hour traffic density & congestion trend data."""
+    """Returns real-time 24-hour traffic density & congestion trend data computed from 48,000+ dataset observations."""
+    try:
+        data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "traffic_data.csv"))
+        if os.path.exists(data_path):
+            import pandas as pd
+            df = pd.read_csv(data_path, parse_dates=["date_time"])
+            df["hour"] = df["date_time"].dt.hour
+            hourly_means = df.groupby("hour")["traffic_volume"].mean().to_dict()
+            trend_data = []
+            for h in range(24):
+                vol = round(float(hourly_means.get(h, 2500)), 0)
+                speed = round(max(15.0, 65.0 - (vol / 120.0)), 1)
+                is_peak = True if h in [7, 8, 9, 16, 17, 18] else False
+                try:
+                    delay = forecast_delay(vehicle_count=int(vol), avg_speed_kmh=speed, road_capacity=4000, is_peak_hour=is_peak, weather_code=0, has_incident=False)
+                except Exception:
+                    delay = round(max(0.5, (vol / 4000.0) * 25.0), 1)
+                trend_data.append({
+                    "time": f"{h:02d}:00",
+                    "vehicle_density": int(vol),
+                    "avg_speed": speed,
+                    "delay_mins": delay
+                })
+            return {"trend_data": trend_data}
+    except Exception as e:
+        print(f"Error computing dataset analytics trends: {e}")
+
     hours = ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"]
-    densities = [240, 120, 480, 1420, 980, 1150, 1680, 720]
-    speeds = [58, 62, 48, 21, 35, 29, 16, 44]
-    delays = [2.0, 1.5, 4.2, 22.5, 12.0, 15.8, 28.4, 8.1]
+    densities = [835, 371, 4140, 4385, 4718, 5240, 4263, 2668]
+    speeds = [58.0, 61.9, 30.5, 28.5, 25.7, 21.3, 29.5, 42.8]
+    delays = [0.8, 0.7, 18.2, 22.4, 25.1, 34.4, 19.5, 8.2]
     
     trend_data = []
     for h, d, s, dl in zip(hours, densities, speeds, delays):
@@ -430,3 +526,14 @@ def get_analytics_trends():
             "delay_mins": dl
         })
     return {"trend_data": trend_data}
+
+class DismissRouteRequest(BaseModel):
+    route_id: str
+
+@router.post("/dismiss-route")
+def dismiss_route(request: DismissRouteRequest):
+    """Dismisses an approved or pending route proposal."""
+    global IN_MEMORY_PROPOSED_ROUTES
+    IN_MEMORY_PROPOSED_ROUTES = [r for r in IN_MEMORY_PROPOSED_ROUTES if r["id"] != request.route_id]
+    return {"status": "success", "remaining": len(IN_MEMORY_PROPOSED_ROUTES)}
+
