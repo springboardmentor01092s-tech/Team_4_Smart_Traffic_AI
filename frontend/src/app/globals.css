@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --font-sans: var(--font-google-sans), 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  font-family: var(--font-google-sans), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+body {
+  font-family: var(--font-google-sans), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+button, 
+a, 
+[role="button"], 
+input[type="button"], 
+input[type="submit"], 
+input[type="checkbox"], 
+label {
+  cursor: pointer !important;
+}
+
