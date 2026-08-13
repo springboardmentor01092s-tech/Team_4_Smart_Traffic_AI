@@ -1,24 +1,12 @@
-"""
+﻿"""
 app/schemas/route.py
 
 Pydantic v2 schemas for the Routes module.
 
-Schema hierarchy:
-  RouteCreate        — validated input for POST /routes
-  RouteUpdate        — partial update input for PUT /routes/{id}
-  RouteRead          — standard response for route list/create/update
-  RouteDetailRead    — extended response for GET /routes/{id} (includes segments)
-  RouteSegmentAdd    — validated input for POST /routes/{id}/segments
-  RouteSegmentRead   — join-row response
-  RouteTrafficRead   — aggregated current traffic state for GET /routes/{id}/traffic
-  SegmentTrafficItem — per-segment entry inside RouteTrafficRead
-
-Design notes:
-  - deleted_at is never exposed in any response schema.
-  - CongestionLevel is imported from the frozen segment model (read-only use).
-  - RouteDetailRead extends RouteRead to add route_segments list.
-  - SegmentTrafficItem intentionally excludes segment names to avoid
-    N additional segment DB lookups on each /traffic call.
+Milestone 2 additions:
+  TravelTimeEstimateRead  — response for GET /routes/{id}/estimate
+  RouteComparisonItem     — per-route entry in comparison response
+  RouteComparisonRead     — response for GET /routes/compare
 """
 from datetime import datetime
 from uuid import UUID
@@ -130,3 +118,55 @@ class RouteTrafficRead(BaseModel):
     segment_count: int
     segments_with_readings: int
     segment_traffic: list[SegmentTrafficItem]
+
+
+# ── Milestone 2: Travel Time Estimate ────────────────────────────────────────
+
+class SegmentEstimateItem(BaseModel):
+    """Per-segment breakdown inside a TravelTimeEstimateRead."""
+
+    segment_id: UUID
+    segment_name: str
+    length_km: float
+    speed_used_kmh: float
+    estimated_minutes: float
+    data_source: str  # "reading" or "speed_limit"
+
+
+class TravelTimeEstimateRead(BaseModel):
+    """Response for GET /routes/{route_id}/estimate."""
+
+    route_id: UUID
+    route_name: str
+    total_distance_km: float
+    estimated_travel_minutes: float
+    worst_congestion_level: CongestionLevel | None
+    segments_with_readings: int
+    segment_count: int
+    segment_estimates: list[SegmentEstimateItem]
+
+
+# ── Milestone 2: Route Comparison ────────────────────────────────────────────
+
+class RouteComparisonItem(BaseModel):
+    """Per-route entry in a route comparison response."""
+
+    route_id: UUID
+    route_name: str
+    origin_name: str
+    destination_name: str
+    total_distance_km: float
+    estimated_travel_minutes: float
+    worst_congestion_level: CongestionLevel | None
+    segments_with_readings: int
+    segment_count: int
+    rank: int
+    is_recommended: bool
+    recommendation_reason: str
+
+
+class RouteComparisonRead(BaseModel):
+    """Response for GET /routes/compare."""
+
+    recommended_route_id: UUID | None
+    routes: list[RouteComparisonItem]

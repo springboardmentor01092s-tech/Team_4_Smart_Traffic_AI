@@ -1,13 +1,23 @@
+﻿"""
+app/routers/predictions.py
+
+Thin REST API router for the Predictions module.
+
+Milestone 2 addition:
+  POST /segment/{segment_id}/forecast  [TC, ADM]
+    Runs ML-powered congestion forecast synchronously and returns a
+    COMPLETED (or FAILED) TrafficPrediction.
+"""
 import uuid
 from typing import Sequence
 
 from fastapi import APIRouter, Depends, Query, status
 
 from app.dependencies.auth import get_current_user, require_role
-from app.dependencies.predictions import get_prediction_service
+from app.dependencies.predictions import get_forecast_service, get_prediction_service
 from app.models.prediction import PredictionStatus
 from app.models.user import User, UserRole
-from app.schemas.prediction import PredictionComplete, PredictionCreate, PredictionRead
+from app.schemas.prediction import ForecastRequest, PredictionComplete, PredictionCreate, PredictionRead
 from app.services.prediction_service import PredictionService
 
 router = APIRouter(prefix="/predictions", tags=["Traffic Predictions"])
@@ -58,6 +68,34 @@ async def get_upcoming_for_segment(
 ) -> Sequence[PredictionRead]:
     """Fetch upcoming PENDING/COMPLETED predictions for a segment."""
     return await service.get_upcoming_for_segment(segment_id)
+
+
+@router.post(
+    "/segment/{segment_id}/forecast",
+    response_model=PredictionRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Run ML-powered congestion forecast for a segment",
+    dependencies=[Depends(require_role(UserRole.TRAFFIC_CONTROLLER, UserRole.ADMIN))],
+)
+async def run_forecast(
+    segment_id: uuid.UUID,
+    data: ForecastRequest,
+    service: PredictionService = Depends(get_forecast_service),
+) -> PredictionRead:
+    """
+    Run a RandomForest-based congestion forecast for the given segment.
+
+    Trains on the last 90 days of traffic readings for the segment, then
+    runs inference for the specified horizon.
+
+    - TRAFFIC_CONTROLLER and ADMIN only.
+    - Requires at least 5 historical readings for the segment.
+    - Returns a COMPLETED prediction on success, FAILED on engine error.
+    """
+    return await service.run_forecast(
+        segment_id=segment_id,
+        horizon_minutes=data.horizon_minutes,
+    )
 
 
 @router.post(

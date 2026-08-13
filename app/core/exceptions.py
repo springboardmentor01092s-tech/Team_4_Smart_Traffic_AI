@@ -1,4 +1,4 @@
-"""
+﻿"""
 app/core/exceptions.py
 
 Custom exception classes and global FastAPI exception handlers.
@@ -199,6 +199,18 @@ class PredictionTimeInPastError(AppBaseException):
         super().__init__("prediction_for must be a future timestamp.")
 
 
+class InsufficientReadingsError(AppBaseException):
+    """Raised when not enough historical readings exist to run ML inference."""
+
+    def __init__(self, segment_id: object, actual: int, required: int) -> None:
+        super().__init__(
+            f"Insufficient readings for segment {segment_id}: "
+            f"{actual} available, {required} required."
+        )
+        self.actual = actual
+        self.required = required
+
+
 # ─── Route Exceptions ──────────────────────────────────────────────────────────
 
 class RouteNotFoundError(AppBaseException):
@@ -226,6 +238,13 @@ class SegmentNotInRouteError(AppBaseException):
         )
 
 
+class NoViableRouteError(AppBaseException):
+    """Raised when no comparable routes can be found for comparison."""
+
+    def __init__(self) -> None:
+        super().__init__("No viable routes could be found for comparison.")
+
+
 # ─── Analytics Exceptions ──────────────────────────────────────────────────────
 
 class AnalyticsRangeExceededError(AppBaseException):
@@ -242,6 +261,23 @@ class AnalyticsInvalidBucketError(AppBaseException):
         super().__init__(
             f"Invalid bucket_minutes: {bucket_minutes}. Allowed values are 5, 15, 30, 60."
         )
+
+
+# ─── External / Maps Exceptions ────────────────────────────────────────────────
+
+class ExternalAPIError(AppBaseException):
+    """Raised when an external API call fails."""
+
+    def __init__(self, provider: str, message: str) -> None:
+        super().__init__(f"External API error [{provider}]: {message}")
+        self.provider = provider
+
+
+class MapsProviderError(ExternalAPIError):
+    """Raised when the Maps/Routing provider returns an error or is unavailable."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(provider="OSRM", message=message)
 
 
 # ─── Exception Handlers ──────────────────────────────────────────────────────
@@ -309,7 +345,7 @@ async def validation_exception_handler(
 async def authentication_error_handler(
     request: Request, exc: AuthenticationError
 ) -> JSONResponse:
-    """Map AuthenticationError → 401 Unauthorized."""
+    """Map AuthenticationError -> 401 Unauthorized."""
     logger.warning("Auth error | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_401_UNAUTHORIZED, exc.message, "UNAUTHORIZED")
 
@@ -317,13 +353,13 @@ async def authentication_error_handler(
 async def permission_denied_handler(
     request: Request, exc: PermissionDeniedError
 ) -> JSONResponse:
-    """Map PermissionDeniedError → 403 Forbidden."""
+    """Map PermissionDeniedError -> 403 Forbidden."""
     logger.warning("Permission denied | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_403_FORBIDDEN, exc.message, "FORBIDDEN")
 
 
 async def user_not_found_handler(request: Request, exc: UserNotFoundError) -> JSONResponse:
-    """Map UserNotFoundError → 404 Not Found."""
+    """Map UserNotFoundError -> 404 Not Found."""
     logger.warning("User not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "NOT_FOUND")
 
@@ -331,13 +367,13 @@ async def user_not_found_handler(request: Request, exc: UserNotFoundError) -> JS
 async def user_already_exists_handler(
     request: Request, exc: UserAlreadyExistsError
 ) -> JSONResponse:
-    """Map UserAlreadyExistsError → 409 Conflict."""
+    """Map UserAlreadyExistsError -> 409 Conflict."""
     logger.warning("User already exists | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "CONFLICT")
 
 
 async def user_inactive_handler(request: Request, exc: UserInactiveError) -> JSONResponse:
-    """Map UserInactiveError → 403 Forbidden."""
+    """Map UserInactiveError -> 403 Forbidden."""
     logger.warning("User inactive | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(
         request, status.HTTP_403_FORBIDDEN, exc.message, "ACCOUNT_INACTIVE"
@@ -358,105 +394,123 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
 
 
 async def camera_not_found_handler(request: Request, exc: CameraNotFoundError) -> JSONResponse:
-    """Map CameraNotFoundError → 404 Not Found."""
+    """Map CameraNotFoundError -> 404 Not Found."""
     logger.warning("Camera not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "CAMERA_NOT_FOUND")
 
 
 async def camera_in_use_handler(request: Request, exc: CameraInUseError) -> JSONResponse:
-    """Map CameraInUseError → 409 Conflict."""
+    """Map CameraInUseError -> 409 Conflict."""
     logger.warning("Camera in use | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "CAMERA_IN_USE")
 
 
 async def segment_not_found_handler(request: Request, exc: SegmentNotFoundError) -> JSONResponse:
-    """Map SegmentNotFoundError → 404 Not Found."""
+    """Map SegmentNotFoundError -> 404 Not Found."""
     logger.warning("Segment not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_FOUND")
 
 
 async def segment_has_active_alerts_handler(request: Request, exc: SegmentHasActiveAlertsError) -> JSONResponse:
-    """Map SegmentHasActiveAlertsError → 400 Bad Request."""
+    """Map SegmentHasActiveAlertsError -> 400 Bad Request."""
     logger.warning("Segment has active alerts | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_400_BAD_REQUEST, exc.message, "SEGMENT_HAS_ACTIVE_ALERTS")
 
 
 async def reading_not_found_handler(request: Request, exc: ReadingNotFoundError) -> JSONResponse:
-    """Map ReadingNotFoundError → 404 Not Found."""
+    """Map ReadingNotFoundError -> 404 Not Found."""
     logger.warning("Reading not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "READING_NOT_FOUND")
 
 
 async def invalid_reading_time_handler(request: Request, exc: InvalidReadingTimeError) -> JSONResponse:
-    """Map InvalidReadingTimeError → 422 Unprocessable Entity."""
+    """Map InvalidReadingTimeError -> 422 Unprocessable Entity."""
     logger.warning("Invalid reading time | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_READING_TIME")
 
 
 async def invalid_date_range_handler(request: Request, exc: InvalidDateRangeError) -> JSONResponse:
-    """Map InvalidDateRangeError → 422 Unprocessable Entity."""
+    """Map InvalidDateRangeError -> 422 Unprocessable Entity."""
     logger.warning("Invalid date range | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INVALID_DATE_RANGE")
 
 
 async def alert_not_found_handler(request: Request, exc: AlertNotFoundError) -> JSONResponse:
-    """Map AlertNotFoundError → 404 Not Found."""
+    """Map AlertNotFoundError -> 404 Not Found."""
     logger.warning("Alert not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "ALERT_NOT_FOUND")
 
 
 async def alert_not_active_handler(request: Request, exc: AlertNotActiveError) -> JSONResponse:
-    """Map AlertNotActiveError → 409 Conflict."""
+    """Map AlertNotActiveError -> 409 Conflict."""
     logger.warning("Alert not active | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "ALERT_NOT_ACTIVE")
 
 
 async def prediction_not_found_handler(request: Request, exc: PredictionNotFoundError) -> JSONResponse:
-    """Map PredictionNotFoundError → 404 Not Found."""
+    """Map PredictionNotFoundError -> 404 Not Found."""
     logger.warning("Prediction not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "PREDICTION_NOT_FOUND")
 
 
 async def prediction_not_pending_handler(request: Request, exc: PredictionNotPendingError) -> JSONResponse:
-    """Map PredictionNotPendingError → 409 Conflict."""
+    """Map PredictionNotPendingError -> 409 Conflict."""
     logger.warning("Prediction not pending | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "PREDICTION_NOT_PENDING")
 
 
 async def prediction_time_in_past_handler(request: Request, exc: PredictionTimeInPastError) -> JSONResponse:
-    """Map PredictionTimeInPastError → 422 Unprocessable Entity."""
+    """Map PredictionTimeInPastError -> 422 Unprocessable Entity."""
     logger.warning("Prediction time in past | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "PREDICTION_TIME_IN_PAST")
 
 
+async def insufficient_readings_handler(request: Request, exc: InsufficientReadingsError) -> JSONResponse:
+    """Map InsufficientReadingsError -> 422 Unprocessable Entity."""
+    logger.warning("Insufficient readings | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "INSUFFICIENT_READINGS")
+
+
 async def route_not_found_handler(request: Request, exc: RouteNotFoundError) -> JSONResponse:
-    """Map RouteNotFoundError → 404 Not Found."""
+    """Map RouteNotFoundError -> 404 Not Found."""
     logger.warning("Route not found | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "ROUTE_NOT_FOUND")
 
 
 async def route_sequence_conflict_handler(request: Request, exc: RouteSequenceConflictError) -> JSONResponse:
-    """Map RouteSequenceConflictError → 409 Conflict."""
+    """Map RouteSequenceConflictError -> 409 Conflict."""
     logger.warning("Route sequence conflict | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_409_CONFLICT, exc.message, "ROUTE_SEQUENCE_CONFLICT")
 
 
 async def segment_not_in_route_handler(request: Request, exc: SegmentNotInRouteError) -> JSONResponse:
-    """Map SegmentNotInRouteError → 404 Not Found."""
+    """Map SegmentNotInRouteError -> 404 Not Found."""
     logger.warning("Segment not in route | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_404_NOT_FOUND, exc.message, "SEGMENT_NOT_IN_ROUTE")
 
 
+async def no_viable_route_handler(request: Request, exc: NoViableRouteError) -> JSONResponse:
+    """Map NoViableRouteError -> 422 Unprocessable Entity."""
+    logger.warning("No viable route | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "NO_VIABLE_ROUTE")
+
+
 async def analytics_range_exceeded_handler(request: Request, exc: AnalyticsRangeExceededError) -> JSONResponse:
-    """Map AnalyticsRangeExceededError → 422 Unprocessable Entity."""
+    """Map AnalyticsRangeExceededError -> 422 Unprocessable Entity."""
     logger.warning("Analytics range exceeded | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "ANALYTICS_RANGE_EXCEEDED")
 
 
 async def analytics_invalid_bucket_handler(request: Request, exc: AnalyticsInvalidBucketError) -> JSONResponse:
-    """Map AnalyticsInvalidBucketError → 422 Unprocessable Entity."""
+    """Map AnalyticsInvalidBucketError -> 422 Unprocessable Entity."""
     logger.warning("Analytics invalid bucket | %s %s | %s", request.method, request.url.path, exc.message)
     return _error_response(request, status.HTTP_422_UNPROCESSABLE_ENTITY, exc.message, "ANALYTICS_INVALID_BUCKET")
+
+
+async def external_api_error_handler(request: Request, exc: ExternalAPIError) -> JSONResponse:
+    """Map ExternalAPIError -> 502 Bad Gateway."""
+    logger.error("External API error | %s %s | %s", request.method, request.url.path, exc.message)
+    return _error_response(request, status.HTTP_502_BAD_GATEWAY, exc.message, "EXTERNAL_API_ERROR")
 
 
 def register_exception_handlers(app: FastAPI) -> None:
@@ -489,11 +543,15 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(PredictionNotFoundError, prediction_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(PredictionNotPendingError, prediction_not_pending_handler)  # type: ignore[arg-type]
     app.add_exception_handler(PredictionTimeInPastError, prediction_time_in_past_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(InsufficientReadingsError, insufficient_readings_handler)  # type: ignore[arg-type]
     # ── Route exceptions ──────────────────────────────────────────────────────
     app.add_exception_handler(RouteNotFoundError, route_not_found_handler)  # type: ignore[arg-type]
     app.add_exception_handler(RouteSequenceConflictError, route_sequence_conflict_handler)  # type: ignore[arg-type]
     app.add_exception_handler(SegmentNotInRouteError, segment_not_in_route_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(NoViableRouteError, no_viable_route_handler)  # type: ignore[arg-type]
     # ── Analytics exceptions ──────────────────────────────────────────────────
     app.add_exception_handler(AnalyticsRangeExceededError, analytics_range_exceeded_handler)  # type: ignore[arg-type]
     app.add_exception_handler(AnalyticsInvalidBucketError, analytics_invalid_bucket_handler)  # type: ignore[arg-type]
+    # ── External API exceptions ───────────────────────────────────────────────
+    app.add_exception_handler(ExternalAPIError, external_api_error_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)  # type: ignore[arg-type]

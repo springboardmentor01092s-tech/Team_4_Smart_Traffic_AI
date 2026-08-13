@@ -639,6 +639,42 @@ Successfully deleted.
 
 > API endpoints for managing AI-driven traffic predictions.
 
+### `POST /api/v1/predictions/segment/{segment_id}/forecast`
+
+Generate a traffic congestion forecast using the ML PredictionEngine. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Request Body**
+```json
+{
+  "horizon_minutes": 60
+}
+```
+
+**Response 201 — Created**
+Returns the persisted prediction object with status `COMPLETED` (or `FAILED` if prediction encounters an error).
+```json
+{
+  "id": "880e8400-e29b-41d4-a716-446655440003",
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "prediction_for": "2025-01-15T11:30:00+00:00",
+  "horizon_minutes": 60,
+  "model_version": "rf-v2-150-a1b2c3d4",
+  "status": "COMPLETED",
+  "predicted_congestion_level": "HEAVY",
+  "predicted_vehicle_count": 120,
+  "predicted_avg_speed_kmh": 35.5,
+  "confidence_score": 0.85,
+  "created_at": "2025-01-15T10:30:00+00:00",
+  "updated_at": "2025-01-15T10:30:00+00:00"
+}
+```
+
+**Error Responses**
+- `422 Unprocessable Entity`: Raised if there are insufficient historical readings (`INSUFFICIENT_READINGS`) to train the model, or invalid parameters.
+- `404 Not Found`: Segment does not exist.
+
+---
+
 ### `GET /api/v1/predictions`
 
 List traffic predictions. Accessible by any authenticated user.
@@ -787,6 +823,59 @@ Successfully deleted.
 
 
 ## Module 6: Routes
+
+### `GET /api/v1/routes/compare`
+Compare multiple routes and get a recommendation based on estimated travel time and congestion. Accessible by any authenticated user.
+
+**Query Parameters**
+- `route_ids` (string, required): Comma-separated list of route UUIDs to compare.
+
+**Response 200 — OK**
+```json
+{
+  "recommended_route_id": "770e8400-e29b-41d4-a716-446655440001",
+  "routes": [
+    {
+      "route_id": "770e8400-e29b-41d4-a716-446655440001",
+      "estimated_travel_minutes": 25.5,
+      "worst_congestion_level": "MODERATE",
+      "is_recommended": true
+    }
+  ]
+}
+```
+
+**Error Responses**
+- `422 Unprocessable Entity`: No viable route could be evaluated (`NO_VIABLE_ROUTE`).
+
+---
+
+### `GET /api/v1/routes/{route_id}/estimate`
+Estimate traversal time for a route using current traffic readings or speed limits. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "route_id": "770e8400-e29b-41d4-a716-446655440001",
+  "estimated_travel_minutes": 25.5,
+  "segment_count": 3,
+  "segments_with_readings": 2,
+  "worst_congestion_level": "MODERATE",
+  "segment_estimates": [
+    {
+      "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+      "estimated_minutes": 10.5,
+      "speed_used_kmh": 45.2,
+      "data_source": "reading"
+    }
+  ]
+}
+```
+
+**Error Responses**
+- `404 Not Found`: Route does not exist or was soft-deleted.
+
+---
 
 ### `GET /api/v1/routes`
 List all routes (paginated, non-deleted). Accessible by any authenticated user.
@@ -1046,6 +1135,44 @@ Get statistical trends for a specific segment. Requires `ADMIN` or `TRAFFIC_CONT
 
 **Error Responses**
 - `404 Not Found`: Segment does not exist.
+
+---
+
+### `GET /api/v1/analytics/predictions`
+Get a prediction performance report. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Query Parameters**
+- `segment_id` (UUID, optional): Filter by segment.
+- `status` (string, optional): Filter by status (`PENDING`, `COMPLETED`, `FAILED`).
+- `skip` (integer, default: 0)
+- `limit` (integer, default: 100)
+
+**Response 200 — OK**
+```json
+{
+  "total_predictions": 150,
+  "completed": 140,
+  "failed": 5,
+  "pending": 5,
+  "completion_rate": 0.9333,
+  "predictions": [
+    {
+      "id": "880e8400-e29b-41d4-a716-446655440003",
+      "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+      "status": "COMPLETED",
+      "model_version": "rf-v2-150-a1b2c3d4",
+      "prediction_for": "2025-01-15T11:30:00+00:00",
+      "horizon_minutes": 60,
+      "predicted_congestion_level": "HEAVY",
+      "predicted_vehicle_count": 120,
+      "predicted_avg_speed_kmh": 35.5,
+      "confidence_score": 0.85,
+      "requested_at": "2025-01-15T10:30:00+00:00",
+      "completed_at": "2025-01-15T10:30:05+00:00"
+    }
+  ]
+}
+```
 
 ---
 

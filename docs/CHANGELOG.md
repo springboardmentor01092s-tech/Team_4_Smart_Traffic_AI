@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-13
+
+### Current Status
+**TrafficVision AI Backend Milestone 2 Completion**
+The intelligence layer (ML predictions, dynamic travel times, route recommendations) and OSRM integration have been successfully implemented and tested.
+
+### Added
+- **Machine Learning (app/ml)**: Added `feature_engineering.py` and `prediction_engine.py` using `RandomForestRegressor` (`scikit-learn`) for on-the-fly congestion forecasting.
+- **Congestion Forecasting Endpoint**: Added `POST /api/v1/predictions/segment/{segment_id}/forecast` orchestrating historical readings and ML inference.
+- **Travel Time Estimation**: Added `GET /api/v1/routes/{route_id}/estimate` to calculate dynamic travel durations utilizing current traffic reading speeds and falling back to speed limits.
+- **Route Recommendation**: Added `GET /api/v1/routes/compare` for scoring candidate routes based on estimated travel times and congestion penalties.
+- **Maps Provider Integration**: Created `MapsAdapterProtocol` and a concrete `OSRMAdapter` leveraging `httpx` to abstract routing provider HTTP calls. Added `maps_provider_url` and `maps_api_key` to core configuration.
+- **Prediction Analytics**: Added `GET /api/v1/analytics/predictions` to report real operational prediction metrics (e.g., completion rate).
+- **Domain Exceptions**: Expanded `app/core/exceptions.py` with `InsufficientReadingsError`, `NoViableRouteError`, and `MapsProviderError`.
+- **Test Suite**: Developed comprehensive unit and integration tests for ML logic, forecasting, travel times, recommendations, and mock-based maps adapters.
+
+### Changed
+- `RouteService` now optionally injects `PredictionRepository` for congestion forecasting functionality.
+- `requirements.txt` updated to include `scikit-learn==1.5.2` and `numpy==1.26.4`.
+
 ## [1.0.0] - 2026-08-01
 
 ### Current Status

@@ -1,26 +1,18 @@
-"""
+﻿"""
 app/routers/routes.py
 
 Thin REST API router for the Routes module.
 
-Design rules followed:
-  - Each handler: extract params → call one service method → return schema.
-  - No business logic. No try/except for domain exceptions (caught globally).
-  - Root-level paths use "" (not "/") to prevent 307 redirects in FastAPI.
-  - RBAC: read endpoints require authentication (PUB); all write endpoints
-    require ADMIN role, consistent with the camera and segment routers.
+Milestone 2 additions:
+  GET /compare?route_ids=...     -> compare_routes  [PUB auth]
+  GET /{route_id}/estimate       -> get_travel_time_estimate  [PUB auth]
 
-Endpoints:
-  GET    ""                          → list_routes
-  GET    "/{route_id}"               → get_route (with segments)
-  GET    "/{route_id}/traffic"       → get_route_traffic
-  POST   ""                          → create_route  [ADMIN]
-  PUT    "/{route_id}"               → update_route  [ADMIN]
-  POST   "/{route_id}/segments"      → add_segment   [ADMIN]
-  DELETE "/{route_id}/segments/{id}" → remove_segment [ADMIN]
-  DELETE "/{route_id}"               → delete_route  [ADMIN]
+All handlers: extract params -> call one service method -> return schema.
+No business logic. No try/except for domain exceptions (caught globally).
+RBAC: read endpoints require authentication (PUB); write endpoints require ADMIN.
 """
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, status
 
@@ -28,6 +20,7 @@ from app.dependencies.auth import get_current_user, require_role
 from app.dependencies.routes import get_route_service
 from app.models.user import User, UserRole
 from app.schemas.route import (
+    RouteComparisonRead,
     RouteCreate,
     RouteDetailRead,
     RouteRead,
@@ -35,10 +28,33 @@ from app.schemas.route import (
     RouteSegmentRead,
     RouteTrafficRead,
     RouteUpdate,
+    TravelTimeEstimateRead,
 )
 from app.services.route_service import RouteService
 
 router = APIRouter(prefix="/routes", tags=["Routes"])
+
+
+@router.get(
+    "/compare",
+    response_model=RouteComparisonRead,
+    summary="Compare multiple routes and get a recommendation",
+)
+async def compare_routes(
+    route_ids: Annotated[
+        list[uuid.UUID],
+        Query(description="Comma-separated list of route UUIDs to compare (min 1)"),
+    ],
+    service: RouteService = Depends(get_route_service),
+    current_user: User = Depends(get_current_user),
+) -> RouteComparisonRead:
+    """
+    Score and rank candidate routes by estimated travel time and congestion.
+
+    Returns a ranked list with the recommended route identified.
+    Scoring: estimated_travel_minutes + (congestion_rank * 5 min penalty).
+    """
+    return await service.compare_routes(route_ids)
 
 
 @router.get(
@@ -70,11 +86,31 @@ async def get_route_traffic(
     """
     Return aggregated current traffic across all segments of a route.
 
-    Computed worst_congestion_level uses severity ordering:
+    worst_congestion_level uses severity ordering:
     STANDSTILL > HEAVY > MODERATE > LIGHT > FREE_FLOW.
     Returns None when no segment has readings yet.
     """
     return await service.get_route_traffic(route_id)
+
+
+@router.get(
+    "/{route_id}/estimate",
+    response_model=TravelTimeEstimateRead,
+    summary="Estimate travel time for a route",
+)
+async def get_travel_time_estimate(
+    route_id: uuid.UUID,
+    service: RouteService = Depends(get_route_service),
+    current_user: User = Depends(get_current_user),
+) -> TravelTimeEstimateRead:
+    """
+    Estimate traversal time for a route using current traffic readings.
+
+    Uses actual average_speed_kmh from the latest reading per segment.
+    Falls back to speed_limit_kmh when no reading is available.
+    Returns per-segment breakdown with data source indicated.
+    """
+    return await service.estimate_travel_time(route_id)
 
 
 @router.get(
@@ -117,7 +153,7 @@ async def update_route(
     data: RouteUpdate,
     service: RouteService = Depends(get_route_service),
 ) -> RouteRead:
-    """Partially update a route's metadata. Requires ADMIN role."""
+    """Partially update a route metadata. Requires ADMIN role."""
     return await service.update_route(route_id, data)
 
 

@@ -70,6 +70,16 @@ class Settings(BaseSettings):
         description="Logging verbosity level",
     )
 
+    # ─── Maps / Routing (Milestone 2) ─────────────────────────────────────────
+    maps_provider_url: str = Field(
+        default="http://router.project-osrm.org",
+        description="Base URL for the external routing/maps provider (OSRM).",
+    )
+    maps_api_key: str = Field(
+        default="",
+        description="API key for the maps provider. Empty string = no key (OSRM public server).",
+    )
+
     @field_validator("allowed_origins", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: str) -> str:

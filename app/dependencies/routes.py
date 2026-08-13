@@ -1,12 +1,13 @@
-"""
+﻿"""
 app/dependencies/routes.py
 
 Dependency injection factory for the Routes module.
 
-Constructs RouteService with its three required repositories:
-  - RouteRepository   (primary entity access)
-  - SegmentRepository (segment existence validation)
-  - ReadingRepository (latest readings for /traffic endpoint)
+Constructs RouteService with its required repositories:
+  - RouteRepository      (primary entity access)
+  - SegmentRepository    (segment existence validation)
+  - ReadingRepository    (latest readings for /traffic and /estimate)
+  - PredictionRepository (optional: for predicted congestion in /compare)
 
 Follows the exact factory pattern used by all existing modules.
 """
@@ -14,6 +15,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.repositories.prediction_repository import PredictionRepository
 from app.repositories.reading_repository import ReadingRepository
 from app.repositories.route_repository import RouteRepository
 from app.repositories.segment_repository import SegmentRepository
@@ -26,4 +28,5 @@ async def get_route_service(db: AsyncSession = Depends(get_db)) -> RouteService:
         RouteRepository(db),
         SegmentRepository(db),
         ReadingRepository(db),
+        PredictionRepository(db),
     )

@@ -27,6 +27,8 @@ from app.schemas.analytics import (
     HistoryBucketRead,
     HourlyTrend,
     PeakHourRead,
+    PredictionReportItem,
+    PredictionReportRead,
     SegmentTrendsRead,
 )
 
@@ -243,4 +245,67 @@ class AnalyticsService:
             congestion_distribution=congestion_dist,
             prediction_completion_rate=completion_rate,
             busiest_hour=busiest_hour,
+        )
+
+    async def get_prediction_report(
+        self,
+        segment_id: uuid.UUID | None = None,
+        status: PredictionStatus | None = None,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> PredictionReportRead:
+        """
+        Return a prediction performance report.
+
+        Uses PredictionRepository directly (no AnalyticsRepository).
+        No fabricated accuracy metrics — only real prediction data.
+
+        Args:
+            segment_id: Optional filter by segment UUID.
+            status:     Optional filter by prediction status.
+            skip:       Pagination offset.
+            limit:      Maximum predictions to include.
+
+        Returns:
+            PredictionReportRead with counts, completion rate, and prediction list.
+        """
+        predictions = await self.prediction_repo.get_all(
+            segment_id=segment_id,
+            status=status,
+            skip=skip,
+            limit=limit,
+        )
+
+        # Count totals from the filtered result set
+        total = len(predictions)
+        completed = sum(1 for p in predictions if p.status == PredictionStatus.COMPLETED)
+        failed = sum(1 for p in predictions if p.status == PredictionStatus.FAILED)
+        pending = sum(1 for p in predictions if p.status == PredictionStatus.PENDING)
+        completion_rate = completed / total if total > 0 else 0.0
+
+        items = [
+            PredictionReportItem(
+                id=p.id,
+                segment_id=p.segment_id,
+                status=p.status,
+                model_version=p.model_version,
+                prediction_for=p.prediction_for,
+                horizon_minutes=p.horizon_minutes,
+                predicted_congestion_level=p.predicted_congestion_level,
+                predicted_vehicle_count=p.predicted_vehicle_count,
+                predicted_avg_speed_kmh=p.predicted_avg_speed_kmh,
+                confidence_score=p.confidence_score,
+                requested_at=p.requested_at,
+                completed_at=p.completed_at,
+            )
+            for p in predictions
+        ]
+
+        return PredictionReportRead(
+            total_predictions=total,
+            completed=completed,
+            failed=failed,
+            pending=pending,
+            completion_rate=round(completion_rate, 4),
+            predictions=items,
         )

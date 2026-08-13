@@ -1,3 +1,11 @@
+﻿"""
+app/schemas/prediction.py
+
+Pydantic v2 schemas for the Predictions module.
+
+Milestone 2 additions:
+  ForecastRequest - request body for POST /segment/{id}/forecast
+"""
 from datetime import datetime
 from uuid import UUID
 
@@ -21,6 +29,16 @@ class PredictionComplete(BaseModel):
     predicted_vehicle_count: int | None = Field(default=None, ge=0)
     predicted_avg_speed_kmh: float | None = Field(default=None, ge=0.0)
     confidence_score: float = Field(..., ge=0.0, le=1.0)
+
+
+class ForecastRequest(BaseModel):
+    """Request body for POST /predictions/segment/{segment_id}/forecast."""
+    horizon_minutes: int = Field(
+        default=60,
+        gt=0,
+        le=1440,
+        description="Minutes into the future to forecast (max 1440 = 24h).",
+    )
 
 
 class PredictionRead(BaseModel):

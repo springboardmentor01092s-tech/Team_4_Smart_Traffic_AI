@@ -1,4 +1,4 @@
-"""
+﻿"""
 app/services/route_service.py
 
 Business logic layer for the Routes module.
@@ -11,19 +11,27 @@ RouteService owns all domain rules:
     occupied in the route.
   - SegmentNotInRouteError: raised when trying to remove a segment that
     is not part of the route.
+  - NoViableRouteError: raised when no candidate routes can be scored.
+
+Milestone 2 additions:
+  estimate_travel_time(route_id) -> TravelTimeEstimateRead
+    Calculates estimated route traversal time using current readings
+    (speed_limit_kmh as fallback when no reading exists).
+
+  compare_routes(route_ids) -> RouteComparisonRead
+    Scores multiple candidate routes by travel time and congestion,
+    returning a ranked list with the recommended route identified.
 
 This service is HTTP-agnostic.  No FastAPI, no Request, no Response.
 Dependencies are injected via the constructor and the DI factory
 in app/dependencies/routes.py.
-
-CongestionLevel severity ranking used by get_route_traffic:
-  STANDSTILL=4 > HEAVY=3 > MODERATE=2 > LIGHT=1 > FREE_FLOW=0
-  worst_congestion_level is None if no segment has any reading.
 """
 import uuid
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from app.core.exceptions import (
+    NoViableRouteError,
     RouteNotFoundError,
     RouteSequenceConflictError,
     SegmentNotFoundError,
@@ -36,12 +44,19 @@ from app.repositories.reading_repository import ReadingRepository
 from app.repositories.route_repository import RouteRepository
 from app.repositories.segment_repository import SegmentRepository
 from app.schemas.route import (
+    RouteComparisonItem,
+    RouteComparisonRead,
     RouteCreate,
     RouteSegmentAdd,
     RouteTrafficRead,
     RouteUpdate,
+    SegmentEstimateItem,
     SegmentTrafficItem,
+    TravelTimeEstimateRead,
 )
+
+if TYPE_CHECKING:
+    from app.repositories.prediction_repository import PredictionRepository
 
 logger = get_logger(__name__)
 
@@ -55,16 +70,21 @@ _CONGESTION_RANK: dict[CongestionLevel, int] = {
     CongestionLevel.STANDSTILL: 4,
 }
 
+# Score penalty applied per congestion rank level during route comparison.
+# A route with STANDSTILL adds 4 * 5 = 20 synthetic minutes to its score.
+_CONGESTION_PENALTY_MINUTES_PER_RANK = 5.0
+
 
 class RouteService:
     """
     Service for Route and RouteSegment business operations.
 
     Dependencies injected via constructor:
-      - route_repo:   RouteRepository for all Route / RouteSegment DB access.
-      - segment_repo: SegmentRepository for segment existence validation.
-      - reading_repo: ReadingRepository for fetching latest readings in
-                      get_route_traffic.
+      - route_repo:      RouteRepository for all Route / RouteSegment DB access.
+      - segment_repo:    SegmentRepository for segment existence validation.
+      - reading_repo:    ReadingRepository for fetching latest readings.
+      - prediction_repo: PredictionRepository (optional, for future predicted
+                         congestion data; not yet used in scoring).
     """
 
     def __init__(
@@ -72,10 +92,12 @@ class RouteService:
         route_repo: RouteRepository,
         segment_repo: SegmentRepository,
         reading_repo: ReadingRepository,
+        prediction_repo: "PredictionRepository | None" = None,
     ) -> None:
         self._route_repo = route_repo
         self._segment_repo = segment_repo
         self._reading_repo = reading_repo
+        self._prediction_repo = prediction_repo
 
     # ── Read operations ───────────────────────────────────────────────────────
 
@@ -88,20 +110,8 @@ class RouteService:
     ) -> list[Route]:
         """
         Return a paginated, non-deleted list of routes.
-
-        Args:
-            is_active: If provided, only routes matching this flag are returned.
-            skip:      Pagination offset.
-            limit:     Maximum items per page.
         """
         routes = await self._route_repo.get_all(is_active=is_active, skip=skip, limit=limit)
-        logger.debug(
-            "list_routes | is_active=%s | skip=%d | limit=%d | returned=%d",
-            is_active,
-            skip,
-            limit,
-            len(routes),
-        )
         return list(routes)
 
     async def get_route(self, route_id: uuid.UUID) -> Route:
@@ -177,6 +187,188 @@ class RouteService:
             segment_traffic=segment_traffic_items,
         )
 
+    # ── Milestone 2: Travel-time estimation ───────────────────────────────────
+
+    async def estimate_travel_time(self, route_id: uuid.UUID) -> TravelTimeEstimateRead:
+        """
+        Estimate total travel time for a route using current traffic readings.
+
+        Algorithm:
+          For each segment in the route (ordered by sequence_order):
+            1. Fetch latest reading.
+            2. Use reading.average_speed_kmh when available and > 0.
+            3. Fall back to segment.speed_limit_kmh when no reading or speed <= 0.
+            4. travel_time_minutes = (length_km / speed_kmh) * 60.
+          Sum segment times to produce estimated_travel_minutes.
+
+        Worst congestion is tracked across all segments with readings.
+
+        Args:
+            route_id: UUID of the target route.
+
+        Returns:
+            TravelTimeEstimateRead with per-segment breakdown.
+
+        Raises:
+            RouteNotFoundError: If route does not exist.
+        """
+        route = await self._route_repo.get_by_id(route_id)
+        if route is None:
+            raise RouteNotFoundError(route_id)
+
+        segment_ids = await self._route_repo.get_segment_ids_for_route(route_id)
+
+        total_minutes = 0.0
+        segments_with_readings = 0
+        worst_rank = -1
+        worst_level: CongestionLevel | None = None
+        segment_estimates: list[SegmentEstimateItem] = []
+
+        for seg_id in segment_ids:
+            segment = await self._segment_repo.get_by_id(seg_id)
+            if segment is None:
+                # Segment was soft-deleted after being added to route; skip.
+                logger.warning(
+                    "estimate_travel_time: segment %s not found, skipping.", seg_id
+                )
+                continue
+
+            reading = await self._reading_repo.get_latest_for_segment(seg_id)
+
+            if reading is not None and reading.average_speed_kmh > 0:
+                speed_kmh = float(reading.average_speed_kmh)
+                data_source = "reading"
+                segments_with_readings += 1
+
+                rank = _CONGESTION_RANK.get(reading.congestion_level, -1)
+                if rank > worst_rank:
+                    worst_rank = rank
+                    worst_level = reading.congestion_level
+            else:
+                speed_kmh = float(segment.speed_limit_kmh)
+                data_source = "speed_limit"
+                if speed_kmh <= 0:
+                    speed_kmh = 50.0  # absolute fallback
+
+            seg_minutes = (segment.length_km / speed_kmh) * 60.0
+            total_minutes += seg_minutes
+
+            segment_estimates.append(
+                SegmentEstimateItem(
+                    segment_id=seg_id,
+                    segment_name=segment.name,
+                    length_km=segment.length_km,
+                    speed_used_kmh=round(speed_kmh, 2),
+                    estimated_minutes=round(seg_minutes, 2),
+                    data_source=data_source,
+                )
+            )
+
+        return TravelTimeEstimateRead(
+            route_id=route_id,
+            route_name=route.name,
+            total_distance_km=route.total_distance_km,
+            estimated_travel_minutes=round(total_minutes, 2),
+            worst_congestion_level=worst_level,
+            segments_with_readings=segments_with_readings,
+            segment_count=len(segment_ids),
+            segment_estimates=segment_estimates,
+        )
+
+    # ── Milestone 2: Route comparison / recommendation ────────────────────────
+
+    async def compare_routes(self, route_ids: list[uuid.UUID]) -> RouteComparisonRead:
+        """
+        Score and rank candidate routes, returning the recommended route.
+
+        Scoring algorithm (lower is better):
+          score = estimated_travel_minutes + (worst_congestion_rank * PENALTY)
+
+        Where PENALTY = _CONGESTION_PENALTY_MINUTES_PER_RANK = 5 minutes.
+
+        For example, a route with HEAVY congestion (rank=3) and
+        60 estimated minutes scores: 60 + 3*5 = 75.
+
+        Routes without any readings are scored using speed_limit_kmh only,
+        with no congestion penalty (rank=-1 treated as 0).
+
+        The route with the lowest score is recommended.
+        All input route_ids are evaluated; invalid IDs are silently skipped.
+
+        Args:
+            route_ids: List of candidate route UUIDs to compare.
+
+        Returns:
+            RouteComparisonRead with ranked list and recommended route.
+
+        Raises:
+            NoViableRouteError: If no valid routes could be scored.
+        """
+        scored: list[tuple[float, TravelTimeEstimateRead, uuid.UUID]] = []
+
+        for route_id in route_ids:
+            try:
+                estimate = await self.estimate_travel_time(route_id)
+            except RouteNotFoundError:
+                logger.warning("compare_routes: route %s not found, skipping.", route_id)
+                continue
+
+            worst_rank = _CONGESTION_RANK.get(estimate.worst_congestion_level, -1) \
+                if estimate.worst_congestion_level else -1
+            congestion_penalty = max(0, worst_rank) * _CONGESTION_PENALTY_MINUTES_PER_RANK
+            score = estimate.estimated_travel_minutes + congestion_penalty
+            scored.append((score, estimate, route_id))
+
+        if not scored:
+            raise NoViableRouteError()
+
+        # Sort ascending by score (lower = better)
+        scored.sort(key=lambda t: t[0])
+
+        best_route_id = scored[0][2]
+        best_score = scored[0][0]
+
+        comparison_items: list[RouteComparisonItem] = []
+        for rank_idx, (score, estimate, route_id) in enumerate(scored, start=1):
+            is_recommended = route_id == best_route_id
+            if is_recommended:
+                reason = (
+                    f"Lowest estimated travel time ({estimate.estimated_travel_minutes:.1f} min) "
+                    f"with best congestion score."
+                )
+            else:
+                delay = score - best_score
+                reason = (
+                    f"Estimated {delay:.1f} additional minutes vs recommended route "
+                    f"(travel: {estimate.estimated_travel_minutes:.1f} min, "
+                    f"congestion: {estimate.worst_congestion_level.value if estimate.worst_congestion_level else 'N/A'})."
+                )
+
+            # Fetch route for name/origin/destination metadata
+            route = await self._route_repo.get_by_id(route_id)
+
+            comparison_items.append(
+                RouteComparisonItem(
+                    route_id=route_id,
+                    route_name=estimate.route_name,
+                    origin_name=route.origin_name if route else "",
+                    destination_name=route.destination_name if route else "",
+                    total_distance_km=estimate.total_distance_km,
+                    estimated_travel_minutes=estimate.estimated_travel_minutes,
+                    worst_congestion_level=estimate.worst_congestion_level,
+                    segments_with_readings=estimate.segments_with_readings,
+                    segment_count=estimate.segment_count,
+                    rank=rank_idx,
+                    is_recommended=is_recommended,
+                    recommendation_reason=reason,
+                )
+            )
+
+        return RouteComparisonRead(
+            recommended_route_id=best_route_id,
+            routes=comparison_items,
+        )
+
     # ── Write operations ──────────────────────────────────────────────────────
 
     async def create_route(self, data: RouteCreate) -> Route:
@@ -202,33 +394,19 @@ class RouteService:
     ) -> Route:
         """
         Apply a partial update to an existing route.
-
-        Only fields that are explicitly present in `data` are applied.
-        Uses RouteUpdate.model_dump(exclude_unset=True) to distinguish between
-        'field not sent' and 'field sent as None'.
-
-        Raises:
-            RouteNotFoundError: If the route does not exist or is soft-deleted.
         """
         route = await self._route_repo.get_by_id(route_id)
         if route is None:
             raise RouteNotFoundError(route_id)
 
-        # Use exclude_unset to only apply fields the caller explicitly provided.
         update_fields: dict[str, object] = data.model_dump(exclude_unset=True)
 
         if not update_fields:
-            # No fields to update — return unchanged route.
             logger.debug("update_route no-op | id=%s", route_id)
             return route
 
         update_fields["updated_at"] = datetime.now(UTC)
         updated = await self._route_repo.update(route, **update_fields)
-        logger.info(
-            "Route updated | id=%s | fields=%s",
-            route_id,
-            [k for k in update_fields if k != "updated_at"],
-        )
         return updated
 
     async def add_segment_to_route(
@@ -238,28 +416,15 @@ class RouteService:
     ) -> RouteSegment:
         """
         Add a traffic segment to a route at a specific sequence position.
-
-        Business rules:
-          1. Route must exist and not be soft-deleted.
-          2. Segment must exist and not be soft-deleted.
-          3. sequence_order must not already be taken in this route.
-
-        Raises:
-            RouteNotFoundError:         Rule 1 violation.
-            SegmentNotFoundError:       Rule 2 violation.
-            RouteSequenceConflictError: Rule 3 violation.
         """
-        # Rule 1: route must exist.
         route = await self._route_repo.get_by_id(route_id)
         if route is None:
             raise RouteNotFoundError(route_id)
 
-        # Rule 2: segment must exist.
         segment = await self._segment_repo.get_by_id(data.segment_id)
         if segment is None:
             raise SegmentNotFoundError(data.segment_id)
 
-        # Rule 3: sequence_order must not be taken.
         taken = await self._route_repo.check_sequence_order_taken(route_id, data.sequence_order)
         if taken:
             raise RouteSequenceConflictError(route_id, data.sequence_order)
@@ -268,12 +433,6 @@ class RouteService:
             route_id=route_id,
             segment_id=data.segment_id,
             sequence_order=data.sequence_order,
-        )
-        logger.info(
-            "Segment added to route | route_id=%s | segment_id=%s | order=%d",
-            route_id,
-            data.segment_id,
-            data.sequence_order,
         )
         return join_row
 
@@ -284,14 +443,6 @@ class RouteService:
     ) -> None:
         """
         Remove a segment from a route (hard-deletes the join row).
-
-        Business rules:
-          1. Route must exist and not be soft-deleted.
-          2. The join row (route_id, segment_id) must exist.
-
-        Raises:
-            RouteNotFoundError:     Rule 1 violation.
-            SegmentNotInRouteError: Rule 2 violation.
         """
         route = await self._route_repo.get_by_id(route_id)
         if route is None:
@@ -302,21 +453,10 @@ class RouteService:
             raise SegmentNotInRouteError(route_id, segment_id)
 
         await self._route_repo.remove_segment(route_id, segment_id)
-        logger.info(
-            "Segment removed from route | route_id=%s | segment_id=%s",
-            route_id,
-            segment_id,
-        )
 
     async def delete_route(self, route_id: uuid.UUID) -> None:
         """
         Soft-delete a route.
-
-        Sets deleted_at on the route. The route_segments join rows remain
-        in place and are cleaned up on any physical purge via ON DELETE CASCADE.
-
-        Raises:
-            RouteNotFoundError: If route does not exist or is already deleted.
         """
         route = await self._route_repo.get_by_id(route_id)
         if route is None:
