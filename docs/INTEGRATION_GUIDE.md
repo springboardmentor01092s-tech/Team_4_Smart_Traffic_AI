@@ -153,3 +153,20 @@ async def sensitive_resource():
 2. Implementing business orchestration logic within `routers`.
 3. Constructing generic services directly within parameter variables without wrapping them inside FastAPI's `Depends()` contexts utilizing dependency containers.
 4. Returning hashed outputs or arbitrary parameters loosely without invoking validation bindings mapped by strict Pydantic return representations.
+
+---
+
+## External Maps Integration (Milestone 2)
+
+The application communicates with an external routing provider (OSRM) to calculate road intersections, distances, and base travel times. This integration is handled via the Adapters layer.
+
+### Configuration
+The maps adapter uses the following fields in `app/core/config.py`:
+- `maps_provider_url` (str): Base URL for the OSRM backend.
+- `maps_api_key` (str): API key (defaults to empty string for OSRM public servers, currently unused by the OSRM implementation but preserved for extensibility).
+
+### Architecture & Mocking
+- **MapsAdapterProtocol**: The interface that maps providers must implement. Services only interact with this protocol.
+- **OSRMAdapter**: The concrete implementation making asynchronous HTTP calls using `httpx`.
+- **Failure Handling**: External HTTP failures or malformed responses are captured by the adapter and translated into domain exceptions (e.g., `MapsProviderError`), ensuring services do not crash from unhandled external HTTP errors.
+- **Testing**: In the test suite, the external provider is inherently mocked by injecting a mock implementing `MapsAdapterProtocol`. This guarantees that tests remain hermetic, fast, and not reliant on a live OSRM endpoint.

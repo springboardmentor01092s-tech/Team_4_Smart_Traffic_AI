@@ -53,6 +53,14 @@ app/
 ├── dependencies/            # FastAPI Depends() factories
 │   └── auth.py              # get_current_user, require_role()
 │
+├── ml/                      # Machine Learning supporting logic
+│   ├── feature_engineering.py # Data transforms and window aggregations
+│   ├── model_adapter.py       # Wrapper for external ML libraries
+│   └── prediction_engine.py   # Prediction inference orchestrator
+│
+├── adapters/                # External integration anti-corruption layer
+│   └── maps_adapter.py      # Abstract protocol and OSRM implementation
+│
 ├── utils/                   # Pure helper functions (no I/O)
 │   └── datetime.py          # UTC timestamp helpers
 │
@@ -83,6 +91,10 @@ Incoming Request
      ├──→ [Depends(get_current_user)] — JWT decode + DB user load
      │
      └──→ [Service] — business logic
+               │
+               ├──→ [ML Engine] — feature engineering & model inference
+               │
+               ├──→ [Maps Adapter] — external HTTP abstraction
                │
                └──→ [Repository] — SQL queries
                          │

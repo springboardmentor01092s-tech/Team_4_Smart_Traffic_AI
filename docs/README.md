@@ -7,17 +7,17 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.x_Async-red.svg)](https://sqlalchemy.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)](https://postgresql.org)
-[![Tests](https://img.shields.io/badge/Pytest-274_Passed-brightgreen.svg)](tests/)
-[![Status](https://img.shields.io/badge/Release-v1.0.0_Ready-success.svg)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/Pytest-332_Passed-brightgreen.svg)](tests/)
+[![Status](https://img.shields.io/badge/Release-v1.2.0-success.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## Executive Overview
 
-**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12+, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, and deep analytics.
+**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12+, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, and deep analytics. Python 3.12.13 is the verified environment for the current pinned ML dependencies. Python 3.14 has not been verified with these pinned dependencies.
 
-The backend is fully complete and frozen at **v1.0.0 Readiness**, featuring **100% feature completion across all 7 domain modules** and an **immutable Authentication & User Management foundation**.
+The backend is fully complete and upgraded to **v1.2.0 (Milestone 2)**, featuring **100% feature completion across all 7 domain modules**, an **immutable Authentication & User Management foundation**, and **advanced predictive intelligence**.
 
 ### Core System Capabilities
 - 🔐 **Stateless Authentication & User Management**: JWT (HS256) bearer token authentication, bcrypt (12 rounds) password security, and 3-tier Role-Based Access Control (`ADMIN`, `TRAFFIC_CONTROLLER`, `PUBLIC_USER`).
@@ -25,9 +25,9 @@ The backend is fully complete and frozen at **v1.0.0 Readiness**, featuring **10
 - 🛣️ **Road Segment Topology (Module 2)**: Spatial road segment definitions linking cameras, operational status (`ACTIVE`, `CONSTRUCTION`, `CLOSED`), and dynamic latest-reading resolution.
 - 📊 **Time-Series Traffic Readings (Module 3)**: High-throughput ingestion of traffic observations (`BIGSERIAL` PK), immutable append-only data architecture, vehicle counting, speed tracking, congestion scoring (`LOW`, `MODERATE`, `HEAVY`, `SEVERE`), and window-function aggregations.
 - 🚨 **Traffic Incident Alerts (Module 4)**: Real-time incident reporting, multi-type taxonomy (`CONGESTION`, `ACCIDENT`, `WEATHER`, `ROADWORK`, `HAZARD`), severity levels (`LOW` to `CRITICAL`), and strict status state machine (`ACTIVE` → `RESOLVED` / `DISMISSED`).
-- 🔮 **Predictive Traffic Forecasting (Module 5)**: Machine learning forecasting pipeline integration, prediction horizon scheduling, model version tracking, and lifecycle execution (`PENDING` → `COMPLETED` / `FAILED`).
-- 🗺️ **Dynamic Multi-Segment Routes (Module 6)**: Multi-segment route definition, ordered intersection sequencing, dynamic travel time estimation, and real-time route congestion aggregation (`worst_congestion_level`, `average_speed_kmh`).
-- 📈 **Operational Analytics & Intelligence (Module 7)**: System-wide snapshot summaries, real-time spatial congestion heatmaps, peak-hour time-series analysis, segment time-bucketing (5/15/30/60 min intervals), and cross-domain reports with RBAC protection.
+- 🔮 **Predictive Traffic Forecasting (Module 5)**: Machine-learning forecasting pipeline utilizing dynamically trained `RandomForestRegressor`, orchestrating historical readings to predict future congestion, prediction horizon scheduling, model version tracking, and lifecycle execution (`PENDING` → `COMPLETED` / `FAILED`).
+- 🗺️ **Dynamic Multi-Segment Routes (Module 6)**: Multi-segment route definition, ordered intersection sequencing, real-time route congestion aggregation, congestion-aware route comparison, dynamic travel-time estimation based on live readings, and external maps integration via OSRM adapters.
+- 📈 **Operational Analytics & Intelligence (Module 7)**: System-wide snapshot summaries, real-time spatial congestion heatmaps, prediction analytics (reporting completion rates and model states), peak-hour time-series analysis, segment time-bucketing (5/15/30/60 min intervals), and cross-domain reports with RBAC protection.
 
 ---
 

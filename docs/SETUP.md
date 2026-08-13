@@ -4,7 +4,7 @@
 
 | Requirement | Version | Notes |
 |-------------|---------|-------|
-| Python | 3.12+ | 3.14 tested |
+| Python | 3.12+ | 3.12.13 verified (3.14 has not been verified with pinned ML dependencies) |
 | PostgreSQL | 14+ | Local or Docker |
 | Git | any | For version control |
 

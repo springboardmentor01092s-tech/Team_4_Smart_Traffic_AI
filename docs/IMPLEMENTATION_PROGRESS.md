@@ -226,7 +226,10 @@ The backend implementation of **Milestone 2** has been successfully completed, i
 5. **Maps Provider Integration**: Implemented a robust `MapsAdapterProtocol` and a concrete `OSRMAdapter` leveraging `httpx` to abstract away external HTTP requests.
 6. **Prediction Reports**: Implemented `GET /analytics/predictions` returning real operational metrics (completion rates, prediction states) without fabricating accuracy metrics.
 
-### Validation & Known Limitations
+### Validation Results
 - Unit and integration tests were developed for all new services and routers, utilizing mocked external calls (`OSRMAdapter` mocking) to ensure hermetic testing.
-- **Note on Python 3.14 Environment**: The automated test suite (`pytest`) requires `scikit-learn==1.5.2` and `numpy==1.26.4`. These dependencies currently fail to build from source on the local Python 3.14 environment due to missing pre-built binary wheels and C extension compilation failures. Once run in a compatible environment (e.g., Python 3.11/3.12), the suite will execute cleanly.
+- The complete regression and integration suite was successfully executed against the Milestone 2 implementation.
+- **Verified Environment**: Python 3.12.13 (supporting `scikit-learn==1.5.2` and `numpy==1.26.4`).
+- **pytest Results**: 337 collected, 332 passed, 5 skipped, 0 failed, 0 errors.
+- **Alembic**: `0008 (head)` (No new database migrations required).
 - The repository structure, REST endpoints, RBAC, and existing domains remain strictly backwards-compatible with v1.0.0.

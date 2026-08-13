@@ -1681,6 +1681,28 @@ Test complete workflows spanning multiple modules:
 
 ---
 
+## 14. Milestone 2 Architectural Extensions
+
+The Milestone 2 implementation introduces advanced predictive intelligence and external mapping capabilities while strictly adhering to the established Clean Architecture principles. The core data flow (`Router → Service → Repository`) remains intact and authoritative. The following layers were introduced as supporting domain capabilities:
+
+### 14.1 Machine Learning Foundation (`app/ml`)
+
+The Machine Learning layer provides predictive capabilities strictly orchestrated by the `PredictionService`. Repositories and Routers do not interact with this layer directly.
+
+- **PredictionEngine**: The core orchestrator for ML capabilities.
+- **ModelAdapter**: Abstracts the underlying `RandomForestRegressor` (`scikit-learn`), providing deterministic hashing, dynamic in-memory training, and inference.
+- **Feature Engineering**: Encapsulates raw data transformations, window functions, and congestion threshold logic to prepare data for the model.
+
+### 14.2 External Maps Integration (`app/adapters`)
+
+The Adapters layer encapsulates and isolates all external HTTP communications. It acts as an anti-corruption layer between external providers (like OSRM) and internal business logic.
+
+- **MapsAdapterProtocol**: Defines the strict interface that any routing provider must fulfill.
+- **OSRMAdapter**: Concrete implementation leveraging `httpx` for asynchronous HTTP communication with the OSRM backend.
+- **Usage**: The `RouteService` utilizes the `MapsAdapterProtocol` to dynamically evaluate intersection routing and travel times without leaking external HTTP concerns into repositories or routers.
+
+---
+
 *End of Engineering Design Document v2.0*
 
 *This document supersedes v1.0 and is the single source of truth for all TrafficVision AI Dev #2 implementation.*
