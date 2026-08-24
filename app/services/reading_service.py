@@ -10,12 +10,15 @@ from app.repositories.segment_repository import SegmentRepository
 from app.schemas.reading import ReadingCreate
 
 
+from app.services.alert_evaluator import AlertEvaluatorService
+
 class ReadingService:
     def __init__(
-        self, reading_repo: ReadingRepository, segment_repo: SegmentRepository
+        self, reading_repo: ReadingRepository, segment_repo: SegmentRepository, alert_evaluator: AlertEvaluatorService | None = None
     ) -> None:
         self.reading_repo = reading_repo
         self.segment_repo = segment_repo
+        self.alert_evaluator = alert_evaluator
 
     async def submit_reading(self, data: ReadingCreate) -> TrafficReading:
         segment = await self.segment_repo.get_by_id(data.segment_id)
@@ -31,7 +34,7 @@ class ReadingService:
         if recorded_at_utc > now:
             raise InvalidReadingTimeError()
 
-        return await self.reading_repo.create(
+        reading = await self.reading_repo.create(
             segment_id=data.segment_id,
             vehicle_count=data.vehicle_count,
             average_speed_kmh=data.average_speed_kmh,
@@ -39,6 +42,11 @@ class ReadingService:
             occupancy_percent=data.occupancy_percent,
             recorded_at=data.recorded_at,
         )
+
+        if self.alert_evaluator:
+            await self.alert_evaluator.evaluate_reading(reading)
+
+        return reading
 
     async def list_readings(
         self,

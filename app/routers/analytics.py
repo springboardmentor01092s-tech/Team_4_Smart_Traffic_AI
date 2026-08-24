@@ -23,8 +23,11 @@ from app.schemas.analytics import (
     PeakHourRead,
     PredictionReportRead,
     SegmentTrendsRead,
+    AITrafficReportRead
 )
 from app.services.analytics_service import AnalyticsService
+from app.services.insight_service import InsightService
+from app.dependencies.insight import get_insight_service
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
@@ -118,5 +121,27 @@ async def get_full_report(
     to_dt: datetime = Query(...),
     service: AnalyticsService = Depends(get_analytics_service),
 ) -> FullReportRead:
-    """Full analytics report."""
     return await service.get_full_report(from_dt, to_dt)
+
+@router.get(
+    "/ai-report",
+    response_model=AITrafficReportRead,
+    dependencies=[Depends(require_role(UserRole.TRAFFIC_CONTROLLER, UserRole.ADMIN))],
+    summary="Generate system-level AI traffic report",
+)
+async def get_ai_report(
+    from_dt: datetime | None = Query(None, description="Start date/time"),
+    to_dt: datetime | None = Query(None, description="End date/time"),
+    service: AnalyticsService = Depends(get_analytics_service),
+    insight_service: InsightService = Depends(get_insight_service),
+) -> AITrafficReportRead:
+    """
+    Generate a comprehensive AI traffic report over a specified date range.
+    Defaults to the last 24 hours if no date range is provided.
+    Bounded insights are derived deterministically for the most critical segments.
+    """
+    return await service.get_ai_report(
+        insight_service=insight_service,
+        from_dt=from_dt,
+        to_dt=to_dt,
+    )

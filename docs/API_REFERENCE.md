@@ -1049,7 +1049,7 @@ Get a system-wide snapshot. Accessible by any authenticated user.
 ---
 
 ### `GET /api/v1/analytics/congestion-heatmap`
-Get all segments with their latest congestion levels. Accessible by any authenticated user.
+Get all segments with their latest congestion levels and geographic endpoint coordinates. Accessible by any authenticated user.
 
 **Response 200 — OK**
 ```json
@@ -1058,8 +1058,10 @@ Get all segments with their latest congestion levels. Accessible by any authenti
     "segment_id": "660e8400-e29b-41d4-a716-446655440001",
     "congestion_level": "MODERATE",
     "recorded_at": "2025-01-15T10:30:00+00:00",
-    "latitude": 40.7128,
-    "longitude": -74.0060
+    "start_latitude": 40.7128,
+    "start_longitude": -74.0060,
+    "end_latitude": 40.7150,
+    "end_longitude": -74.0080
   }
 ]
 ```
@@ -1199,6 +1201,115 @@ Get a full analytics report combining multiple domains. Requires `ADMIN` or `TRA
 
 **Error Responses**
 - `422 Unprocessable Entity`: Date range exceeds maximum allowed days or is invalid.
+
+---
+
+### `GET /api/v1/analytics/ai-report`
+Get a read-only aggregated operational intelligence report spanning multiple domains. Synthesizes a bounded list of top traffic insights across the system. Defaults to a trailing 24-hour window if dates are omitted. Requires `ADMIN` or `TRAFFIC_CONTROLLER` role.
+
+**Query Parameters**
+- `from_dt` (datetime, optional)
+- `to_dt` (datetime, optional)
+
+**Response 200 — OK**
+```json
+{
+  "report_period": {
+    "start": "2025-01-14T10:30:00+00:00",
+    "end": "2025-01-15T10:30:00+00:00"
+  },
+  "traffic_summary": { ... },
+  "alert_summary": { ... },
+  "prediction_summary": { ... },
+  "trend_distribution": { ... },
+  "top_insights": [
+    {
+       "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+       "insight_type": "SEVERE_CONGESTION",
+       "risk_level": "CRITICAL",
+       "title": "Standstill detected",
+       ...
+    }
+  ]
+}
+```
+
+---
+
+## Module 8: Notifications & Incidents
+
+### `GET /api/v1/notifications/me`
+Retrieve notifications specifically belonging to the authenticated user. Accessible by any authenticated user.
+
+**Query Parameters**
+- `status` (string, optional): Filter by `PENDING`, `SENT`, or `FAILED`.
+- `skip` (integer, default: 0)
+- `limit` (integer, default: 100)
+
+**Response 200 — OK**
+```json
+[
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440005",
+    "recipient_user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "alert_id": "770e8400-e29b-41d4-a716-446655440002",
+    "message": "Critical Alert: Severe Congestion",
+    "status": "SENT",
+    "is_read": false,
+    "created_at": "2025-01-15T10:30:00+00:00",
+    "updated_at": "2025-01-15T10:30:01+00:00"
+  }
+]
+```
+
+---
+
+### `PATCH /api/v1/notifications/{notification_id}/read`
+Mark a specific notification as read. Accessible by the owning user.
+
+**Response 200 — OK**
+Returns the updated notification.
+
+---
+
+### `POST /api/v1/incidents`
+Report a traffic incident (e.g. ACCIDENT, ROAD_CLOSURE). Requires `TRAFFIC_CONTROLLER` or `ADMIN` role. This triggers automated alert and notification generation synchronously.
+
+**Request Body**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "incident_type": "ACCIDENT",
+  "description": "Multi-vehicle collision blocking 2 lanes.",
+  "severity": "CRITICAL"
+}
+```
+
+**Response 201 — Created**
+Returns the persisted incident.
+
+---
+
+## Module 9: Insights
+
+### `GET /api/v1/insights/segment/{segment_id}`
+Get deterministic, structured traffic intelligence for a segment combining current readings, historical trends, upcoming predictions, and active alerts. Accessible by any authenticated user.
+
+**Response 200 — OK**
+```json
+{
+  "segment_id": "660e8400-e29b-41d4-a716-446655440001",
+  "insight_type": "SEVERE_CONGESTION",
+  "risk_level": "CRITICAL",
+  "title": "Severe congestion with critical alerts",
+  "recommendation": "Reroute traffic immediately.",
+  "evidence": [
+    "Current traffic condition is STANDSTILL.",
+    "CRITICAL alert active: Multi-vehicle collision."
+  ],
+  "generated_at": "2025-01-15T10:30:00+00:00"
+}
+```
 
 ---
 

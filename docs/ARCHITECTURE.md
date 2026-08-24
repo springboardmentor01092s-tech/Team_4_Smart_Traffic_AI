@@ -258,3 +258,43 @@ async def delete_camera(...):
 | **Liskov Substitution** | UserRead/UserProfile schema hierarchy |
 | **Interface Segregation** | Dependency factories are small and specific (get_db, get_current_user, require_role) |
 | **Dependency Inversion** | Services receive Repositories via constructor injection |
+
+
+---
+
+## Traffic Intelligence & Operational Flow (Milestone 3)
+
+The architecture correctly abstracts intelligence aggregation and incident alerting, ensuring the core transactional database logic remains fully synchronous and decoupled from upstream providers.
+
+### 1. Alert & Notification Flow
+Alerts are generated **synchronously** during the traffic reading ingestion to guarantee that the system state is immediately coherent before returning a response to the user.
+
+\\\
+Traffic Reading
+      ?
+AlertEvaluatorService
+      ?
+AlertService
+      ?
+NotificationService
+\\\
+
+*(Note: FastAPI \BackgroundTasks\ are not used for core alert generation to ensure data consistency.)*
+
+### 2. Operational Intelligence (Insights & Reports)
+The intelligence layer acts as a deterministic aggregation mechanism over existing foundation data. It does **not** rely on external generative LLMs, but applies explicit rule-based synthesis across ML predictions, physical sensors, and alert triggers.
+
+\\\
+Analytics
+      ?
+Trend Classification
+
+Prediction + Traffic + Alerts + Trends + Routes
+      ?
+InsightService
+      ?
+AI Traffic Report
+\\\
+
+**Design Constraint:** \InsightService\ consumes downstream domain intelligence (Analytics/Prediction/Alert/Route) and does **not** mutate those domains. The AI report is strictly an aggregation read-layer.
+

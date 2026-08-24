@@ -7,6 +7,7 @@ from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 import uuid
 
+from app.core.config import settings
 from app.core.exceptions import (
     AnalyticsInvalidBucketError,
     AnalyticsRangeExceededError,
@@ -30,7 +31,14 @@ from app.schemas.analytics import (
     PredictionReportItem,
     PredictionReportRead,
     SegmentTrendsRead,
+    TrendDirection,
+    AITrafficReportRead
 )
+from app.schemas.insight import TrafficInsightRead
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.services.insight_service import InsightService
 
 
 class AnalyticsService:
@@ -45,6 +53,16 @@ class AnalyticsService:
         self.alert_repo = alert_repo
         self.segment_repo = segment_repo
         self.prediction_repo = prediction_repo
+
+    def _classify_trend(self, delta: float | None) -> TrendDirection:
+        """Classify a trend delta into a Direction enum."""
+        if delta is None:
+            return TrendDirection.STABLE
+        if delta >= settings.trend_increasing_threshold_percent:
+            return TrendDirection.INCREASING
+        if delta <= settings.trend_decreasing_threshold_percent:
+            return TrendDirection.DECREASING
+        return TrendDirection.STABLE
 
     async def get_summary(self) -> AnalyticsSummaryRead:
         total_segments = await self.segment_repo.count_all_non_deleted()
@@ -68,6 +86,10 @@ class AnalyticsService:
                 vehicle_count=item["reading"].vehicle_count,
                 average_speed_kmh=item["reading"].average_speed_kmh,
                 recorded_at=item["reading"].recorded_at,
+                start_latitude=item["segment"].start_latitude,
+                start_longitude=item["segment"].start_longitude,
+                end_latitude=item["segment"].end_latitude,
+                end_longitude=item["segment"].end_longitude,
             )
             for item in items
         ]
@@ -189,6 +211,7 @@ class AnalyticsService:
                     current_avg_vehicle_count=curr_avg,
                     prior_avg_vehicle_count=prior_avg,
                     delta_percent=delta,
+                    trend_direction=self._classify_trend(delta),
                 )
             )
 
@@ -204,7 +227,11 @@ class AnalyticsService:
         
         # 1. Alert Summary by Severity within date range
         alerts = await self.alert_repo.get_all(limit=1000000)
-        filtered_alerts = [a for a in alerts if from_dt <= a.created_at <= to_dt]
+        filtered_alerts = []
+        for a in alerts:
+            created_dt = a.created_at.replace(tzinfo=UTC) if a.created_at.tzinfo is None else a.created_at
+            if from_dt <= created_dt <= to_dt:
+                filtered_alerts.append(a)
         
         active_alerts_by_severity = {severity: 0 for severity in AlertSeverity}
         for a in filtered_alerts:
@@ -225,10 +252,15 @@ class AnalyticsService:
 
         # 3. Prediction Completion Rate
         predictions = await self.prediction_repo.get_all(limit=1000000)
-        filtered_preds = [p for p in predictions if from_dt <= p.created_at <= to_dt]
-        pred_total = len(filtered_preds)
-        pred_completed = sum(1 for p in filtered_preds if p.status == PredictionStatus.COMPLETED)
-        completion_rate = pred_completed / pred_total if pred_total > 0 else 0.0
+        completed = 0
+        total = 0
+        for p in predictions:
+            created_dt = p.created_at.replace(tzinfo=UTC) if p.created_at.tzinfo is None else p.created_at
+            if from_dt <= created_dt <= to_dt:
+                total += 1
+                if p.status == PredictionStatus.COMPLETED:
+                    completed += 1
+        completion_rate = completed / total if total > 0 else 0.0
 
         # 4. Busiest hour band
         averages = await self.reading_repo.get_hourly_averages(from_dt=from_dt, to_dt=to_dt)
@@ -308,4 +340,144 @@ class AnalyticsService:
             pending=pending,
             completion_rate=round(completion_rate, 4),
             predictions=items,
+        )
+
+    async def get_ai_report(
+        self,
+        insight_service: "InsightService",
+        from_dt: datetime | None = None,
+        to_dt: datetime | None = None,
+    ) -> AITrafficReportRead:
+        now = datetime.now(UTC)
+        if to_dt is None:
+            to_dt = now
+        if from_dt is None:
+            from_dt = to_dt - timedelta(days=1)
+            
+        # 1. Reuse existing aggregation for traffic & alerts
+        full_report = await self.get_full_report(from_dt, to_dt)
+        
+        # 2. Reuse predictions
+        # We need total predictions and completion rate from the full_report
+        # full_report already computes this!
+        
+        # 3. System-wide trend distribution
+        prior_to = from_dt
+        prior_from = prior_to - (to_dt - from_dt)
+        
+        # get_hourly_averages across all segments
+        current_avgs = await self.reading_repo.get_hourly_averages(from_dt=from_dt, to_dt=to_dt)
+        prior_avgs = await self.reading_repo.get_hourly_averages(from_dt=prior_from, to_dt=prior_to)
+        
+        current_by_hour = defaultdict(list)
+        for item in current_avgs:
+            current_by_hour[item["hour"].hour].append(item["avg_vehicle_count"])
+
+        prior_by_hour = defaultdict(list)
+        for item in prior_avgs:
+            prior_by_hour[item["hour"].hour].append(item["avg_vehicle_count"])
+
+        trend_distribution = {td: 0 for td in TrendDirection}
+        for hour in range(24):
+            curr_vals = current_by_hour.get(hour, [])
+            prior_vals = prior_by_hour.get(hour, [])
+            curr_avg = sum(curr_vals) / len(curr_vals) if curr_vals else 0.0
+            prior_avg = sum(prior_vals) / len(prior_vals) if prior_vals else 0.0
+            delta = None
+            if prior_avg > 0:
+                delta = ((curr_avg - prior_avg) / prior_avg) * 100.0
+            
+            direction = self._classify_trend(delta)
+            trend_distribution[direction] += 1
+            
+        # 4. Bounded Insight Generation Candidate Selection
+        candidates: dict[uuid.UUID, int] = {}
+        
+        # a. Active Alerts
+        from app.models.alert import AlertStatus
+        active_alerts = await self.alert_repo.get_all(status=AlertStatus.ACTIVE) # get all active
+        for a in active_alerts:
+            # We must resolve priority: CRITICAL=5, HIGH=4
+            score = 0
+            if a.severity == AlertSeverity.CRITICAL:
+                score = 5
+            elif a.severity == AlertSeverity.HIGH:
+                score = 4
+                
+            if score > 0:
+                candidates[a.segment_id] = max(candidates.get(a.segment_id, 0), score)
+                
+        # b. Current Congestion
+        latest_readings = await self.reading_repo.get_latest_per_segment()
+        for item in latest_readings:
+            reading = item["reading"]
+            seg_id = reading.segment_id
+            score = 0
+            if reading.congestion_level == CongestionLevel.STANDSTILL:
+                score = 3
+            elif reading.congestion_level == CongestionLevel.HEAVY:
+                score = 2
+                
+            if score > 0:
+                candidates[seg_id] = max(candidates.get(seg_id, 0), score)
+                
+        # Sort candidates deterministically: score DESC, segment_id ASC
+        sorted_candidates = sorted(
+            candidates.items(),
+            key=lambda x: (-x[1], str(x[0]))
+        )
+        
+        # Take max 10
+        top_segment_ids = [c[0] for c in sorted_candidates[:10]]
+        
+        insights: list[TrafficInsightRead] = []
+        for seg_id in top_segment_ids:
+            insight = await insight_service.generate_segment_insight(seg_id)
+            insights.append(insight)
+            
+        # Sort generated insights deterministically
+        _RISK_RANK = {
+            "CRITICAL": 4,
+            "HIGH": 3,
+            "MEDIUM": 2,
+            "LOW": 1
+        }
+        
+        _TYPE_RANK = {
+            "INCIDENT_RISK": 5,
+            "PREDICTIVE_WARNING": 4,
+            "REROUTE_RECOMMENDATION": 3,
+            "CONGESTION_RISK": 2,
+            "TRAFFIC_TREND": 2,
+            "INSUFFICIENT_DATA": 1
+        }
+        
+        insights.sort(
+            key=lambda i: (
+                -_RISK_RANK.get(i.risk_level.value, 0),
+                -_TYPE_RANK.get(i.insight_type.value, 0),
+                str(i.segment_id)
+            )
+        )
+        
+        # Also need total predictions - we have it in prediction_report if we need it, but the FullReportRead gives completion_rate
+        # To get total predictions in this timeframe without getting full report again
+        # We can just fetch prediction report for counts
+        pred_report = await self.get_prediction_report(limit=1) 
+        # Wait, get_prediction_report does not take from_dt to_dt. Let's do it manually for the date range
+        predictions = await self.prediction_repo.get_all(limit=1000000)
+        filtered_preds = [p for p in predictions if from_dt <= p.created_at <= to_dt]
+        total_predictions = len(filtered_preds)
+
+        return AITrafficReportRead(
+            generated_at=now,
+            report_from=from_dt,
+            report_to=to_dt,
+            active_segment_count=full_report.active_segment_count,
+            congestion_distribution=full_report.congestion_distribution,
+            active_alerts_by_severity=full_report.active_alerts_by_severity,
+            total_predictions=total_predictions,
+            prediction_completion_rate=full_report.prediction_completion_rate,
+            trend_distribution=trend_distribution,
+            insights=insights
         )

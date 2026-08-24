@@ -70,6 +70,18 @@ class Settings(BaseSettings):
         description="Logging verbosity level",
     )
 
+    # ─── Analytics (Milestone 3) ─────────────────────────────────────────────
+    trend_increasing_threshold_percent: float = Field(
+        default=5.0,
+        ge=0.0,
+        description="Percentage threshold above which a trend is considered INCREASING.",
+    )
+    trend_decreasing_threshold_percent: float = Field(
+        default=-5.0,
+        le=0.0,
+        description="Percentage threshold below which a trend is considered DECREASING.",
+    )
+
     # ─── Maps / Routing (Milestone 2) ─────────────────────────────────────────
     maps_provider_url: str = Field(
         default="http://router.project-osrm.org",

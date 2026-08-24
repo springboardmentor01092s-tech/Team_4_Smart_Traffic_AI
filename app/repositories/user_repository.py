@@ -54,6 +54,13 @@ class UserRepository:
         """Return a paginated list of all users. Reserved for Admin use."""
         result = await self._db.execute(select(User).offset(skip).limit(limit))
         return result.scalars().all()
+        
+    async def get_by_roles(self, roles: list[UserRole]) -> Sequence[User]:
+        """Return all active users matching the given roles."""
+        result = await self._db.execute(
+            select(User).where(User.role.in_(roles), User.is_active == True)
+        )
+        return result.scalars().all()
 
     async def exists_by_email(self, email: str) -> bool:
         """Check if a user with the given email already exists."""

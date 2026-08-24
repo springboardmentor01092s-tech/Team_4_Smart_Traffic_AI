@@ -15,7 +15,7 @@
 
 ## Executive Overview
 
-**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12+, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, and deep analytics. Python 3.12.13 is the verified environment for the current pinned ML dependencies. Python 3.14 has not been verified with these pinned dependencies.
+**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12+, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, operational intelligence, and deep analytics. Python 3.12.13 is the verified environment.
 
 The backend is fully complete and upgraded to **v1.2.0 (Milestone 2)**, featuring **100% feature completion across all 7 domain modules**, an **immutable Authentication & User Management foundation**, and **advanced predictive intelligence**.
 
@@ -90,7 +90,7 @@ app/
 
 | Layer / Concern | Technology | Version | Purpose |
 |-----------------|------------|---------|---------|
-| **Language** | Python | 3.12+ (3.14 tested) | Modern async Python execution environment |
+| **Language** | Python | 3.12.13 verified | Modern async Python execution environment |
 | **Framework** | FastAPI | 0.115+ | High-performance async REST web framework |
 | **Database** | PostgreSQL | 14+ | Relational storage for spatial, time-series, and user domain data |
 | **Driver** | `asyncpg` | Latest | High-speed asynchronous PostgreSQL driver |
@@ -204,12 +204,17 @@ The table below lists all endpoints exposed under `/api/v1`:
 | **Routes** | `GET` | `/api/v1/routes/{id}/traffic` | Bearer | Get real-time aggregated traffic across route |
 | **Routes** | `POST` | `/api/v1/routes/{id}/segments` | `ADMIN` | Attach segment to route at sequence order |
 | **Routes** | `DELETE` | `/api/v1/routes/{id}/segments/{assoc_id}` | `ADMIN` | Remove segment from route |
+| **Notifications** | `GET` | `/api/v1/notifications/me` | Bearer | Retrieve owned user notifications |
+| **Notifications** | `PATCH` | `/api/v1/notifications/{id}/read` | Bearer | Mark owned notification as read |
+| **Incidents** | `POST` | `/api/v1/incidents` | `CONTROLLER` | Report traffic incident triggering alerts |
 | **Analytics** | `GET` | `/api/v1/analytics/summary` | Bearer | System-wide operational snapshot |
 | **Analytics** | `GET` | `/api/v1/analytics/congestion-heatmap` | Bearer | Current segment congestion levels & coordinates |
 | **Analytics** | `GET` | `/api/v1/analytics/peak-hours` | Bearer | System-wide hourly vehicle count averages |
 | **Analytics** | `GET` | `/api/v1/analytics/segments/{id}/history` | Bearer | Segment historical metrics in time buckets |
 | **Analytics** | `GET` | `/api/v1/analytics/segments/{id}/trends` | `CONTROLLER` | Segment statistical trend analysis |
 | **Analytics** | `GET` | `/api/v1/analytics/reports` | `CONTROLLER` | Comprehensive multi-domain analytical report |
+| **Analytics** | `GET` | `/api/v1/analytics/ai-report` | `CONTROLLER` | AI traffic intelligence report across domains |
+| **Insights** | `GET` | `/api/v1/insights/segment/{id}` | Bearer | Structured AI insights for a specific segment |
 
 > **Note:** `CONTROLLER` denotes `TRAFFIC_CONTROLLER` or `ADMIN` roles. Detailed request/response payloads are in [API_REFERENCE.md](API_REFERENCE.md).
 
@@ -234,7 +239,7 @@ The table below lists all endpoints exposed under `/api/v1`:
 
 ## Testing & Quality Assurance
 
-The codebase includes a comprehensive test suite of **274 unit and integration tests** executing asynchronously using `pytest-asyncio`, `httpx`, and in-memory `aiosqlite`.
+The codebase includes a comprehensive test suite of **364 unit and integration tests** executing asynchronously using `pytest-asyncio`, `httpx`, and in-memory `aiosqlite`.
 
 ### Execute Test Suite
 
@@ -264,7 +269,11 @@ pytest tests/test_analytics/ -v
 | `tests/test_predictions` | Prediction forecasting lifecycle, horizon validation, router RBAC | 35+ | PASSED |
 | `tests/test_routes` | Multi-segment route calculation, route segment order, traffic aggregation | 40+ | PASSED |
 | `tests/test_analytics` | System summary, heatmap, peak hours, segment time-bucketing, reports | 50+ | PASSED |
-| **Total** | **All 7 Domain Modules + Auth Foundation** | **274** | **100% Passed** |
+| `tests/test_incidents` | Incident reporting and workflow validation | 5+ | PASSED |
+| `tests/test_notifications` | Notification tracking and read marking | 5+ | PASSED |
+| `tests/test_insights` | Insight orchestration across domains | 5+ | PASSED |
+| `tests/test_e2e` | E2E integration validations across M1, M2, and M3 | 10+ | PASSED |
+| **Total** | **All Domain Modules + Auth Foundation** | **364** | **100% Passed (5 Skipped)** |
 
 ---
 

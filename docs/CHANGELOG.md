@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-08-24
+
+### Current Status
+**TrafficVision AI Backend Milestone 3 Completion**
+The Operational Intelligence layer (Alerts, Notifications, Incidents, Heatmaps, Trends, and Structured AI Reports) has been successfully implemented and E2E verified.
+
+### Added
+- **Automated Alerts**: Implemented synchronous `AlertEvaluatorService` triggered by new traffic readings.
+- **Notifications & Incidents**: Added user-specific notification tracking (`recipient_user_id`) and incident ingestion workflow triggering alerts.
+- **Geographic Heatmaps**: Upgraded `GET /api/v1/analytics/congestion-heatmap` to expose segment start/end geographic coordinates.
+- **Trend Classification**: Added deterministic thresholding for historical trends (-5% / +5% configuration defaults) in `GET /api/v1/analytics/segments/{segment_id}/trends`.
+- **Structured AI Insights**: Added `GET /api/v1/insights/segment/{segment_id}` for deterministic traffic intelligence combining alerts, route comparisons, predictions, and readings.
+- **AI Traffic Reports**: Added `GET /api/v1/analytics/ai-report` serving bounded, read-only operational intelligence across all domains for specified reporting windows.
+- **E2E Integration Validation**: Test suite expanded to thoroughly cover cross-module execution workflows. Final regression baseline: 359 passed, 5 skipped, 0 failed.
+
 ## [1.2.0] - 2026-08-13
 
 ### Current Status

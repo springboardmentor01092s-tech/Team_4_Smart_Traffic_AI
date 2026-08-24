@@ -81,3 +81,45 @@ async def test_get_full_report_invalid_dates(analytics_service: AnalyticsService
         await analytics_service.get_full_report(
             from_dt=now - timedelta(days=32), to_dt=now
         )
+
+
+async def test_classify_trend(analytics_service: AnalyticsService) -> None:
+    from app.schemas.analytics import TrendDirection
+    
+    # default thresholds: +5.0 and -5.0
+    # Increasing
+    assert analytics_service._classify_trend(10.0) == TrendDirection.INCREASING
+    # Decreasing
+    assert analytics_service._classify_trend(-10.0) == TrendDirection.DECREASING
+    # Stable
+    assert analytics_service._classify_trend(0.0) == TrendDirection.STABLE
+    
+    # Positive boundary
+    assert analytics_service._classify_trend(5.0) == TrendDirection.INCREASING
+    
+    # Negative boundary
+    assert analytics_service._classify_trend(-5.0) == TrendDirection.DECREASING
+    
+    # Just inside stable range
+    assert analytics_service._classify_trend(4.99) == TrendDirection.STABLE
+    assert analytics_service._classify_trend(-4.99) == TrendDirection.STABLE
+    
+    # Missing data / zero baseline
+    assert analytics_service._classify_trend(None) == TrendDirection.STABLE
+
+
+async def test_classify_trend_configured_thresholds(
+    analytics_service: AnalyticsService, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from app.schemas.analytics import TrendDirection
+    from app.core.config import settings
+    
+    # Isolate and override settings
+    monkeypatch.setattr(settings, "trend_increasing_threshold_percent", 10.0)
+    monkeypatch.setattr(settings, "trend_decreasing_threshold_percent", -10.0)
+    
+    assert analytics_service._classify_trend(9.99) == TrendDirection.STABLE
+    assert analytics_service._classify_trend(10.0) == TrendDirection.INCREASING
+    assert analytics_service._classify_trend(-9.99) == TrendDirection.STABLE
+    assert analytics_service._classify_trend(-10.0) == TrendDirection.DECREASING
+

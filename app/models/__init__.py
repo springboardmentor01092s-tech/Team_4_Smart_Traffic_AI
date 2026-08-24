@@ -19,6 +19,7 @@ from app.models.reading import TrafficReading  # noqa: F401
 from app.models.alert import Alert, AlertType, AlertSeverity, AlertStatus  # noqa: F401
 from app.models.prediction import TrafficPrediction, PredictionStatus  # noqa: F401
 from app.models.route import Route, RouteSegment  # noqa: F401
+from app.models.notification import Notification, NotificationStatus  # noqa: F401
 
 __all__ = [
     "User", "UserRole",
@@ -28,4 +29,5 @@ __all__ = [
     "Alert", "AlertType", "AlertSeverity", "AlertStatus",
     "TrafficPrediction", "PredictionStatus",
     "Route", "RouteSegment",
+    "Notification", "NotificationStatus",
 ]

@@ -212,6 +212,21 @@ class RouteRepository:
         )
         return result.scalar_one_or_none() is not None
 
+    async def get_routes_by_segment_id(self, segment_id: uuid.UUID) -> Sequence[Route]:
+        """
+        Return non-deleted routes that contain the given segment.
+        """
+        stmt = (
+            select(Route)
+            .join(RouteSegment, Route.id == RouteSegment.route_id)
+            .where(
+                RouteSegment.segment_id == segment_id,
+                Route.deleted_at.is_(None)
+            )
+        )
+        result = await self._db.execute(stmt)
+        return result.scalars().all()
+
     # ── RouteSegment writes ───────────────────────────────────────────────────
 
     async def add_segment(

@@ -10,6 +10,7 @@ Milestone 2 additions:
   PredictionReportRead  — response for GET /analytics/predictions
 """
 from datetime import datetime
+from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -17,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.models.alert import AlertSeverity
 from app.models.prediction import PredictionStatus
 from app.models.segment import CongestionLevel
+from app.schemas.insight import TrafficInsightRead
 
 
 # ── System Summary ────────────────────────────────────────────────────────────
@@ -42,6 +44,11 @@ class HeatmapItemRead(BaseModel):
     vehicle_count: int
     average_speed_kmh: float
     recorded_at: datetime
+
+    start_latitude: float
+    start_longitude: float
+    end_latitude: float
+    end_longitude: float
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -73,6 +80,13 @@ class HistoryBucketRead(BaseModel):
 
 # ── Segment Trends ────────────────────────────────────────────────────────────
 
+class TrendDirection(str, Enum):
+    """Directional classification of a traffic trend."""
+    INCREASING = "INCREASING"
+    DECREASING = "DECREASING"
+    STABLE = "STABLE"
+
+
 class HourlyTrend(BaseModel):
     """Comparing an hour of the day across two periods."""
 
@@ -82,6 +96,10 @@ class HourlyTrend(BaseModel):
     delta_percent: float | None = Field(
         ...,
         description="Percentage change. None if prior period was 0.",
+    )
+    trend_direction: TrendDirection = Field(
+        ...,
+        description="Categorical classification of the trend based on configured thresholds.",
     )
 
 
@@ -150,3 +168,29 @@ class PredictionReportRead(BaseModel):
         description="Fraction of predictions in COMPLETED status (0.0-1.0).",
     )
     predictions: list[PredictionReportItem]
+
+
+# ── AI Traffic Report (Milestone 3 Stage 6) ───────────────────────────────────
+
+class AITrafficReportRead(BaseModel):
+    """
+    Comprehensive system-level AI traffic report.
+    Aggregates traffic, alerts, predictions, trends, and bounded insights.
+    """
+    generated_at: datetime
+    report_from: datetime
+    report_to: datetime
+    
+    active_segment_count: int
+    congestion_distribution: dict[CongestionLevel, int]
+    active_alerts_by_severity: dict[AlertSeverity, int]
+    
+    total_predictions: int
+    prediction_completion_rate: float
+    
+    trend_distribution: dict[TrendDirection, int]
+    
+    insights: list[TrafficInsightRead]
+
+    model_config = ConfigDict(from_attributes=True)
+

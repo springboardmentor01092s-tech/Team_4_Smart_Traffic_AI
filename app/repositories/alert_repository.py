@@ -72,6 +72,23 @@ class AlertRepository:
         )
         return result.scalar_one()
 
+    async def get_active_for_segment_and_type(
+        self, segment_id: uuid.UUID, alert_type: AlertType, for_update: bool = False
+    ) -> Alert | None:
+        """Fetch the active alert for a segment and type, optionally locking the row."""
+        query = select(Alert).where(
+            Alert.segment_id == segment_id,
+            Alert.alert_type == alert_type,
+            Alert.status == AlertStatus.ACTIVE,
+            Alert.deleted_at.is_(None)
+        )
+        
+        if for_update and self._db.bind.dialect.name != "sqlite":
+            query = query.with_for_update()
+            
+        result = await self._db.execute(query)
+        return result.scalar_one_or_none()
+
     async def create(
         self,
         *,

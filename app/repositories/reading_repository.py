@@ -135,19 +135,19 @@ class ReadingRepository:
         reading_alias = aliased(TrafficReading, subq)
         
         stmt = (
-            select(reading_alias)
+            select(reading_alias, TrafficSegment)
             .join(TrafficSegment, TrafficSegment.id == reading_alias.segment_id)
             .where(TrafficSegment.deleted_at.is_(None))
             .where(subq.c.rn == 1)
         )
         result = await self.session.execute(stmt)
-        readings = result.scalars().all()
         return [
             {
                 "segment_id": r.segment_id,
-                "reading": r
+                "reading": r,
+                "segment": s,
             }
-            for r in readings
+            for r, s in result.all()
         ]
 
     async def count_by_congestion_level(self) -> dict[str, int]:
