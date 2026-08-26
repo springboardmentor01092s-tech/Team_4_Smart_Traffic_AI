@@ -24,6 +24,9 @@ def connect_to_mongo():
         logger.info("Successfully connected to MongoDB Atlas!")
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
+        mongodb_client.db = None
+        mongodb_client.client = None
+
 
 def close_mongo_connection():
     if mongodb_client.client:

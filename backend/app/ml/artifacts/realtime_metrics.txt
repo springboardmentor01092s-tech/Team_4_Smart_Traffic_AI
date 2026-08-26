@@ -1,0 +1,6 @@
+=== REAL-TIME MODEL RETRAINING METRICS ===
+Retrained At: 2026-08-26T20:26:05.046417
+Dataset Size: 40953 rows
+Volume Regressor Training MAE: 129.84 vehicles/hr
+Congestion Classifier Training Accuracy: 0.9805
+Delay Regressor Training MAE: 0.48 minutes

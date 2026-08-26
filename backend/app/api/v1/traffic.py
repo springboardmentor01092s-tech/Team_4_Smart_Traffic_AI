@@ -59,6 +59,33 @@ IN_MEMORY_JUNCTIONS = [
 
 IN_MEMORY_PROPOSED_ROUTES = []
 
+IN_MEMORY_NOTIFICATIONS = [
+    {
+        "id": 1,
+        "text": "System initialized. Traffic AI models loaded successfully.",
+        "time": "Just now",
+        "type": "info"
+    },
+    {
+        "id": 2,
+        "text": "AI Congestion Simulator standing by.",
+        "time": "2 mins ago",
+        "type": "info"
+    }
+]
+
+def add_notification(text: str, type: str = "info"):
+    import datetime
+    now_str = datetime.datetime.now().strftime("%H:%M:%S")
+    new_id = len(IN_MEMORY_NOTIFICATIONS) + 1
+    IN_MEMORY_NOTIFICATIONS.insert(0, {
+        "id": new_id,
+        "text": text,
+        "time": f"at {now_str}",
+        "type": type
+    })
+
+
 class TrafficPredictRequest(BaseModel):
     vehicle_count: int
     avg_speed_kmh: float
@@ -106,6 +133,18 @@ class ForecastRequest(BaseModel):
     is_peak_hour: bool
     weather_code: int = 0
     has_incident: bool = False
+
+@router.get("/notifications")
+def get_notifications():
+    """Returns dynamic system notifications feed."""
+    return IN_MEMORY_NOTIFICATIONS
+
+@router.post("/notifications/clear")
+def clear_notifications():
+    """Clears system notifications feed."""
+    global IN_MEMORY_NOTIFICATIONS
+    IN_MEMORY_NOTIFICATIONS = []
+    return {"success": True, "message": "Notifications cleared"}
 
 @router.post("/forecast")
 def forecast_traffic(request: ForecastRequest):
@@ -404,6 +443,32 @@ def optimize_route(request: RouteOptimizeRequest):
                 f"AI Model recommends '{best_route['name']}' with an estimated travel time of {best_route['total_time_mins']} mins."
             )
 
+        # AI Trigger: If primary corridor has High congestion, automatically propose alternate
+        primary_route = next((r for r in evaluated_routes if r["index"] == 0), None)
+        if primary_route and primary_route["congestion_level"] == "High":
+            best_alternate = next((r for r in evaluated_routes if r["index"] == best_route_index), None)
+            if best_alternate and best_route_index != 0:
+                route_exists = any(r["destination"] == request.destination and r["status"] == "PENDING" for r in IN_MEMORY_PROPOSED_ROUTES)
+                if not route_exists:
+                    import uuid
+                    new_route_id = str(uuid.uuid4())[:8]
+                    IN_MEMORY_PROPOSED_ROUTES.append({
+                        "id": new_route_id,
+                        "origin": request.origin,
+                        "destination": request.destination,
+                        "status": "PENDING",
+                        "alternate_route": {
+                            "name": best_alternate["name"],
+                            "distance_km": best_alternate["distance_km"],
+                            "estimated_time_mins": best_alternate["total_time_mins"],
+                            "delay_mins": best_alternate["delay_mins"]
+                        }
+                    })
+                    add_notification(
+                        f"AI Warning: High congestion on primary route to {request.destination}. Alternate route proposed (J-{new_route_id})", 
+                        "warning"
+                    )
+
         return {
             "status": "success",
             "origin": request.origin,
@@ -429,6 +494,7 @@ def approve_route(request: ApproveRouteRequest):
     for r in IN_MEMORY_PROPOSED_ROUTES:
         if r["id"] == request.route_id:
             r["status"] = "APPROVED"
+            add_notification(f"Broadcast: Alternate route to {r['destination']} APPROVED by Traffic Controller.", "success")
             return {"status": "success", "route": r}
     raise HTTPException(status_code=404, detail="Route not found")
 
@@ -451,15 +517,18 @@ def report_incident(incident: IncidentReportRequest):
         "status": "Active"
     }
     IN_MEMORY_INCIDENTS.insert(0, item)
+    add_notification(f"Hazard Alert: {incident.type} reported at {incident.location} ({incident.severity} severity).", "danger")
     return {"success": True, "incident": item}
 
 @router.post("/acknowledge-incident")
+@router.post("/incidents/resolve")
 def acknowledge_incident(request: AcknowledgeIncidentRequest):
     """Traffic Controller acknowledges a civilian reported hazard."""
     for inc in IN_MEMORY_INCIDENTS:
         if inc["id"] == request.incident_id:
             inc["status"] = "Acknowledged"
             inc["acknowledged_at"] = "Just now"
+            add_notification(f"Action: Hazard Alert at {inc['location']} acknowledged & response unit dispatched.", "info")
             return {"success": True, "incident": inc}
     raise HTTPException(status_code=404, detail="Incident not found")
 
@@ -472,14 +541,17 @@ def override_signal(request: SignalOverrideRequest):
                 j["signal"] = "Green"
                 j["override"] = True
                 j["status"] = "Priority Wave"
+                add_notification(f"Command Override: Emergency Green Wave activated at {j['name']}.", "success")
             elif request.mode == "all_red":
                 j["signal"] = "Red"
                 j["override"] = True
                 j["status"] = "Halted"
+                add_notification(f"Command Override: All-Red Halt activated at {j['name']}.", "danger")
             else:
                 j["override"] = False
                 j["signal"] = "Green"
                 j["status"] = "Auto Control"
+                add_notification(f"Command Override: Junction {j['name']} returned to AI Auto Control.", "info")
             return {"success": True, "junction": j}
     raise HTTPException(status_code=404, detail="Junction not found")
 
