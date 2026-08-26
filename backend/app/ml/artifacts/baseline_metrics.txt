@@ -2,7 +2,18 @@ RandomForest Regressor MAE: 107.57 vehicles/hr
 RandomForest Regressor MAPE (volume >= 100): 4.38%
 RandomForest Classifier Accuracy: 0.9508
 
-Model Load Time (One-Time Startup): 798.05 ms
-Optimized Serving Latency (n_jobs=1): 25.47 ms (Min: 21.32 ms)
-Default Multi-Thread Latency (n_jobs=-1): 103.07 ms
-Model Binary File Size: 42.97 MB
+Classification Report:
+              precision    recall  f1-score   support
+
+         Low       0.98      0.97      0.97      2827
+    Moderate       0.92      0.91      0.91      2321
+        High       0.95      0.96      0.96      2963
+
+    accuracy                           0.95      8111
+   macro avg       0.95      0.95      0.95      8111
+weighted avg       0.95      0.95      0.95      8111
+
+Confusion Matrix (Rows=True, Cols=Pred) [Low, Moderate, High]:
+[[2741   85    1]
+ [  63 2113  145]
+ [   0  105 2858]]

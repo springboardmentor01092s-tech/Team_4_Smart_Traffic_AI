@@ -1,0 +1,140 @@
+[
+  {
+    "junction_id": "J1",
+    "junction_name": "Central Plaza Crossing",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 4000,
+    "avg_speed_kmh": 33.75,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 2107,
+    "has_incident": 1,
+    "temp": 25.7,
+    "rain_1h": 0,
+    "weather_code": 0,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 2.4,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  },
+  {
+    "junction_id": "J2",
+    "junction_name": "MG Road & 5th Avenue",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 3800,
+    "avg_speed_kmh": 33.25,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 1677,
+    "has_incident": 1,
+    "temp": 23.0,
+    "rain_1h": 0,
+    "weather_code": 0,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 6.9,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  },
+  {
+    "junction_id": "J3",
+    "junction_name": "Tech Corridor Junction",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 4500,
+    "avg_speed_kmh": 33.75,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 1945,
+    "has_incident": 1,
+    "temp": 25.6,
+    "rain_1h": 0,
+    "weather_code": 0,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 2.4,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  },
+  {
+    "junction_id": "J4",
+    "junction_name": "Airport Expressway Flyover",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 6000,
+    "avg_speed_kmh": 27.0,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 3331,
+    "has_incident": 1,
+    "temp": 23.1,
+    "rain_1h": 0,
+    "weather_code": 0,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 4.7,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  },
+  {
+    "junction_id": "J5",
+    "junction_name": "Metro Station Interchange",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 3500,
+    "avg_speed_kmh": 26.75,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 2026,
+    "has_incident": 1,
+    "temp": 26.0,
+    "rain_1h": 1,
+    "weather_code": 1,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 6.9,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  },
+  {
+    "junction_id": "J6",
+    "junction_name": "South Port Boulevard",
+    "timestamp": "2026-08-26T20:19:45.161030",
+    "hour": 20,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "is_peak_hour": 0,
+    "road_capacity": 3200,
+    "avg_speed_kmh": 40.25,
+    "free_flow_speed_kmh": 60.0,
+    "vehicle_count": 1230,
+    "has_incident": 1,
+    "temp": 23.6,
+    "rain_1h": 0,
+    "weather_code": 0,
+    "tomtom_incidents_count": 2,
+    "here_jam_factor": 2.4,
+    "meta": {
+      "source": "TomTom & HERE APIs",
+      "polled_at": "2026-08-26 20:19:45"
+    }
+  }
+]

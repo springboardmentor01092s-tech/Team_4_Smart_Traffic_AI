@@ -307,33 +307,45 @@ export default function CivilianDashboard({ username }: { username?: string }) {
     fetchJunctions();
   }, []);
 
-  // Poll for APPROVED routes from controller only if civilian hasn't searched a custom route
+  // Poll for APPROVED routes from controller to dynamically notify commuter and shift routes
   useEffect(() => {
     const pollRoutes = async () => {
-      if (userHasCustomSearch.current) return;
       try {
         const res = await fetch(getApiUrl("traffic/proposed-routes"));
         if (res.ok) {
           const data = await res.json();
           const approved = data.filter((r: any) => r.status === "APPROVED");
           if (approved.length > 0) {
-            const latest = approved[approved.length - 1];
-            setActiveRoute((prev) => {
-              if (!prev || prev.id !== latest.id) {
-                setToastMsg(`Alert ${username ? `[${username}]` : ""}: New Alternate Route Approved by Controller!`);
-                return latest;
-              }
-              return prev;
-            });
+            const latest = destination 
+              ? approved.find((r: any) => r.destination.toLowerCase().trim() === destination.toLowerCase().trim()) || approved[approved.length - 1]
+              : approved[approved.length - 1];
+
+            if (latest) {
+              setActiveRoute((prev) => {
+                if (!prev || prev.id !== latest.id || prev.status !== latest.status) {
+                  setToastMsg(`Traffic Control Command: Alternate Bypass to "${latest.destination}" Approved!`);
+                  
+                  if (realRoutes.length > 1) {
+                    const altIdx = realRoutes.findIndex(r => r.index !== 0 && r.congestion_level !== "High");
+                    if (altIdx !== -1) {
+                      setSelectedRouteIndex(altIdx);
+                    }
+                  }
+                  
+                  return latest;
+                }
+                return prev;
+              });
+            }
           }
         }
       } catch (e) {}
     };
 
     pollRoutes();
-    const interval = setInterval(pollRoutes, 5000);
+    const interval = setInterval(pollRoutes, 4000);
     return () => clearInterval(interval);
-  }, [username]);
+  }, [destination, realRoutes]);
 
   const fallbackOsmRouting = async () => {
     setDirectionsResult(null);

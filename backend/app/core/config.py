@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     # Google Maps API
     GOOGLE_MAPS_API_KEY: str = ""
 
+    # TomTom & HERE Traffic APIs
+    TOMTOM_API_KEY: str = ""
+    HERE_API_KEY: str = ""
+
+
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
