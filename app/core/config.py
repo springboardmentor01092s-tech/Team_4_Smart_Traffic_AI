@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 
     # ─── Application ─────────────────────────────────────────────────────────
     app_name: str = Field(default="TrafficVision AI", description="Human-readable app name")
-    app_version: str = Field(default="1.0.0", description="Semantic version string")
+    app_version: str = Field(default="1.4.0", description="Semantic version string")
     app_env: Literal["development", "staging", "production"] = Field(default="development")
     debug: bool = Field(default=False, description="Enable debug mode (never True in prod)")
 

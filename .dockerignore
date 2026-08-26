@@ -1,0 +1,44 @@
+# Version control
+.git
+.gitignore
+
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# Testing & linting caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.ruff_cache/
+
+# IDE configurations
+.idea/
+.vscode/
+*.swp
+
+# Documentation & large binary assets
+AI_Smart Traffic Prediction & Congestion Management System.pdf
+docs/
+
+# Local logs
+*.log
+logs/

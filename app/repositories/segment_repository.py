@@ -29,6 +29,24 @@ class SegmentRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_ids(
+        self, segment_ids: Sequence[uuid.UUID]
+    ) -> dict[uuid.UUID, TrafficSegment]:
+        """
+        Batch-fetches active (non-deleted) segments by UUID.
+        Returns a mapping of {segment_id: TrafficSegment}.
+        """
+        if not segment_ids:
+            return {}
+        result = await self._db.execute(
+            select(TrafficSegment).where(
+                TrafficSegment.id.in_(segment_ids),
+                TrafficSegment.deleted_at.is_(None),
+            )
+        )
+        segments = result.scalars().all()
+        return {s.id: s for s in segments}
+
     async def get_all(
         self,
         *,

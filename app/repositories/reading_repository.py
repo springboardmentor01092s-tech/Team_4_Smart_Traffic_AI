@@ -32,6 +32,36 @@ class ReadingRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_latest_for_segments(
+        self, segment_ids: Sequence[uuid.UUID]
+    ) -> dict[uuid.UUID, TrafficReading]:
+        """
+        Batch-fetches the latest reading for each segment in `segment_ids` in a single query.
+        Returns a mapping of {segment_id: TrafficReading}.
+        """
+        if not segment_ids:
+            return {}
+
+        subq = (
+            select(
+                TrafficReading,
+                func.row_number()
+                .over(
+                    partition_by=TrafficReading.segment_id,
+                    order_by=desc(TrafficReading.recorded_at),
+                )
+                .label("rn"),
+            )
+            .where(TrafficReading.segment_id.in_(segment_ids))
+            .subquery()
+        )
+
+        reading_alias = aliased(TrafficReading, subq)
+        stmt = select(reading_alias).where(subq.c.rn == 1)
+        result = await self.session.execute(stmt)
+        readings = result.scalars().all()
+        return {r.segment_id: r for r in readings}
+
 
 
     async def get_all(
@@ -180,3 +210,21 @@ class ReadingRepository:
             counts[row.congestion_level.value] = row.count
             
         return counts
+
+    async def count_congestion_in_range(
+        self, from_dt: datetime, to_dt: datetime
+    ) -> dict[CongestionLevel, int]:
+        """Count readings grouped by congestion_level in a date range directly via SQL."""
+        stmt = (
+            select(TrafficReading.congestion_level, func.count().label("cnt"))
+            .where(
+                TrafficReading.recorded_at >= from_dt,
+                TrafficReading.recorded_at <= to_dt,
+            )
+            .group_by(TrafficReading.congestion_level)
+        )
+        result = await self.session.execute(stmt)
+        dist = {level: 0 for level in CongestionLevel}
+        for row in result.all():
+            dist[row.congestion_level] = row.cnt
+        return dist

@@ -3,7 +3,7 @@ import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.prediction import PredictionStatus, TrafficPrediction
@@ -19,6 +19,25 @@ class PredictionRepository:
 
     def __init__(self, db: AsyncSession) -> None:
         self._db = db
+
+    async def count_in_range(
+        self, from_dt: datetime, to_dt: datetime
+    ) -> tuple[int, int]:
+        """Return (total_count, completed_count) in the given created_at date range."""
+        stmt_total = select(func.count()).where(
+            TrafficPrediction.created_at >= from_dt,
+            TrafficPrediction.created_at <= to_dt,
+            TrafficPrediction.deleted_at.is_(None),
+        )
+        stmt_completed = select(func.count()).where(
+            TrafficPrediction.created_at >= from_dt,
+            TrafficPrediction.created_at <= to_dt,
+            TrafficPrediction.status == PredictionStatus.COMPLETED,
+            TrafficPrediction.deleted_at.is_(None),
+        )
+        res_total = await self._db.execute(stmt_total)
+        res_completed = await self._db.execute(stmt_completed)
+        return res_total.scalar_one(), res_completed.scalar_one()
 
     async def get_by_id(self, prediction_id: uuid.UUID) -> TrafficPrediction | None:
         result = await self._db.execute(

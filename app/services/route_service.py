@@ -1,4 +1,4 @@
-﻿"""
+"""
 app/services/route_service.py
 
 Business logic layer for the Routes module.
@@ -130,10 +130,10 @@ class RouteService:
         """
         Return the aggregated current traffic status across all segments of a route.
 
-        Algorithm:
+        Algorithm (optimized batch execution):
           1. Fetch route (raises RouteNotFoundError if absent).
           2. Fetch ordered segment UUIDs from the join table.
-          3. For each segment UUID, fetch the latest reading.
+          3. Batch-fetch latest readings for all segments in a single query.
           4. Compute worst_congestion_level using _CONGESTION_RANK dict.
           5. Assemble and return RouteTrafficRead.
 
@@ -144,6 +144,7 @@ class RouteService:
             raise RouteNotFoundError(route_id)
 
         segment_ids = await self._route_repo.get_segment_ids_for_route(route_id)
+        readings_map = await self._reading_repo.get_latest_for_segments(segment_ids)
 
         segment_traffic_items: list[SegmentTrafficItem] = []
         segments_with_readings = 0
@@ -151,7 +152,7 @@ class RouteService:
         worst_level: CongestionLevel | None = None
 
         for seg_id in segment_ids:
-            reading = await self._reading_repo.get_latest_for_segment(seg_id)
+            reading = readings_map.get(seg_id)
             if reading is not None:
                 segments_with_readings += 1
                 rank = _CONGESTION_RANK.get(reading.congestion_level, -1)
@@ -193,13 +194,15 @@ class RouteService:
         """
         Estimate total travel time for a route using current traffic readings.
 
-        Algorithm:
-          For each segment in the route (ordered by sequence_order):
-            1. Fetch latest reading.
-            2. Use reading.average_speed_kmh when available and > 0.
-            3. Fall back to segment.speed_limit_kmh when no reading or speed <= 0.
-            4. travel_time_minutes = (length_km / speed_kmh) * 60.
-          Sum segment times to produce estimated_travel_minutes.
+        Algorithm (optimized batch execution):
+          1. Fetch route (raises RouteNotFoundError if absent).
+          2. Fetch ordered segment UUIDs from the join table.
+          3. Batch-fetch segment models and latest readings in 2 queries total.
+          4. For each segment in the route (ordered by sequence_order):
+             - Use reading.average_speed_kmh when available and > 0.
+             - Fall back to segment.speed_limit_kmh when no reading or speed <= 0.
+             - travel_time_minutes = (length_km / speed_kmh) * 60.
+          5. Sum segment times to produce estimated_travel_minutes.
 
         Worst congestion is tracked across all segments with readings.
 
@@ -217,6 +220,8 @@ class RouteService:
             raise RouteNotFoundError(route_id)
 
         segment_ids = await self._route_repo.get_segment_ids_for_route(route_id)
+        segments_map = await self._segment_repo.get_by_ids(segment_ids)
+        readings_map = await self._reading_repo.get_latest_for_segments(segment_ids)
 
         total_minutes = 0.0
         segments_with_readings = 0
@@ -225,7 +230,7 @@ class RouteService:
         segment_estimates: list[SegmentEstimateItem] = []
 
         for seg_id in segment_ids:
-            segment = await self._segment_repo.get_by_id(seg_id)
+            segment = segments_map.get(seg_id)
             if segment is None:
                 # Segment was soft-deleted after being added to route; skip.
                 logger.warning(
@@ -233,7 +238,7 @@ class RouteService:
                 )
                 continue
 
-            reading = await self._reading_repo.get_latest_for_segment(seg_id)
+            reading = readings_map.get(seg_id)
 
             if reading is not None and reading.average_speed_kmh > 0:
                 speed_kmh = float(reading.average_speed_kmh)
@@ -328,6 +333,10 @@ class RouteService:
         best_route_id = scored[0][2]
         best_score = scored[0][0]
 
+        # Fetch routes for name/origin/destination metadata in batch
+        valid_route_ids = [r_id for _, _, r_id in scored]
+        routes_map = await self._route_repo.get_by_ids(valid_route_ids)
+
         comparison_items: list[RouteComparisonItem] = []
         for rank_idx, (score, estimate, route_id) in enumerate(scored, start=1):
             is_recommended = route_id == best_route_id
@@ -344,8 +353,7 @@ class RouteService:
                     f"congestion: {estimate.worst_congestion_level.value if estimate.worst_congestion_level else 'N/A'})."
                 )
 
-            # Fetch route for name/origin/destination metadata
-            route = await self._route_repo.get_by_id(route_id)
+            route = routes_map.get(route_id)
 
             comparison_items.append(
                 RouteComparisonItem(

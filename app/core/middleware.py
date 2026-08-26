@@ -52,7 +52,9 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
     Excludes health-check endpoints to avoid log noise in production.
     """
 
-    _EXCLUDED_PATHS: frozenset[str] = frozenset({"/api/v1/health", "/favicon.ico"})
+    _EXCLUDED_PATHS: frozenset[str] = frozenset(
+        {"/api/v1/health", "/api/v1/health/live", "/api/v1/health/ready", "/favicon.ico"}
+    )
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.url.path in self._EXCLUDED_PATHS:

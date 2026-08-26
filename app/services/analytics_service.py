@@ -225,42 +225,15 @@ class AnalyticsService:
 
         active_segment_count = await self.segment_repo.count_all_non_deleted()
         
-        # 1. Alert Summary by Severity within date range
-        alerts = await self.alert_repo.get_all(limit=1000000)
-        filtered_alerts = []
-        for a in alerts:
-            created_dt = a.created_at.replace(tzinfo=UTC) if a.created_at.tzinfo is None else a.created_at
-            if from_dt <= created_dt <= to_dt:
-                filtered_alerts.append(a)
-        
-        active_alerts_by_severity = {severity: 0 for severity in AlertSeverity}
-        for a in filtered_alerts:
-            # Re-read: The spec says "active alert summary by severity". Does it mean status=ACTIVE?
-            if a.status.value == "ACTIVE":
-                active_alerts_by_severity[a.severity] += 1
-                
-        # Wait, if it says "active alert summary by severity", it likely means just currently active alerts. 
-        # But we pass from_dt and to_dt... maybe for congestion dist and busiest hour.
-        # Let's count all alerts created in the period that are active, or just all active alerts?
-        # I'll just use the filtered ones. 
+        # 1. Alert Summary by Severity (SQL grouped count of active alerts)
+        active_alerts_by_severity = await self.alert_repo.count_active_by_severities()
 
-        # 2. Congestion Distribution (from readings in date range)
-        readings = await self.reading_repo.get_all(from_dt=from_dt, to_dt=to_dt, limit=1000000)
-        congestion_dist = {level: 0 for level in CongestionLevel}
-        for r in readings:
-            congestion_dist[r.congestion_level] += 1
+        # 2. Congestion Distribution (SQL grouped count from readings in date range)
+        congestion_dist = await self.reading_repo.count_congestion_in_range(from_dt=from_dt, to_dt=to_dt)
 
-        # 3. Prediction Completion Rate
-        predictions = await self.prediction_repo.get_all(limit=1000000)
-        completed = 0
-        total = 0
-        for p in predictions:
-            created_dt = p.created_at.replace(tzinfo=UTC) if p.created_at.tzinfo is None else p.created_at
-            if from_dt <= created_dt <= to_dt:
-                total += 1
-                if p.status == PredictionStatus.COMPLETED:
-                    completed += 1
-        completion_rate = completed / total if total > 0 else 0.0
+        # 3. Prediction Completion Rate (SQL count in date range)
+        total_preds, completed_preds = await self.prediction_repo.count_in_range(from_dt=from_dt, to_dt=to_dt)
+        completion_rate = completed_preds / total_preds if total_preds > 0 else 0.0
 
         # 4. Busiest hour band
         averages = await self.reading_repo.get_hourly_averages(from_dt=from_dt, to_dt=to_dt)
@@ -464,10 +437,8 @@ class AnalyticsService:
         # To get total predictions in this timeframe without getting full report again
         # We can just fetch prediction report for counts
         pred_report = await self.get_prediction_report(limit=1) 
-        # Wait, get_prediction_report does not take from_dt to_dt. Let's do it manually for the date range
-        predictions = await self.prediction_repo.get_all(limit=1000000)
-        filtered_preds = [p for p in predictions if from_dt <= p.created_at <= to_dt]
-        total_predictions = len(filtered_preds)
+        # Get total predictions in date range via direct SQL count
+        total_predictions, _ = await self.prediction_repo.count_in_range(from_dt, to_dt)
 
         return AITrafficReportRead(
             generated_at=now,

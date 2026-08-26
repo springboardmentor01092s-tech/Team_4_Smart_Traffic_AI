@@ -6,20 +6,51 @@
 
 ---
 
-## Health Check
+## Health & Readiness Probes
 
 ### `GET /api/v1/health`
 
-Returns the service health status. No authentication required.
+Returns general application metadata and status. No authentication required.
 
 **Response 200**
 ```json
 {
   "status": "healthy",
   "service": "TrafficVision AI",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "environment": "development",
-  "timestamp": "2025-01-15T10:30:00+00:00"
+  "timestamp": "2026-08-26T19:00:00+00:00"
+}
+```
+
+### `GET /api/v1/health/live`
+
+Lightweight process liveness check for container orchestrators (Kubernetes, Docker). Returns 200 as long as the FastAPI process is responsive. No authentication required.
+
+**Response 200**
+```json
+{
+  "status": "live",
+  "service": "TrafficVision AI"
+}
+```
+
+### `GET /api/v1/health/ready`
+
+Database readiness probe. Executes a lightweight `SELECT 1` against PostgreSQL to confirm database connectivity. No authentication required.
+
+**Response 200 — Database Connected**
+```json
+{
+  "status": "ready",
+  "database": "connected"
+}
+```
+
+**Response 503 — Database Disconnected / Unreachable**
+```json
+{
+  "detail": "Database unavailable"
 }
 ```
 

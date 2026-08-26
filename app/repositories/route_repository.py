@@ -58,6 +58,24 @@ class RouteRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_ids(
+        self, route_ids: Sequence[uuid.UUID]
+    ) -> dict[uuid.UUID, Route]:
+        """
+        Batch-fetches active (non-deleted) routes by UUID.
+        Returns a mapping of {route_id: Route}.
+        """
+        if not route_ids:
+            return {}
+        result = await self._db.execute(
+            select(Route).where(
+                Route.id.in_(route_ids),
+                Route.deleted_at.is_(None),
+            )
+        )
+        routes = result.scalars().all()
+        return {r.id: r for r in routes}
+
     async def get_by_id_with_segments(self, route_id: uuid.UUID) -> Route | None:
         """
         Fetch a non-deleted route by UUID with its route_segments eagerly loaded.

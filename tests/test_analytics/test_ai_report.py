@@ -53,6 +53,7 @@ async def test_ai_report_candidate_selection_priority(monkeypatch):
     
     # Also mock full_report and prediction report logic correctly
     mock_prediction_repo.get_all.return_value = []
+    mock_prediction_repo.count_in_range.return_value = (0, 0)
     
     async def get_full_report(*args, **kwargs):
         return FullReportRead(

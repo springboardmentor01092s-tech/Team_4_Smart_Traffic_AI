@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-08-26
+
+### Current Status
+**TrafficVision AI Backend Milestone 4 Completion (Release Hardening, Performance Profiling & Deployment Readiness)**
+Milestone 4 completes the production-readiness hardening, containerization, performance profiling, automated CI/CD pipeline, and health monitoring.
+
+### Added
+- **Production Health Probes**:
+  - `GET /api/v1/health`: Backward-compatible application metadata health probe.
+  - `GET /api/v1/health/live`: Lightweight process liveness probe for Kubernetes and Docker container healthchecks.
+  - `GET /api/v1/health/ready`: Database connectivity readiness probe executing `SELECT 1` (returns `200 OK` or `503 Service Unavailable`).
+  - Added request logging exclusions in `RequestLoggingMiddleware` to keep health check polling from flooding access logs.
+- **Evidence-Based Database Migration `0009`**:
+  - `uq_notifications_recipient_alert`: Database unique constraint on `notifications(recipient_user_id, alert_id)` to guarantee notification idempotency and prevent race conditions.
+  - `ix_notifications_user_created`: Composite index on `notifications(recipient_user_id, created_at DESC)` for high-speed user notification feeds.
+  - `ix_notifications_status`: Index on `notifications(status)` for delivery status tracking.
+  - `ix_alerts_segment_status`: Composite index on `alerts(segment_id, status)` for fast active alert lookups.
+  - Verified 100% migration reversibility via `alembic downgrade -1` and `alembic upgrade head`.
+- **Docker Containerization**:
+  - `Dockerfile`: Multi-layer, Python 3.12-slim based container running as non-root `appuser` (UID 1001) with integrated curl health checks.
+  - `entrypoint.sh`: Defensive container entrypoint running `alembic upgrade head` with fail-fast exit on migration errors before starting Uvicorn.
+  - `docker-compose.yml`: Multi-container orchestration linking PostgreSQL 16 (with `pg_isready` healthcheck) and the FastAPI backend service.
+  - `.dockerignore`: Lean build context excluding test caches, virtualenvs, local `.env`, and git history.
+- **CI / Release Workflow**:
+  - `.github/workflows/backend-ci.yml`: GitHub Actions pipeline with dual jobs (Python 3.12 test suite against live PostgreSQL service container + Docker container build validation).
+- **Test Suite Expansion & PostgreSQL Direct Validation**:
+  - Expanded test suite to **372 collected tests** (367 passed, 5 SQLite compatibility skips).
+  - Validated all 5 SQLite-skipped `date_trunc` functions against real PostgreSQL with 100% pass rate.
+  - Added batch query tests in `tests/test_optimizations/test_batch_queries.py`.
+  - Added notification uniqueness and idempotency tests in `tests/test_notifications/test_notification_idempotency.py`.
+
+### Changed & Optimized
+- **Route Service N+1 Query Elimination**:
+  - Implemented batch fetching in `ReadingRepository.get_latest_for_segments()`, `SegmentRepository.get_by_ids()`, and `RouteRepository.get_by_ids()`.
+  - `RouteService.estimate_travel_time()`: Reduced query count from **22 queries to 4 queries** (81.8% reduction), latency improved by **54.1%** (20.85ms -> 9.56ms) with bit-identical calculation results.
+  - `RouteService.compare_routes()`: Reduced query count from **115 queries to 21 queries** (81.7% reduction), latency improved by **75.9%** (83.67ms -> 20.15ms).
+- **Analytics Aggregation Optimization**:
+  - Replaced unbounded `limit=1000000` list iteration with direct SQL grouped counts (`count_active_by_severities`, `count_congestion_in_range`, `count_in_range`), reducing server memory overhead from O(N) to O(1).
+
+### Security & Release Hardening
+- Authenticated RBAC frozen and preserved.
+- Database credentials and secrets fully decoupled via `.env.example` templates.
+- Explicit non-root permissions and defensive container startup.
+
+---
+
 ## [1.3.0] - 2026-08-24
 
 ### Current Status

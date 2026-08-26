@@ -7,17 +7,17 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.x_Async-red.svg)](https://sqlalchemy.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)](https://postgresql.org)
-[![Tests](https://img.shields.io/badge/Pytest-332_Passed-brightgreen.svg)](tests/)
-[![Status](https://img.shields.io/badge/Release-v1.2.0-success.svg)](CHANGELOG.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Pytest-367_Passed%20%7C%205_PG_Validated-brightgreen.svg)](../tests/)
+[![Status](https://img.shields.io/badge/Release-v1.4.0_Milestone_4-success.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
 ---
 
 ## Executive Overview
 
-**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12+, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, operational intelligence, and deep analytics. Python 3.12.13 is the verified environment.
+**TrafficVision AI Backend** is an enterprise-grade backend infrastructure built with Python 3.12, FastAPI, SQLAlchemy 2.x (Async), and PostgreSQL. It delivers a scalable, modular architecture engineered for real-time traffic monitoring, automated incident reporting, machine-learning prediction ingestion, dynamic routing, operational intelligence, notification dispatch, and deep analytics.
 
-The backend is fully complete and upgraded to **v1.2.0 (Milestone 2)**, featuring **100% feature completion across all 7 domain modules**, an **immutable Authentication & User Management foundation**, and **advanced predictive intelligence**.
+The backend is fully complete and hardened for **v1.4.0 (Milestone 4)**, featuring **100% feature completion across all 7 domain modules**, an **immutable Authentication & User Management foundation**, **Docker containerization**, and **measurable performance profiling**.
 
 ### Core System Capabilities
 - 🔐 **Stateless Authentication & User Management**: JWT (HS256) bearer token authentication, bcrypt (12 rounds) password security, and 3-tier Role-Based Access Control (`ADMIN`, `TRAFFIC_CONTROLLER`, `PUBLIC_USER`).

@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: trafficvision-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: trafficvision
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d trafficvision"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trafficvision-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: "TrafficVision AI"
+      APP_ENV: "production"
+      DEBUG: "false"
+      API_V1_PREFIX: "/api/v1"
+      DATABASE_URL: "postgresql+asyncpg://postgres:postgres_password@db:5432/trafficvision"
+      JWT_SECRET_KEY: "prod_sample_secret_key_change_in_real_cloud_deployment_min_32_chars"
+      JWT_ALGORITHM: "HS256"
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
+      LOG_LEVEL: "INFO"
+      MAPS_PROVIDER_URL: "http://router.project-osrm.org"
+      MAPS_API_KEY: ""
+      TREND_INCREASING_THRESHOLD_PERCENT: "5.0"
+      TREND_DECREASING_THRESHOLD_PERCENT: "-5.0"
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  pgdata:
+    driver: local

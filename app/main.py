@@ -107,23 +107,6 @@ def create_application() -> FastAPI:
     
     app.include_router(get_api_router(), prefix=settings.api_v1_prefix)
 
-    # ── Health Endpoint ───────────────────────────────────────────────────────
-    @app.get(
-        f"{settings.api_v1_prefix}/health",
-        tags=["Health"],
-        summary="Health check",
-        description="Returns service status and uptime. No authentication required.",
-        response_description="Service health status",
-    )
-    async def health_check() -> dict:
-        return {
-            "status": "healthy",
-            "service": settings.app_name,
-            "version": settings.app_version,
-            "environment": settings.app_env,
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
-
     return app
 
 

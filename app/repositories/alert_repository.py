@@ -72,6 +72,22 @@ class AlertRepository:
         )
         return result.scalar_one()
 
+    async def count_active_by_severities(self) -> dict[AlertSeverity, int]:
+        """Return active alert counts grouped by severity directly via SQL."""
+        stmt = (
+            select(Alert.severity, func.count().label("cnt"))
+            .where(
+                Alert.status == AlertStatus.ACTIVE,
+                Alert.deleted_at.is_(None),
+            )
+            .group_by(Alert.severity)
+        )
+        result = await self._db.execute(stmt)
+        counts = {severity: 0 for severity in AlertSeverity}
+        for row in result.all():
+            counts[row.severity] = row.cnt
+        return counts
+
     async def get_active_for_segment_and_type(
         self, segment_id: uuid.UUID, alert_type: AlertType, for_update: bool = False
     ) -> Alert | None:

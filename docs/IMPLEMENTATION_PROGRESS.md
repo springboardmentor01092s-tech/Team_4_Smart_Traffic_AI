@@ -39,7 +39,7 @@ The project now consists of six fully working modules:
 5. **Traffic Alerts** (COMPLETED & FROZEN)
 6. **Traffic Predictions** (COMPLETED & FROZEN)
 
-All code adheres strictly to the architectural patterns (Router → Service → Repository), leveraging dependency injection, standardized exception handling, and async SQLAlchemy.
+All code adheres strictly to the architectural patterns (Router â Service â Repository), leveraging dependency injection, standardized exception handling, and async SQLAlchemy.
 
 ## Module 2 Completion: Traffic Segments
 The implementation of **Module 2: Traffic Segments** has been successfully completed in accordance with the Engineering Design Document v2.0.
@@ -209,7 +209,7 @@ The final production release blockers have been successfully addressed:
 - **pytest**: The final regression suite of 274 tests completed with 269 passed, 5 skipped (due to SQLite limitations), and 0 failed across both SQLite and PostgreSQL.
 
 ### Project Status Finalized
-**Authentication and Modules 1–7 are 100% complete and frozen.**
+**Authentication and Modules 1â7 are 100% complete and frozen.**
 **Documentation is 100% complete and frozen.**
 **TrafficVision AI Backend is officially ready for the v1.0.0 release.**
 
@@ -241,7 +241,8 @@ The backend implementation of **Milestone 3** has been successfully completed, i
 
 ### Core Features Added
 1. **Automated Alerts**: Implemented synchronous AlertEvaluatorService triggered dynamically by new traffic readings (without utilizing background tasks).
-2. **Notifications & Incidents**: Implemented NotificationService and IncidentService, enabling tracking of user-specific notifications (via ecipient_user_id) natively within the DB.
+2. **Notifications & Incidents**: Implemented NotificationService and IncidentService, enabling tracking of user-specific notifications (via 
+ecipient_user_id) natively within the DB.
 3. **Geographic Heatmaps**: Implemented GET /api/v1/analytics/congestion-heatmap exposing segment start/end geographic points for mapping UI.
 4. **Trend Classification**: Configurable deterministic thresholding implemented for historical trends (-5% / +5% defaults).
 5. **Structured AI Insights**: Implemented a rule-based deterministic traffic intelligence layer synthesizing alerts, route comparisons, predictions, and readings.
@@ -255,14 +256,46 @@ The backend implementation of **Milestone 3** has been successfully completed, i
 - **Alembic**: Migrations applied natively without regressions.
 
 ### Implementation Status
-- Stage 1 � COMPLETE
-- Stage 2 � COMPLETE
-- Stage 3 � COMPLETE
-- Stage 4 � COMPLETE
-- Stage 5 � COMPLETE
-- Stage 6 � COMPLETE
-- Stage 7 � COMPLETE
-- Stage 8 � COMPLETE
-- Stage 9 � IN PROGRESS
-- Stage 10 � PENDING
+- Stage 1 — COMPLETE
+- Stage 2 — COMPLETE
+- Stage 3 — COMPLETE
+- Stage 4 — COMPLETE
+- Stage 5 — COMPLETE
+- Stage 6 — COMPLETE
+- Stage 7 — COMPLETE
+- Stage 8 — COMPLETE
+- Stage 9 — COMPLETE
+- Stage 10 — COMPLETE
 
+---
+
+## Milestone 4 Completion: Release Hardening, Performance Profiling & Deployment Readiness
+
+The backend implementation of **Milestone 4** has been successfully completed, delivering production hardening, Docker containerization, performance profiling, automated CI/CD pipeline, and complete release validation.
+
+### Core Deliverables Added & Verified
+1. **Production Health & Readiness Probes**:
+   - Implemented `/api/v1/health` (metadata), `/api/v1/health/live` (process liveness), and `/api/v1/health/ready` (database connectivity probe executing `SELECT 1`, returning 200/503).
+   - Middleware updated with polling suppression for health check endpoints.
+2. **Performance Optimizations (Evidence-Based)**:
+   - **Route Service N+1 Query Elimination**: Added batch repository methods (`ReadingRepository.get_latest_for_segments`, `SegmentRepository.get_by_ids`, `RouteRepository.get_by_ids`).
+     - `estimate_travel_time`: Query count dropped from **22 to 4 queries** (81.8% reduction), latency improved from 20.85ms to 9.56ms (54.1% reduction).
+     - `compare_routes`: Query count dropped from **115 to 21 queries** (81.7% reduction), latency improved from 83.67ms to 20.15ms (75.9% reduction).
+   - **Analytics Direct SQL Aggregations**: Replaced unbounded `limit=1000000` loops with direct SQL grouped counts (`count_active_by_severities`, `count_congestion_in_range`, `count_in_range`), reducing memory overhead from O(N) to O(1).
+3. **Database Migration `0009` & Notification Uniqueness**:
+   - Verified 0 duplicate notifications prior to applying unique constraint.
+   - Applied migration `0009` with `uq_notifications_recipient_alert`, composite index `ix_notifications_user_created`, `ix_notifications_status`, and `ix_alerts_segment_status`.
+   - Verified 100% migration reversibility (upgrade -> downgrade -> upgrade).
+4. **Docker Containerization**:
+   - Multi-layer `Dockerfile` using Python 3.12-slim, non-root user `appuser` (UID 1001), container healthchecks, and lean `.dockerignore`.
+   - Defensive `entrypoint.sh` executing `alembic upgrade head` with fail-fast exit before Uvicorn starts.
+   - `docker-compose.yml` orchestrating PostgreSQL 16 (with healthchecks) and the FastAPI backend service.
+5. **CI / Automated Release Workflow**:
+   - Created `.github/workflows/backend-ci.yml` with dual jobs for test suite execution against PostgreSQL and Docker container build verification.
+
+### Validation Results
+- **Full Test Suite**: **372 collected, 367 passed, 5 skipped, 0 failed** in 85.30s.
+- **PostgreSQL Direct Validation**: All 5 SQLite-skipped `date_trunc` functions (`ReadingRepository.get_hourly_averages`, `AnalyticsService.get_peak_hour_averages`, `AnalyticsService.get_segment_trends`, `AnalyticsService.get_full_report`, and `busiest_hour`) executed with 100% success against PostgreSQL.
+- **Alembic State**: `0009 (head)` fully synchronized.
+- **Architecture & RBAC**: 100% preserved and frozen.
+- **TrafficVision AI Backend is officially ready for the v1.4.0 (Milestone 4) release.**

@@ -10,6 +10,7 @@ Extension point for Backend Developer #2:
 from fastapi import APIRouter
 
 from app.routers.auth import router as auth_router
+from app.routers.health import router as health_router
 from app.routers.users import router as users_router
 
 
@@ -20,6 +21,7 @@ def get_api_router() -> APIRouter:
     # Core foundation routes
     api_router.include_router(auth_router)
     api_router.include_router(users_router)
+    api_router.include_router(health_router)
 
     # ──────────────────────────────────────────────────────────────────────────
     # BUSINESS MODULE ROUTERS — Backend Developer #2

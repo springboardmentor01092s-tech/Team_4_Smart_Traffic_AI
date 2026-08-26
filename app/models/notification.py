@@ -7,7 +7,7 @@ import uuid
 from datetime import UTC, datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, Enum as SAEnum
+from sqlalchemy import DateTime, ForeignKey, String, Text, UniqueConstraint, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -25,6 +25,9 @@ class Notification(Base):
     """ORM model representing a user notification."""
 
     __tablename__ = "notifications"
+    __table_args__ = (
+        UniqueConstraint("recipient_user_id", "alert_id", name="uq_notifications_recipient_alert"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
