@@ -291,7 +291,7 @@ The `docs/` directory contains comprehensive specifications and developer guides
 | [BACKEND_CONTRACT.md](BACKEND_CONTRACT.md) | Module boundaries, integration guidelines, and extension rules |
 | [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md) | Integration protocols for frontend applications and external AI prediction services |
 | [IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md) | Module-by-module completion log, test execution summaries, and validation history |
-| [CHANGELOG.md](CHANGELOG.md) | Version history tracking features, fixes, and release readiness (v1.0.0) |
+| [CHANGELOG.md](CHANGELOG.md) | Version history tracking features, fixes, and release readiness (v1.4.0) |
 
 ---
 
