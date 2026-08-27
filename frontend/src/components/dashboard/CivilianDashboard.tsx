@@ -574,7 +574,21 @@ export default function CivilianDashboard({ username }: { username?: string }) {
           destination: destination,
           status: "APPROVED"
         });
-        setToastMsg(`AI Model evaluated ${computedRoutes.length} real-time routes! Optimal route highlighted.`);
+       const recommendedRoute =
+  computedRoutes.find((r) => r.isRecommended) || computedRoutes[recommendedIndex];
+
+if (
+  recommendedRoute?.congestion_level === "High" ||
+  recommendedRoute?.congestion === "High Traffic"
+) {
+  setToastMsg(
+    `🚨 Congestion Alert: ${recommendedRoute.name} — High congestion detected. Estimated delay: ${recommendedRoute.delay_mins} minutes.`
+  );
+} else {
+  setToastMsg(
+    `🚦 Traffic Update: ${recommendedRoute?.name || "Recommended route"} — ${recommendedRoute?.congestion || "Traffic monitored"}.`
+  );
+}
       } else {
         const msg = "No connected driving road paths found between specified origin and destination.";
         setToastMsg(msg);
@@ -619,7 +633,7 @@ export default function CivilianDashboard({ username }: { username?: string }) {
         setIncidents([data.incident, ...incidents]);
         setIncidentLoc("");
         setIncidentDesc("");
-        setToastMsg("Traffic incident report submitted to city control center!");
+        setToastMsg(`🚨 ${incidentType} Alert: ${incidentLoc} — ${incidentDesc}`);
         setTimeout(() => setToastMsg(null), 4000);
       }
     } catch {
