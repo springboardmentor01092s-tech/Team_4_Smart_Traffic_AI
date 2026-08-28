@@ -1,0 +1,5122 @@
+[
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:23:39.886523+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 2675 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T05:23:55.828251+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:23:55.828290+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 2238 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:24:16.764845+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:24:16.764873+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 2876 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:24:37.772844+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:24:37.772876+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 2876 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:24:58.668438+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:24:58.668473+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:25:19.226326+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:36:10.982863+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 2648 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:36:26.507703+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:36:26.507794+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 2674 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:36:47.173363+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:36:47.173410+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 2876 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:37:07.834959+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:37:07.834995+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 2699 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:37:28.806122+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:37:28.806152+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:37:49.445449+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 2797 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:46:10.446260+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:46:10.446296+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 2643 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:46:30.906294+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:46:30.906330+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 2702 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:46:52.022537+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:46:52.022577+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 2875 veh/hr, ~11.1 min delay",
+    "timestamp": "2026-08-27T05:47:12.687231+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:47:12.687265+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 2728 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T05:47:33.173222+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:47:33.173256+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:47:53.874537+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 2722 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:56:10.576673+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:56:10.576699+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 2642 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:56:31.325301+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:56:31.325329+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 2712 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:56:52.393261+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:56:52.393296+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 2848 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:57:12.817687+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:57:12.817720+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 2718 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T05:57:33.724182+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:57:33.724212+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T05:57:54.455757+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 3946 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:06:10.456929+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:06:10.456960+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4433 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:06:31.690090+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:06:31.690116+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4851 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:06:52.236257+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:06:52.236291+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5110 veh/hr, ~13.8 min delay",
+    "timestamp": "2026-08-27T06:07:12.990568+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:07:12.990602+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4862 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:07:33.808466+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:07:33.808493+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:07:54.876181+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4430 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:16:10.495840+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:16:10.495884+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4502 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:16:31.644215+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:16:31.644244+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4774 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:16:52.311208+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:16:52.311240+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5146 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:17:13.541068+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:17:13.541102+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4770 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T06:17:34.200393+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:17:34.200422+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:17:55.381212+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4471 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:26:10.477319+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:26:10.477357+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 4672 veh/hr, ~14.0 min delay",
+    "timestamp": "2026-08-27T06:26:31.282021+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:26:31.282049+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4953 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:26:52.624674+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:26:52.624718+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5185 veh/hr, ~13.2 min delay",
+    "timestamp": "2026-08-27T06:27:13.102239+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:27:13.102263+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4921 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:27:33.822290+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:27:33.822322+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 2930 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:27:54.961159+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:27:54.961188+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4820 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:36:10.332805+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:36:10.332839+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4963 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:36:31.374156+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:36:31.374190+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5037 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:36:52.476711+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:36:52.476740+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5039 veh/hr, ~13.2 min delay",
+    "timestamp": "2026-08-27T06:37:13.720344+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:37:13.720379+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5061 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:37:34.558216+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:37:34.558241+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 3459 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:37:55.812414+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:37:55.812445+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4998 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T06:46:10.603833+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:46:10.603868+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5045 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T06:46:31.292639+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:46:31.292673+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5089 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:46:52.632025+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:46:52.632060+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5104 veh/hr, ~13.1 min delay",
+    "timestamp": "2026-08-27T06:47:13.953389+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:47:13.953420+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5075 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:47:34.449504+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:47:34.449547+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4891 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T06:47:55.431524+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:47:55.431565+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5083 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:56:10.205511+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:56:10.205546+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5065 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T06:56:30.921372+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:56:30.921406+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5052 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:56:51.677059+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:56:51.677088+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5156 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:57:12.241331+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:57:12.241364+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5150 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:57:33.657838+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:57:33.657896+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4850 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T06:57:54.583177+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T06:57:54.583234+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5897 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:06:10.135385+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:06:10.135411+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5854 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:06:30.752540+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:06:30.752572+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 5857 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T07:06:51.616179+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:06:51.616212+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5997 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T07:07:12.551257+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:07:12.551288+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 5997 veh/hr, ~12.7 min delay",
+    "timestamp": "2026-08-27T07:07:33.227236+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:07:33.227264+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 5246 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:07:54.104801+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:07:54.104825+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 6476 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:16:10.372860+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:16:10.372895+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 6488 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:16:30.955299+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:16:30.955338+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6476 veh/hr, ~12.3 min delay",
+    "timestamp": "2026-08-27T07:16:51.420874+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:16:51.420914+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6428 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T07:17:12.412831+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:17:12.412862+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 6457 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:17:33.962806+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:17:33.962837+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 6041 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:17:54.898924+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:17:54.898957+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 6295 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:26:10.361119+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:26:10.361176+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 6286 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:26:31.193813+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:26:31.193874+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6286 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T07:26:52.402853+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:26:52.402915+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6295 veh/hr, ~12.9 min delay",
+    "timestamp": "2026-08-27T07:27:13.602833+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:27:13.602896+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6295 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:27:34.521221+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:27:34.521284+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 6485 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:27:55.762573+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:27:55.762641+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 6429 veh/hr, ~11.3 min delay",
+    "timestamp": "2026-08-27T07:36:10.378975+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:36:10.379033+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 6429 veh/hr, ~11.5 min delay",
+    "timestamp": "2026-08-27T07:36:31.063492+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:36:31.063548+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 6429 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:36:51.714544+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:36:51.714606+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6429 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T07:37:12.510201+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:37:12.510264+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 6429 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:37:33.115247+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:37:33.115297+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 6295 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:37:53.731969+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:37:53.732014+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 6469 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:46:10.488123+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:46:10.488177+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 6469 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:46:30.770807+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:46:30.770864+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6469 veh/hr, ~12.0 min delay",
+    "timestamp": "2026-08-27T07:46:51.333893+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:46:51.333957+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6469 veh/hr, ~12.6 min delay",
+    "timestamp": "2026-08-27T07:47:12.316704+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:47:12.316765+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6469 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:47:32.778103+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:47:32.778154+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 6445 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:47:53.263335+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:47:53.263395+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 6469 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:56:10.350503+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:56:10.350566+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 6469 veh/hr, ~12.9 min delay",
+    "timestamp": "2026-08-27T07:56:30.901189+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:56:30.901251+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6469 veh/hr, ~11.4 min delay",
+    "timestamp": "2026-08-27T07:56:51.357209+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:56:51.357265+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6469 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T07:57:11.747008+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:57:11.747074+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6469 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T07:57:32.952486+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:57:32.952543+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 6469 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T07:57:53.598459+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T07:57:53.598513+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 6158 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:06:10.216350+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:06:10.216433+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 6158 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:06:30.844013+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:06:30.844066+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6158 veh/hr, ~11.0 min delay",
+    "timestamp": "2026-08-27T08:06:51.637863+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:06:51.637931+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6158 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T08:07:12.504175+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:07:12.504237+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6158 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:07:33.175483+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:07:33.175547+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 6158 veh/hr, ~12.5 min delay",
+    "timestamp": "2026-08-27T08:07:53.861368+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:07:53.861422+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 6158 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:16:10.183547+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:16:10.183607+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 6158 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:16:31.092019+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:16:31.092078+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6158 veh/hr, ~13.0 min delay",
+    "timestamp": "2026-08-27T08:16:51.394123+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:16:51.394177+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6158 veh/hr, ~12.9 min delay",
+    "timestamp": "2026-08-27T08:17:12.216519+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:17:12.216576+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6158 veh/hr, ~11.1 min delay",
+    "timestamp": "2026-08-27T08:17:32.646065+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:17:32.646135+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 6158 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:17:53.150998+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:17:53.151057+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 6137 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:26:10.488347+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:26:10.488413+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 6137 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:26:31.483493+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:26:31.483554+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6137 veh/hr, ~13.7 min delay",
+    "timestamp": "2026-08-27T08:26:52.627598+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:26:52.627656+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6137 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T08:27:13.461754+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:27:13.461810+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 6137 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:27:34.014386+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:27:34.014445+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 6137 veh/hr, ~12.0 min delay",
+    "timestamp": "2026-08-27T08:27:55.303872+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:27:55.303933+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 6021 veh/hr, ~12.7 min delay",
+    "timestamp": "2026-08-27T08:36:10.264179+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:36:10.264230+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 6021 veh/hr, ~11.0 min delay",
+    "timestamp": "2026-08-27T08:36:30.999363+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:36:30.999409+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 6021 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:36:51.756654+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:36:51.756706+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 6021 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T08:37:12.683187+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:37:12.683238+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 6021 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:37:33.581825+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:37:33.581886+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 6021 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:37:54.828314+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:37:54.828386+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 5933 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:46:10.231247+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:46:10.231386+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 5933 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T08:46:30.811109+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:46:30.811162+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 5933 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:46:51.563730+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:46:51.563785+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5933 veh/hr, ~11.0 min delay",
+    "timestamp": "2026-08-27T08:47:12.154214+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:47:12.154301+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 5933 veh/hr, ~12.1 min delay",
+    "timestamp": "2026-08-27T08:47:32.589063+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:47:32.589116+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 5933 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T08:47:53.095813+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:47:53.095868+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5870 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:56:10.146107+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:56:10.146167+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 5870 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T08:56:31.102784+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:56:31.102849+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5870 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:56:51.748268+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:56:51.748336+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5870 veh/hr, ~12.3 min delay",
+    "timestamp": "2026-08-27T08:57:12.447832+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:57:12.447892+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5870 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:57:33.173416+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:57:33.173479+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5870 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T08:57:53.981390+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T08:57:53.981464+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5213 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:06:10.249659+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:06:10.249716+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5213 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:06:31.055351+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:06:31.055411+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5213 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:06:51.464429+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:06:51.464492+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5213 veh/hr, ~11.0 min delay",
+    "timestamp": "2026-08-27T09:07:12.000724+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:07:12.000786+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5213 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:07:32.539578+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:07:32.539637+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 5213 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T09:07:53.173540+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:07:53.173605+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5123 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:16:10.443304+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:16:10.443361+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5123 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:16:30.934830+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:16:30.934884+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 5123 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T09:16:51.494711+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:16:51.494769+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5123 veh/hr, ~13.0 min delay",
+    "timestamp": "2026-08-27T09:17:12.243109+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:17:12.243171+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5123 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:17:33.172497+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:17:33.172553+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 5123 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T09:17:54.013262+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:17:54.013322+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 5027 veh/hr, ~13.2 min delay",
+    "timestamp": "2026-08-27T09:26:10.316249+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:26:10.316305+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5027 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:26:31.251770+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:26:31.251828+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5027 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:26:51.959896+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:26:51.959954+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5027 veh/hr, ~12.8 min delay",
+    "timestamp": "2026-08-27T09:27:12.533184+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:27:12.533242+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5027 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:27:33.495143+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:27:33.495208+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 5027 veh/hr, ~11.6 min delay",
+    "timestamp": "2026-08-27T09:27:54.339685+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:27:54.339751+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 4877 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T09:36:10.066642+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:36:10.066706+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4877 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:36:30.798043+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:36:30.798107+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4877 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:36:51.447607+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:36:51.447658+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4877 veh/hr, ~12.9 min delay",
+    "timestamp": "2026-08-27T09:37:12.267844+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:37:12.267917+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4877 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:37:32.909991+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:37:32.910042+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4877 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:37:54.518713+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:37:54.518767+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 4805 veh/hr, ~12.6 min delay",
+    "timestamp": "2026-08-27T09:46:10.286439+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:46:10.286571+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4793 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:46:30.837157+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:46:30.837215+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4793 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:46:51.425252+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:46:51.425306+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4793 veh/hr, ~12.1 min delay",
+    "timestamp": "2026-08-27T09:47:12.259437+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:47:12.259500+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 4805 veh/hr, ~12.5 min delay",
+    "timestamp": "2026-08-27T09:47:32.891816+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:47:32.891864+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4791 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:47:53.462724+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:47:53.462785+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J1: 4784 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T09:56:10.197014+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:56:10.197076+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 4791 veh/hr, ~10.2 min delay",
+    "timestamp": "2026-08-27T09:56:31.124331+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:56:31.124389+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 4784 veh/hr, ~13.0 min delay",
+    "timestamp": "2026-08-27T09:56:52.443722+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:56:52.443780+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4773 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T09:57:13.293785+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:57:13.293845+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 4773 veh/hr, ~10.8 min delay",
+    "timestamp": "2026-08-27T09:57:33.929293+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:57:33.929355+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4778 veh/hr, ~9.8 min delay",
+    "timestamp": "2026-08-27T09:57:54.712402+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T09:57:54.712461+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4503 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:06:10.146504+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:06:10.146568+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4493 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:06:30.854896+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:06:30.854955+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4528 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:06:51.683694+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:06:51.683750+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4530 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T10:07:12.965672+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:07:12.965736+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4499 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:07:34.135888+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:07:34.135948+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4493 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:07:55.096691+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:07:55.096763+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4325 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:16:10.376094+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:16:10.376151+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4343 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:16:31.077952+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:16:31.078003+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4331 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:16:52.246282+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:16:52.246340+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4363 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:17:13.259731+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:17:13.259792+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4338 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:17:33.737148+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:17:33.737216+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4370 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T10:17:54.231899+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:17:54.231958+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4300 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:26:10.136113+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:26:10.136170+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 4302 veh/hr, ~13.9 min delay",
+    "timestamp": "2026-08-27T10:26:31.160265+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:26:31.160321+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 4306 veh/hr, ~14.0 min delay",
+    "timestamp": "2026-08-27T10:26:52.007523+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:26:52.007585+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4304 veh/hr, ~13.3 min delay",
+    "timestamp": "2026-08-27T10:27:12.974878+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:27:12.974940+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4304 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:27:33.818984+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:27:33.819044+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4291 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:27:54.655122+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:27:54.655178+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4279 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T10:36:10.391102+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:36:10.391155+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4281 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:36:30.838887+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:36:30.838947+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4278 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:36:51.421231+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:36:51.421292+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4279 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T10:37:12.283762+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:37:12.283829+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4278 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:37:32.985982+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:37:32.986040+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4260 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:37:53.596128+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:37:53.596260+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4315 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:46:10.132416+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:46:10.132483+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4305 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:46:30.928766+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:46:30.928834+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4314 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:46:51.784231+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:46:51.784301+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4305 veh/hr, ~14.1 min delay",
+    "timestamp": "2026-08-27T10:47:12.532318+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:47:12.532384+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4309 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:47:33.750023+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:47:33.750083+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4294 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:47:54.134472+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:47:54.134533+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4317 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:56:10.300827+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:56:10.300893+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4322 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:56:31.097324+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:56:31.097390+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4314 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T10:56:52.120630+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:56:52.120680+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4322 veh/hr, ~12.4 min delay",
+    "timestamp": "2026-08-27T10:57:13.070729+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:57:13.070829+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 4322 veh/hr, ~13.4 min delay",
+    "timestamp": "2026-08-27T10:57:34.112875+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:57:34.112936+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4271 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T10:57:54.955606+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T10:57:54.955654+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4436 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:06:10.527834+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:06:10.527891+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4435 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T11:06:31.111943+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:06:31.111997+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4427 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:06:51.919632+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:06:51.919695+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4430 veh/hr, ~12.0 min delay",
+    "timestamp": "2026-08-27T11:07:12.631213+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:07:12.631280+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4436 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T11:07:33.886437+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:07:33.886498+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4374 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:07:55.184376+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:07:55.184438+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4513 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:16:10.273219+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:16:10.273279+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4508 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:16:31.383145+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:16:31.383208+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 4506 veh/hr, ~13.0 min delay",
+    "timestamp": "2026-08-27T11:16:52.032127+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:16:52.032202+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4506 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:17:13.131697+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:17:13.131758+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4513 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:17:33.437093+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:17:33.437156+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4461 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:17:54.007427+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:17:54.007484+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4521 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:26:10.602074+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:26:10.602140+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4522 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:26:31.996411+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:26:31.996473+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4520 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:26:53.074878+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:26:53.074937+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4520 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:27:14.167933+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:27:14.167994+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4523 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:27:35.257599+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:27:35.257656+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4513 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T11:27:56.342029+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:27:56.342085+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4587 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:36:10.610744+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:36:10.610807+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4587 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:36:32.709680+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:36:32.709735+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 4587 veh/hr, ~14.0 min delay",
+    "timestamp": "2026-08-27T11:36:54.299753+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:36:54.299811+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4587 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:37:16.390346+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:37:16.390419+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4587 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:37:38.486228+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:37:38.486330+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J6: 4557 veh/hr, ~13.4 min delay",
+    "timestamp": "2026-08-27T11:38:00.591475+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:38:00.591527+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4623 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:46:10.785019+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:46:10.785076+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4623 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:46:32.891301+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:46:32.891367+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4623 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T11:46:54.973531+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:46:54.973589+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4623 veh/hr, ~13.3 min delay",
+    "timestamp": "2026-08-27T11:47:17.082812+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:47:17.082874+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4623 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:47:38.670974+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:47:38.671036+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4609 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:48:00.764388+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:48:00.764505+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4658 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:56:10.976442+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:56:10.976499+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4658 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T11:56:33.064238+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:56:33.064298+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4658 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:56:55.157399+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:56:55.157456+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4658 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:57:17.254586+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:57:17.254658+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4658 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:57:39.344607+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:57:39.344670+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4631 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T11:58:01.444913+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T11:58:01.445012+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4726 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T12:06:10.644476+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:06:10.644537+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4726 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:06:32.754219+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:06:32.754278+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 4726 veh/hr, ~11.2 min delay",
+    "timestamp": "2026-08-27T12:06:54.835964+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:06:54.836025+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 4726 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T12:07:16.942697+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:07:16.942746+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4726 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:07:39.038849+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:07:39.038905+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4694 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:08:00.662065+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:08:00.662127+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4765 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:16:10.887588+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:16:10.887649+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4765 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:16:32.994058+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:16:32.994115+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4765 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:16:55.085204+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:16:55.085262+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4765 veh/hr, ~13.3 min delay",
+    "timestamp": "2026-08-27T12:17:17.200203+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:17:17.200273+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4765 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:17:39.297204+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:17:39.297262+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4741 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:18:01.387115+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:18:01.387170+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4805 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:26:10.603663+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:26:10.603731+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4805 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:26:32.711324+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:26:32.711380+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4805 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:26:54.812754+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:26:54.812799+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4805 veh/hr, ~13.2 min delay",
+    "timestamp": "2026-08-27T12:27:16.901048+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:27:16.901146+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4805 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:27:38.993870+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:27:38.993936+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4780 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T12:28:01.090309+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:28:01.090416+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4891 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:36:10.807022+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:36:10.807094+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4891 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:36:32.900587+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:36:32.900647+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4891 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:36:54.986504+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:36:54.986557+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4891 veh/hr, ~12.0 min delay",
+    "timestamp": "2026-08-27T12:37:17.078992+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:37:17.079063+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4891 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:37:39.180128+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:37:39.180204+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4848 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:38:01.277942+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:38:01.277995+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 4923 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:56:10.412429+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:56:10.412484+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 4923 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:56:32.033868+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:56:32.034042+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 4923 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:56:53.542219+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:56:53.542289+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 4923 veh/hr, ~14.1 min delay",
+    "timestamp": "2026-08-27T12:57:14.818197+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:57:14.818257+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 4923 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:57:36.073499+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:57:36.073561+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4906 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T12:57:57.640769+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T12:57:57.640833+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5000 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:06:10.815990+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:06:10.816048+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5000 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:06:31.672963+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:06:31.673019+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 5000 veh/hr, ~12.5 min delay",
+    "timestamp": "2026-08-27T13:06:52.816361+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:06:52.816426+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5000 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:07:14.145328+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:07:14.145455+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5000 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:07:35.214074+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:07:35.214135+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 4950 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:07:56.745028+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:07:56.745092+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5029 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:16:10.249569+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:16:10.249631+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5029 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:16:31.674639+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:16:31.674706+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5029 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:16:52.740953+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:16:52.741118+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5029 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:17:13.797405+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:17:13.797456+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5029 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:17:35.088623+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:17:35.088681+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5014 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:17:56.279868+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:17:56.279939+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5071 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:26:10.633776+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:26:10.633845+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J2: 5071 veh/hr, ~13.4 min delay",
+    "timestamp": "2026-08-27T13:26:31.834743+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:26:31.834807+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J3: 5071 veh/hr, ~14.0 min delay",
+    "timestamp": "2026-08-27T13:26:52.942975+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:26:52.943033+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5071 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:27:14.178230+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:27:14.178287+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5071 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:27:35.504116+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:27:35.504184+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5047 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:27:56.744846+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:27:56.744905+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5143 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:36:10.350450+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:36:10.350516+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5143 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:36:31.802482+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:36:31.802539+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5143 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:36:53.126877+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:36:53.126946+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5143 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:37:14.391585+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:37:14.391647+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J5: 5143 veh/hr, ~13.4 min delay",
+    "timestamp": "2026-08-27T13:37:35.625095+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:37:35.625157+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5107 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:37:56.686213+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:37:56.686272+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5202 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:46:10.142071+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:46:10.142137+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5202 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:46:31.314667+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:46:31.314727+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5202 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:46:52.041444+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:46:52.041506+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5202 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:47:13.036275+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:47:13.036340+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5202 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:47:34.033636+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:47:34.033699+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5166 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T13:47:55.016547+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:47:55.016616+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5244 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:56:10.499854+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:56:10.499913+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5244 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:56:31.375905+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:56:31.375966+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5244 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:56:52.693880+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:56:52.693941+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "high",
+    "message": "High congestion at J4: 5244 veh/hr, ~13.1 min delay",
+    "timestamp": "2026-08-27T13:57:13.993807+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:57:13.993866+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5244 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:57:34.979215+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:57:34.979274+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5215 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T13:57:56.461218+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T13:57:56.461261+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5357 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:06:10.645483+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:06:10.645546+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5357 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:06:31.317006+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:06:31.317077+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5357 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:06:52.496936+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:06:52.497005+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5357 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:07:14.107988+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:07:14.108042+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5357 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T14:07:35.442096+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:07:35.442145+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5323 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:07:55.859231+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:07:55.859289+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5484 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T14:16:10.562920+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:16:10.562972+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5484 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:16:31.900813+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:16:31.900877+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5484 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:16:52.486715+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:16:52.486780+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5484 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:17:13.410372+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:17:13.410431+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5484 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:17:34.791800+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:17:34.791854+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5431 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:17:56.057216+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:17:56.057265+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J1: 5603 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T14:26:10.774500+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J1",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:26:10.774558+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J2: 5603 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:26:31.898851+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J2",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:26:31.898903+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J3: 5603 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:26:52.697835+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J3",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:26:52.697890+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J4: 5603 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:27:13.478688+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J4",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:27:13.478746+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J5: 5603 veh/hr, ~9.0 min delay",
+    "timestamp": "2026-08-27T14:27:34.906607+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J5",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:27:34.906669+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "congestion",
+    "severity": "moderate",
+    "message": "High congestion at J6: 5554 veh/hr, ~9.6 min delay",
+    "timestamp": "2026-08-27T14:27:55.500628+00:00",
+    "resolved": false
+  },
+  {
+    "junction_id": "J6",
+    "type": "accident",
+    "severity": "high",
+    "message": "TomTom Realtime: Two-vehicle collision blocking right lane.",
+    "timestamp": "2026-08-27T14:27:55.500677+00:00",
+    "resolved": false
+  }
+]

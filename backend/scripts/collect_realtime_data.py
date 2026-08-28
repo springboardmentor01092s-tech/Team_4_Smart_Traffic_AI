@@ -133,7 +133,6 @@ def collect_and_store():
             else:
                 record.pop("_id", None)
                 local_records.append(record)
-
                 
             logger.info(f"Processed observation for {j['name']}. Vol={vehicle_count}, Speed={record['avg_speed_kmh']} km/h")
             

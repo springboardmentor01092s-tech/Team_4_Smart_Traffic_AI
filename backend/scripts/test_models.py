@@ -27,6 +27,7 @@ from sklearn.metrics import accuracy_score, mean_absolute_error, classification_
 
 # ---- CONFIG: adjust these paths/columns to match your repo ----------------
 ARTIFACTS_DIR = Path("app/ml/artifacts")
+BASELINE_CSV = Path("data/traffic_data.csv")
 HOLDOUT_CSV = Path("data/true_holdout.csv")
 REALTIME_CACHE = Path("data/realtime_traffic_fallback.json")
 
@@ -48,7 +49,11 @@ TARGET_DELAY = "delay_mins"
 def load_model(path):
     if not path.exists():
         raise FileNotFoundError(f"Model not found: {path}")
-    return joblib.load(path)
+    try:
+        return joblib.load(path)
+    except Exception:
+        with open(path, "rb") as f:
+            return pickle.load(f)
 
 
 
@@ -168,13 +173,24 @@ def held_out_evaluation():
     print("STEP 2: HELD-OUT EVALUATION — real accuracy/MAE on unseen data")
     print("=" * 60)
 
-    if not HOLDOUT_CSV.exists():
-        print(f"[SKIP] Holdout CSV not found at {HOLDOUT_CSV}")
+    if not BASELINE_CSV.exists():
+        print(f"[SKIP] Baseline CSV not found at {BASELINE_CSV}")
         return
 
-    # Read preprocessed holdout split directly
-    test_df = pd.read_csv(HOLDOUT_CSV)
-    print(f"Loaded true holdout test split: {test_df.shape}")
+    if HOLDOUT_CSV.exists():
+        test_df = pd.read_csv(HOLDOUT_CSV)
+        print(f"Loaded true holdout test split: {test_df.shape}")
+    else:
+        df_raw = pd.read_csv(BASELINE_CSV)
+        print(f"Loaded raw baseline dataset: {df_raw.shape}")
+        
+        # Feature engineer the baseline dataset
+        df = preprocess_data(df_raw)
+        print(f"Preprocessed baseline dataset shape: {df.shape}")
+
+        split_idx = int(len(df) * 0.85)
+        test_df = df.iloc[split_idx:]
+        print(f"Held-out test set size: {test_df.shape[0]} samples")
 
     # --- Congestion classifier ---
     if CONGESTION_MODEL.exists() and TARGET_CONGESTION in test_df.columns:
@@ -212,5 +228,5 @@ if __name__ == "__main__":
     sanity_check()
     held_out_evaluation()
     print("\nDone. Compare held-out numbers above against the *training* numbers "
-          "from your walkthrough (MAE 129.84, Accuracy 98.05%, MAE 0.48). "
+          "from your walkthrough (MAE 131.83, Accuracy 98.01%, MAE 0.49). "
           "If held-out numbers are much worse, the model is overfitting.")
