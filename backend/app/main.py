@@ -42,13 +42,30 @@ async def lifespan(app: FastAPI):
             logger.warning(f"Trigger setup note: {trigger_err}")
     except Exception as e:
         logger.warning(f"PostgreSQL table creation/seeding skipped or failed: {e}")
+        
+    # Start APScheduler for end-to-end traffic management workflow
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    from app.services.pipeline_service import run_pipeline_cycle
+    
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(run_pipeline_cycle, "interval", minutes=10)
+    scheduler.start()
+    logger.info("APScheduler started: scheduled run_pipeline_cycle every 10 minutes.")
+    
     yield
     # Shutdown sequence
     logger.info("Shutting down CityFlowX Backend...")
     try:
+        scheduler.shutdown()
+        logger.info("APScheduler shut down successfully.")
+    except Exception as sched_err:
+        logger.warning(f"Error shutting down APScheduler: {sched_err}")
+        
+    try:
         close_mongo_connection()
     except Exception as e:
         logger.warning(f"Error closing MongoDB connection: {e}")
+
 
 app = FastAPI(
     title="CityFlowX AI",
