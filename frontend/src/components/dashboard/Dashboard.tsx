@@ -18,6 +18,9 @@ import {
 import CivilianDashboard from "./CivilianDashboard";
 import ControllerDashboard from "./ControllerDashboard";
 
+import { getApiUrl } from "@/lib/api";
+import ToastAlert from "@/components/ui/ToastAlert";
+
 interface DashboardProps {
   user?: { role: string; email: string; name?: string };
   onLogout?: () => void;
@@ -28,13 +31,49 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
   const [showNotifications, setShowNotifications] = React.useState(false);
-  const [notifications, setNotifications] = React.useState([
-    { id: 1, text: "System initialized. Maps integrated.", time: "Just now" },
-    { id: 2, text: "AI Simulator is standing by.", time: "2 mins ago" }
-  ]);
+  const [notifications, setNotifications] = React.useState<any[]>([]);
+  const [activeToast, setActiveToast] = React.useState<{ type: "success" | "error" | "warning"; message: string } | null>(null);
+  const lastNotificationId = React.useRef<number>(0);
 
-  const clearNotifications = () => {
-    setNotifications([]);
+  const fetchNotifications = React.useCallback(async () => {
+    try {
+      const res = await fetch(getApiUrl("traffic/notifications"));
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+        
+        if (data.length > 0) {
+          const latest = data[0];
+          if (latest.id > lastNotificationId.current) {
+            if (lastNotificationId.current !== 0) {
+              const toastType = latest.type === "danger" ? "error" : latest.type === "warning" ? "warning" : "success";
+              setActiveToast({
+                type: toastType,
+                message: latest.text
+              });
+            }
+            lastNotificationId.current = latest.id;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Notifications fetch error:", e);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 4000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+  const clearNotifications = async () => {
+    try {
+      const res = await fetch(getApiUrl("traffic/notifications/clear"), { method: "POST" });
+      if (res.ok) {
+        setNotifications([]);
+      }
+    } catch {}
   };
 
   // Format display username (e.g., "Nagul", "Arunprasath", or "Head Traffic Controller")
@@ -54,6 +93,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-3 sm:p-5 md:p-8 select-none w-full max-w-full">
+      {activeToast && (
+        <ToastAlert 
+          type={activeToast.type} 
+          message={activeToast.message} 
+          onClose={() => setActiveToast(null)} 
+        />
+      )}
+
       
       {/* Top Header matching Login Page Aesthetics */}
       <header className="w-full max-w-full flex items-start md:items-center justify-between border-b border-slate-200 pb-6 mb-8 gap-3">

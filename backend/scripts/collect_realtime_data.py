@@ -128,8 +128,10 @@ def collect_and_store():
                     records_inserted += 1
                 except Exception as mongo_err:
                     logger.warning(f"MongoDB write failed: {mongo_err}. Storing locally instead.")
+                    record.pop("_id", None)
                     local_records.append(record)
             else:
+                record.pop("_id", None)
                 local_records.append(record)
                 
             logger.info(f"Processed observation for {j['name']}. Vol={vehicle_count}, Speed={record['avg_speed_kmh']} km/h")

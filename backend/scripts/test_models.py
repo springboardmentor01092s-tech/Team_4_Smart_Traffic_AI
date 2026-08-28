@@ -28,6 +28,7 @@ from sklearn.metrics import accuracy_score, mean_absolute_error, classification_
 # ---- CONFIG: adjust these paths/columns to match your repo ----------------
 ARTIFACTS_DIR = Path("app/ml/artifacts")
 BASELINE_CSV = Path("data/traffic_data.csv")
+HOLDOUT_CSV = Path("data/true_holdout.csv")
 REALTIME_CACHE = Path("data/realtime_traffic_fallback.json")
 
 CONGESTION_MODEL = ARTIFACTS_DIR / "congestion_classifier.joblib"
@@ -176,9 +177,8 @@ def held_out_evaluation():
         print(f"[SKIP] Baseline CSV not found at {BASELINE_CSV}")
         return
 
-    HOLDOUT_CSV_PATH = Path("data/true_holdout.csv")
-    if HOLDOUT_CSV_PATH.exists():
-        test_df = pd.read_csv(HOLDOUT_CSV_PATH)
+    if HOLDOUT_CSV.exists():
+        test_df = pd.read_csv(HOLDOUT_CSV)
         print(f"Loaded true holdout test split: {test_df.shape}")
     else:
         df_raw = pd.read_csv(BASELINE_CSV)
@@ -200,7 +200,7 @@ def held_out_evaluation():
         y_true = test_df[TARGET_CONGESTION]
         y_pred = model.predict(X_test)
         acc = accuracy_score(y_true, y_pred)
-        print(f"\nCongestion Classifier — Held-out Accuracy: {acc:.2%}")
+        print(f"\nCongestion Classifier — True Holdout Accuracy: {acc:.2%}")
         print(classification_report(y_true, y_pred))
 
     # --- Volume regressor ---
@@ -211,7 +211,7 @@ def held_out_evaluation():
         y_true = test_df[TARGET_VOLUME]
         y_pred = model.predict(X_test)
         mae = mean_absolute_error(y_true, y_pred)
-        print(f"Volume Regressor — Held-out MAE: {mae:.2f} vehicles/hr")
+        print(f"Volume Regressor — True Holdout MAE: {mae:.2f} vehicles/hr")
 
     # --- Delay regressor ---
     if DELAY_MODEL.exists() and TARGET_DELAY in test_df.columns:
@@ -221,8 +221,7 @@ def held_out_evaluation():
         y_true = test_df[TARGET_DELAY]
         y_pred = model.predict(X_test)
         mae = mean_absolute_error(y_true, y_pred)
-        print(f"Delay Regressor — Held-out MAE: {mae:.2f} minutes")
-
+        print(f"Delay Regressor — True Holdout MAE: {mae:.2f} minutes")
 
 
 if __name__ == "__main__":
