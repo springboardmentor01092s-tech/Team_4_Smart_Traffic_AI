@@ -212,8 +212,8 @@ export default function LoginPage() {
   };
       
   const handleOAuthLogin = async () => {
-    setIsLoading(true);
-    const googleEmail = email.trim() && email.includes("@") ? email.trim() : "nagulaadhi08@gmail.com";
+    setLoading(true);
+    const googleEmail = emailOrUsername.trim() && emailOrUsername.includes("@") ? emailOrUsername.trim() : "nagulaadhi08@gmail.com";
     const googleName = googleEmail.split("@")[0] || "Nagul";
 
     // Sync user with backend in background
@@ -241,6 +241,7 @@ export default function LoginPage() {
       name: googleName,
     });
   };
+
 
 
 
