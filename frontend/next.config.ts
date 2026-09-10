@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   experimental: {
     // Prevent excessive worker thread allocation
@@ -9,3 +10,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
