@@ -53,24 +53,52 @@ export default function LoginPage() {
       }).catch(() => {});
     };
 
-    // Check for Google OAuth Callback URL parameters (e.g. /?auth=google_success)
+    // Real Google OAuth 2.0 Token & Profile Handler
     if (typeof window !== "undefined") {
+      const hash = window.location.hash;
       const urlParams = new URLSearchParams(window.location.search);
-      const isGoogleSuccess = urlParams.get("auth") === "google_success" || window.location.href.includes("google_success") || window.location.hash.includes("access_token");
-      if (isGoogleSuccess) {
+      
+      // If returning from Google OAuth with access_token in URL hash
+      if (hash && hash.includes("access_token")) {
+        const hashParams = new URLSearchParams(hash.substring(1));
+        const accessToken = hashParams.get("access_token");
+        if (accessToken) {
+          fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          })
+            .then((res) => res.json())
+            .then((profile) => {
+              if (profile && profile.email) {
+                const userEmail = profile.email;
+                const userName = profile.name || profile.given_name || userEmail.split("@")[0];
+                saveAuthUser({
+                  email: userEmail,
+                  user_type: "civilian",
+                  name: userName,
+                });
+                syncUser(userEmail, userName);
+                triggerToast("success", `Welcome ${userName}! Signed in with Google.`);
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }
+            })
+            .catch(() => {});
+        }
+      } else if (urlParams.get("auth") === "google_success") {
         const rawEmail = urlParams.get("email");
-        const googleEmail = rawEmail && !rawEmail.toLowerCase().includes("google.user") ? rawEmail : "nagulaadhi08@gmail.com";
         const rawName = urlParams.get("name");
-        const googleName = rawName && !rawName.toLowerCase().includes("google.user") ? rawName : "Nagul";
-        saveAuthUser({
-          email: googleEmail,
-          user_type: "civilian",
-          name: googleName,
-        });
-        syncUser(googleEmail, googleName);
-        window.history.replaceState({}, document.title, window.location.pathname);
+        if (rawEmail) {
+          saveAuthUser({
+            email: rawEmail,
+            user_type: "civilian",
+            name: rawName || rawEmail.split("@")[0],
+          });
+          syncUser(rawEmail, rawName || undefined);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
     }
+
+
 
     // Initial session check & Google OAuth return handler
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -211,36 +239,17 @@ export default function LoginPage() {
     });
   };
       
-  const handleOAuthLogin = async () => {
+  const handleOAuthLogin = () => {
     setLoading(true);
-    const googleEmail = emailOrUsername.trim() && emailOrUsername.includes("@") ? emailOrUsername.trim() : "nagulaadhi08@gmail.com";
-    const googleName = googleEmail.split("@")[0] || "Nagul";
-
-    // Sync user with backend in background
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/google-sync`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: googleEmail,
-          full_name: googleName,
-          user_type: "civilian",
-        }),
-      });
-    } catch {}
-
-    // Save auth session & smoothly transition into Dashboard
-    saveAuthUser({
-      email: googleEmail,
-      user_type: "civilian",
-      name: googleName,
-    });
-    setPendingUser({
-      email: googleEmail,
-      user_type: "civilian",
-      name: googleName,
-    });
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "641284559789-mukvticnb4bol4rqs23fn3hm3flf9g4j.apps.googleusercontent.com";
+    const redirectUri = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    
+    // Redirect directly to Google's Official OAuth 2.0 Account Selection
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(googleClientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=email%20profile%20openid&prompt=select_account`;
+    
+    window.location.href = googleAuthUrl;
   };
+
 
 
 
