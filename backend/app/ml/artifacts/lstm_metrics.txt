@@ -1,0 +1,8 @@
+Multivariate TensorFlow LSTM MAE: 190.13 vehicles/hr
+Multivariate TensorFlow LSTM MAPE (volume >= 100): 9.84%
+
+Model Load Time (One-Time Startup): 442.98 ms
+Pure Inference Latency: 98.30 ms (Min: 75.98 ms)
+Model Serialized Architecture Size: 0.26 MB
+Framework Runtime Overhead: ~500 MB (TensorFlow/Keras Runtime)
+Inference Speedup (Optimized RF vs LSTM): RandomForest is 3.9x Faster

@@ -1,0 +1,19 @@
+RandomForest Regressor MAE: 107.57 vehicles/hr
+RandomForest Regressor MAPE (volume >= 100): 4.38%
+RandomForest Classifier Accuracy: 0.9508
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         Low       0.98      0.97      0.97      2827
+    Moderate       0.92      0.91      0.91      2321
+        High       0.95      0.96      0.96      2963
+
+    accuracy                           0.95      8111
+   macro avg       0.95      0.95      0.95      8111
+weighted avg       0.95      0.95      0.95      8111
+
+Confusion Matrix (Rows=True, Cols=Pred) [Low, Moderate, High]:
+[[2741   85    1]
+ [  63 2113  145]
+ [   0  105 2858]]
